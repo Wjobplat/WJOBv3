@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>W-JOB — Candidatures</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;
+      --bg:#030d12;
+      --glass:rgba(255,255,255,.052);--gb:rgba(16,185,129,.16);--gh:rgba(255,255,255,.085);
+      --text:#f0fdf8;--muted:#6b9e8e;--dim:#a3c4bc;
+    }
+
+    /* ── LIGHT MODE ── */
+    [data-theme="light"]{
+      --bg:#f0fdf8;--glass:rgba(0,0,0,.04);--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);
+      --text:#0f172a;--muted:#4b7a6c;--dim:#2d5c4e;
+    }
+    [data-theme="light"] body::before{background:
+      radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.09) 0%,transparent 55%),
+      radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.06) 0%,transparent 50%),
+      linear-gradient(160deg,#f0fdf8 0%,#e5f7f0 100%)}
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.88);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .nav-link:hover{background:rgba(0,0,0,.05);color:var(--text)}
+    [data-theme="light"] .nav-link.active{color:var(--em);background:rgba(16,185,129,.1)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .stat-pill,[data-theme="light"] .kanban-col{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .app-card{background:rgba(255,255,255,.5);border-color:rgba(0,0,0,.08)}
+    [data-theme="light"] .app-card:hover{background:rgba(255,255,255,.85)}
+    [data-theme="light"] .col-header{border-bottom-color:rgba(0,0,0,.08)}
+    [data-theme="light"] .col-count{background:rgba(0,0,0,.07);color:var(--muted)}
+    [data-theme="light"] .card-footer{border-top-color:rgba(0,0,0,.07)}
+    [data-theme="light"] .tag{background:rgba(0,0,0,.06);color:var(--muted)}
+    [data-theme="light"] .filter-btn{background:rgba(255,255,255,.6);color:var(--dim)}
+    [data-theme="light"] .search-input{background:rgba(255,255,255,.6);color:var(--dim)}
+    [data-theme="light"] .add-card{border-color:rgba(16,185,129,.25)}
+    [data-theme="light"] .page-header p{color:var(--muted)}
+    [data-theme="light"] .btn-ghost{background:rgba(255,255,255,.6);color:var(--dim)}
+
+    /* Theme toggle icons */
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}[data-theme="light"] .icon-moon{display:block}
+
+    /* Theme transitions */
+    body{transition:background .45s ease,color .45s ease}
+    .topnav{transition:background .45s ease,border-color .45s ease}
+    .stat-pill,.kanban-col,.app-card{transition:background .45s ease,border-color .45s ease,transform .32s cubic-bezier(.16,1,.3,1),box-shadow .32s}
+
+    /* Flash overlay */
+    #theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(255,255,255,0)}
+    #theme-flash.flash-dark{animation:flashOut .4s ease forwards;background:rgba(0,0,0,.18)}
+    #theme-flash.flash-light{animation:flashOut .4s ease forwards;background:rgba(255,255,255,.22)}
+    @keyframes flashOut{0%{opacity:1}100%{opacity:0}}
+
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.14) 0%,transparent 55%),
+                 radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.09) 0%,transparent 50%),
+                 linear-gradient(160deg,#030d12 0%,#071a20 100%)}
+
+    /* ── TOP NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      background:rgba(3,13,18,.8);backdrop-filter:blur(28px) saturate(1.5);
+      border-bottom:1px solid rgba(16,185,129,.11)}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.25rem;font-weight:900;letter-spacing:-.5px;
+      background:linear-gradient(135deg,var(--em-l),var(--teal));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{display:flex;align-items:center;gap:.45rem;padding:.42rem .85rem;border-radius:8px;
+      font-size:.85rem;font-weight:500;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap}
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--text);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+    .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--gb);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--dim)}
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em));
+      display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;
+      cursor:pointer;box-shadow:0 0 16px rgba(16,185,129,.32);transition:box-shadow .2s}
+    .avatar:hover{box-shadow:0 0 28px rgba(16,185,129,.5)}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:2rem 2rem 4rem}
+
+    .fade-in{opacity:0;transform:translateY(16px);animation:fadeIn .55s cubic-bezier(.16,1,.3,1) forwards}
+    .fi1{animation-delay:.05s}.fi2{animation-delay:.12s}.fi3{animation-delay:.2s}.fi4{animation-delay:.28s}
+    @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+    /* PAGE HEADER */
+    .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+    .page-header h2{font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+    .page-header p{color:var(--muted);margin-top:.3rem;font-size:.875rem}
+    .header-actions{display:flex;gap:.75rem}
+    .btn{padding:.6rem 1.2rem;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;
+      text-decoration:none;transition:all .25s;border:none;font-family:'Inter',sans-serif;
+      display:inline-flex;align-items:center;gap:.4rem;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.07);transform:translateX(-110%) skewX(-15deg);transition:transform .4s}
+    .btn:hover::after{transform:translateX(110%) skewX(-15deg)}
+    .btn-primary{background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;box-shadow:0 0 22px rgba(16,185,129,.3)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(16,185,129,.5)}
+    .btn-ghost{background:var(--glass);border:1px solid var(--gb);color:var(--dim)}
+    .btn-ghost:hover{border-color:var(--em);color:var(--em-l)}
+    .btn svg{width:15px;height:15px;stroke-width:2}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+    .stat-pill{background:var(--glass);border:1px solid var(--gb);border-radius:14px;
+      padding:1rem 1.25rem;backdrop-filter:blur(20px);display:flex;align-items:center;gap:.9rem;cursor:default}
+    .stat-pill:hover{transform:translateY(-3px);border-color:rgba(16,185,129,.35);box-shadow:0 12px 35px rgba(16,185,129,.12)}
+    .stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s}
+    .stat-pill:hover .stat-icon{transform:scale(1.1) rotate(-6deg)}
+    .stat-icon svg{width:17px;height:17px;stroke-width:2}
+    .stat-val{font-size:1.6rem;font-weight:800;line-height:1}
+    .stat-lbl{font-size:.7rem;color:var(--muted);font-weight:500;margin-top:.15rem}
+
+    /* FILTERS */
+    .filters{display:flex;gap:.6rem;margin-bottom:1.75rem;flex-wrap:wrap;align-items:center;position:relative;z-index:2}
+    .filter-btn{padding:.42rem .95rem;border-radius:999px;font-size:.78rem;font-weight:600;
+      cursor:pointer;border:1px solid var(--gb);background:var(--glass);color:var(--dim);
+      transition:all .22s;display:flex;align-items:center;gap:.35rem}
+    .filter-btn svg{width:13px;height:13px;stroke-width:2}
+    .filter-btn:hover,.filter-btn.active{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.38);color:var(--em-l)}
+    .search-input{display:flex;align-items:center;gap:.5rem;background:var(--glass);border:1px solid var(--gb);
+      border-radius:10px;padding:.42rem .9rem;font-size:.82rem;color:var(--dim);
+      margin-left:auto;transition:border-color .2s;cursor:text}
+    .search-input:hover{border-color:rgba(16,185,129,.35)}
+    .search-input svg{width:14px;height:14px;stroke-width:2}
+
+    /* KANBAN */
+    .kanban{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .kanban-col{background:var(--glass);border:1px solid var(--gb);border-radius:18px;padding:1rem;
+      backdrop-filter:blur(20px);min-height:420px;
+      transform:translateY(0)}
+    .kanban-col:nth-child(1){animation-delay:.1s}.kanban-col:nth-child(2){animation-delay:.2s}
+    .kanban-col:nth-child(3){animation-delay:.3s}.kanban-col:nth-child(4){animation-delay:.4s}
+    .col-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;
+      padding-bottom:.75rem;border-bottom:1px solid rgba(255,255,255,.06)}
+    .col-title{display:flex;align-items:center;gap:.5rem;font-size:.84rem;font-weight:700}
+    .col-dot{width:8px;height:8px;border-radius:50%}
+    .col-count{font-size:.7rem;font-weight:700;background:rgba(255,255,255,.08);padding:.14rem .48rem;border-radius:999px;color:var(--muted)}
+
+    /* APP CARD */
+    .app-card{background:rgba(255,255,255,.038);border:1px solid rgba(255,255,255,.07);
+      border-radius:14px;padding:1rem;margin-bottom:.75rem;
+      transition:all .28s cubic-bezier(.16,1,.3,1);cursor:pointer;position:relative;overflow:hidden}
+    .app-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;transition:width .25s}
+    .app-card.draft::before{background:#4b5563}
+    .app-card.pending::before{background:#f59e0b}
+    .app-card.sent::before{background:var(--em)}
+    .app-card.response::before{background:#3b82f6}
+    .app-card::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);transition:left .5s}
+    .app-card:hover::after{left:130%}
+    .app-card:hover{background:rgba(255,255,255,.07);transform:translateY(-3px) scale(1.01);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .app-card:hover::before{width:4px}
+    .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.65rem}
+    .company-logo{width:34px;height:34px;border-radius:8px;
+      background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(20,184,166,.12));
+      border:1px solid rgba(16,185,129,.22);display:flex;align-items:center;justify-content:center;
+      color:var(--em-l);transition:transform .25s;flex-shrink:0}
+    .company-logo svg{width:16px;height:16px;stroke-width:1.8}
+    .app-card:hover .company-logo{transform:scale(1.1) rotate(-5deg)}
+    .match-score{font-size:.67rem;font-weight:700;color:var(--em-l);background:rgba(16,185,129,.12);
+      border:1px solid rgba(16,185,129,.22);padding:.14rem .44rem;border-radius:6px}
+    .card-role{font-size:.84rem;font-weight:700;margin-bottom:.18rem;line-height:1.3}
+    .card-company{font-size:.73rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
+    .card-company svg{width:11px;height:11px;stroke-width:2}
+    .card-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.65rem}
+    .tag{font-size:.63rem;font-weight:600;padding:.14rem .48rem;border-radius:5px;background:rgba(255,255,255,.06);color:var(--dim)}
+    .card-footer{display:flex;justify-content:space-between;align-items:center;margin-top:.8rem;
+      padding-top:.7rem;border-top:1px solid rgba(255,255,255,.05)}
+    .card-date{font-size:.67rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
+    .card-date svg{width:11px;height:11px;stroke-width:2}
+    .card-action{font-size:.7rem;font-weight:600;color:var(--em);text-decoration:none;
+      display:flex;align-items:center;gap:.25rem;transition:color .2s,gap .2s}
+    .card-action svg{width:12px;height:12px;stroke-width:2.5;transition:transform .2s}
+    .card-action:hover{color:var(--em-l);gap:.4rem}
+    .card-alert{margin-top:.7rem;padding:.45rem .65rem;border-radius:8px;font-size:.7rem;display:flex;align-items:center;gap:.4rem}
+    .card-alert svg{width:13px;height:13px;stroke-width:2;flex-shrink:0}
+    .alert-blue{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.2);color:#93c5fd}
+    .alert-yellow{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+    .add-card{border:1px dashed rgba(16,185,129,.2);border-radius:14px;padding:1rem;text-align:center;
+      cursor:pointer;color:var(--muted);font-size:.78rem;transition:all .22s;
+      display:flex;align-items:center;justify-content:center;gap:.4rem}
+    .add-card svg{width:15px;height:15px;stroke-width:2}
+    .add-card:hover{border-color:rgba(16,185,129,.42);color:var(--em-l);background:rgba(16,185,129,.04);transform:scale(1.01)}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.3);border-radius:2px}
+
+    @media(max-width:1024px){.kanban{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:900px){.stats-row{grid-template-columns:repeat(2,1fr)};.nav-links .nav-link span{display:none}}
+    @media(max-width:600px){.topnav{padding:0 1rem}.kanban{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="theme-flash"></div>
+
+  <!-- ── TOP NAV ── -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="url(#lg)"/>
+        <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+      </svg>
+      <span class="nav-logo-text">W-JOB</span>
+    </a>
+    <div class="nav-links">
+      <a href="applications.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>Démarrer</span>
+      </a>
+      <a href="index.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="jobs.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Emplois</span>
+        <span class="badge">12</span>
+      </a>
+      <a href="candidatures.html" class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Candidatures</span>
+        <span class="badge">5</span>
+      </a>
+      <a href="recruiters.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Recruteurs</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="settings.html" class="icon-btn" title="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </a>
+      <button class="icon-btn" id="themeToggle" title="Mode clair / sombre" aria-label="Changer le thème">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <div class="avatar" id="user-avatar" title="Déconnexion">MM</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- PAGE HEADER -->
+    <div class="page-header fade-in fi1">
+      <div>
+        <h2>Suivi des candidatures</h2>
+        <p>Gérez et suivez l'avancement de toutes vos candidatures</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exporter
+        </button>
+        <button class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvelle candidature
+        </button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row fade-in fi2">
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(255,255,255,.07)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+        </div>
+        <div><div class="stat-val">50</div><div class="stat-lbl">Offres trouvées</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(16,185,129,.14);color:var(--em-l)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </div>
+        <div><div class="stat-val" style="color:var(--em-l)">3</div><div class="stat-lbl">Envoyées</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(245,158,11,.12);color:#fbbf24">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div><div class="stat-val" style="color:#fbbf24">5</div><div class="stat-lbl">En attente</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(59,130,246,.14);color:#93c5fd">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div><div class="stat-val" style="color:#93c5fd">91%</div><div class="stat-lbl">Meilleur match</div></div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters fade-in fi3">
+      <button class="filter-btn active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Toutes (50)
+      </button>
+      <button class="filter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Brouillons
+      </button>
+      <button class="filter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        En attente
+      </button>
+      <button class="filter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Envoyées (3)
+      </button>
+      <button class="filter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Réponses
+      </button>
+      <div class="search-input">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Rechercher...
+      </div>
+    </div>
+
+    <!-- KANBAN -->
+    <div class="kanban">
+      <!-- BROUILLONS -->
+      <div class="kanban-col" id="kanban-draft">
+        <div class="col-header">
+          <div class="col-title"><span class="col-dot" style="background:#4b5563"></span> Brouillons</div>
+          <span class="col-count" id="count-draft">2</span>
+        </div>
+        <div class="app-card draft">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/></svg></div>
+            <span class="match-score">89%</span>
+          </div>
+          <div class="card-role">Ingénieur Fabrication Moteurs</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> GE Aviation · Villepinte</div>
+          <div class="card-tags"><span class="tag">CAO</span><span class="tag">Modélisation</span><span class="tag">Stats</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Il y a 2j</span>
+            <a href="#" class="card-action">Finaliser <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+        <div class="app-card draft">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="2" x2="9" y2="4"/><line x1="15" y1="2" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="22"/><line x1="15" y1="20" x2="15" y2="22"/><line x1="20" y1="9" x2="22" y2="9"/><line x1="20" y1="14" x2="22" y2="14"/><line x1="2" y1="9" x2="4" y2="9"/><line x1="2" y1="14" x2="4" y2="14"/></svg></div>
+            <span class="match-score">89%</span>
+          </div>
+          <div class="card-role">Concepteur Mécanique Automatisation</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Siemens · Nantes</div>
+          <div class="card-tags"><span class="tag">CREO</span><span class="tag">CAO</span><span class="tag">PDM</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Il y a 2j</span>
+            <a href="#" class="card-action">Finaliser <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+        <div class="add-card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Ajouter une candidature
+        </div>
+      </div>
+
+      <!-- EN ATTENTE -->
+      <div class="kanban-col" id="kanban-pending">
+        <div class="col-header">
+          <div class="col-title"><span class="col-dot" style="background:#f59e0b"></span> En attente</div>
+          <span class="col-count" id="count-pending">2</span>
+        </div>
+        <div class="app-card pending">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <span class="match-score">89%</span>
+          </div>
+          <div class="card-role">Ingénieur Matériaux et Conception</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Safran Aerospace · Villaroche</div>
+          <div class="card-tags"><span class="tag">CAO CREO</span><span class="tag">Matériaux</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 22 mars</span>
+            <a href="#" class="card-action">Relancer <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+        <div class="app-card pending" style="border-color:rgba(251,191,36,.15)">
+          <div class="card-top">
+            <div class="company-logo" style="background:rgba(251,191,36,.12);color:#fbbf24"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+            <span class="match-score" style="color:#fbbf24;background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.2)">À modifier</span>
+          </div>
+          <div class="card-role">Technicien Usinage CNC</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Safran Bordeaux · Bordeaux</div>
+          <div class="card-tags"><span class="tag">Usinage CNC</span><span class="tag">Qualité</span></div>
+          <div class="card-alert alert-yellow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Lettre de motivation à revoir
+          </div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 22 mars</span>
+            <a href="#" class="card-action">Modifier <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ENVOYÉES -->
+      <div class="kanban-col" id="kanban-sent">
+        <div class="col-header">
+          <div class="col-title"><span class="col-dot" style="background:var(--em)"></span> Envoyées</div>
+          <span class="col-count" id="count-sent">3</span>
+        </div>
+        <div class="app-card sent">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+            <span class="match-score">91%</span>
+          </div>
+          <div class="card-role">Ingénieur Conception Mécanique Jr</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Bosch Rexroth · Lyon</div>
+          <div class="card-tags"><span class="tag">CAO</span><span class="tag">Windchill</span><span class="tag">Hydraulique</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 22 mars</span>
+            <a href="#" class="card-action">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+        <div class="app-card sent">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
+            <span class="match-score">91%</span>
+          </div>
+          <div class="card-role">Ingénieur Conception Mécanique Jr</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Michelin · Clermont-Ferrand</div>
+          <div class="card-tags"><span class="tag">CAO CREO</span><span class="tag">Matériaux</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 22 mars</span>
+            <a href="#" class="card-action">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+        <div class="app-card sent">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+            <span class="match-score">88%</span>
+          </div>
+          <div class="card-role">Ingénieur Conception Mécanique Jr</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Bosch Rexroth · Louhans</div>
+          <div class="card-tags"><span class="tag">CAO CREO</span><span class="tag">Modélisation</span></div>
+          <div class="card-footer">
+            <span class="card-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> 22 mars</span>
+            <a href="#" class="card-action">Voir <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RÉPONSES -->
+      <div class="kanban-col" id="kanban-responded">
+        <div class="col-header">
+          <div class="col-title"><span class="col-dot" style="background:#3b82f6"></span> Réponses reçues</div>
+          <span class="col-count" id="count-responded">0</span>
+        </div>
+        <div style="text-align:center;padding:2.5rem 1rem;color:var(--muted)">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;color:#93c5fd">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div style="font-size:.82rem;font-weight:600;color:var(--dim);margin-bottom:.3rem">En attente de réponses</div>
+          <div style="font-size:.75rem">3 candidatures envoyées le 22 mars</div>
+        </div>
+        <div class="app-card response" style="opacity:.5">
+          <div class="card-top">
+            <div class="company-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+            <span class="match-score">91%</span>
+          </div>
+          <div class="card-role">Bosch Rexroth</div>
+          <div class="card-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> En attente · envoyé il y a 2j</div>
+          <div class="card-alert alert-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Pas encore de réponse
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // ── THEME TOGGLE ──
+    const root = document.documentElement;
+    const saved = localStorage.getItem('wjob-theme') || 'dark';
+    root.dataset.theme = saved;
+
+    function navBg() {
+      const light = root.dataset.theme === 'light';
+      const scrolled = window.scrollY > 10;
+      document.querySelector('.topnav').style.background = scrolled
+        ? (light ? 'rgba(240,253,248,.96)' : 'rgba(3,13,18,.9)')
+        : (light ? 'rgba(240,253,248,.88)' : 'rgba(3,13,18,.75)');
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      const flash = document.getElementById('theme-flash');
+      flash.className = next === 'light' ? 'flash-light' : 'flash-dark';
+      flash.addEventListener('animationend', () => { flash.className = ''; }, { once: true });
+      root.dataset.theme = next;
+      localStorage.setItem('wjob-theme', next);
+      navBg();
+    });
+
+    window.addEventListener('scroll', navBg);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/kanban.js"></script>
+  <script>
+    const root=document.documentElement;
+    root.dataset.theme=localStorage.getItem('wjob-theme')||'dark';
+    const av=document.getElementById('user-avatar');
+    if(av)av.addEventListener('click',async()=>{if(confirm('Se deconnecter ?')){try{await API.logout();}catch(e){}window.location.href='login.html';}});
+  </script>
+</body>
+</html>

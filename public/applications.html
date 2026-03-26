@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>W-JOB — Démarrer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    .hidden{display:none!important}
+    :root{
+      --em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;
+      --bg:#030d12;
+      --glass:rgba(255,255,255,.05);--gb:rgba(16,185,129,.18);--gh:rgba(255,255,255,.09);
+      --text:#f0fdf8;--muted:#6b9e8e;--dim:#a3c4bc;
+    }
+
+    /* ── LIGHT MODE ── */
+    [data-theme="light"]{
+      --bg:#f0fdf8;--glass:rgba(0,0,0,.04);--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);
+      --text:#0f172a;--muted:#4b7a6c;--dim:#2d5c4e;
+    }
+    [data-theme="light"] body::before{
+      background:
+        radial-gradient(ellipse 70% 60% at 50% -15%,rgba(16,185,129,.1) 0%,transparent 65%),
+        linear-gradient(160deg,#f0fdf8 0%,#e5f7f0 100%)
+    }
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.9);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.65);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .nav-link:hover{background:rgba(0,0,0,.05);color:var(--text)}
+    [data-theme="light"] .nav-link.active{color:var(--em);background:rgba(16,185,129,.1)}
+    [data-theme="light"] .hero-card{background:rgba(255,255,255,.5);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .wz-bar{background:rgba(0,0,0,.07)}
+    [data-theme="light"] .wz-step-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .wz-step-card.wz-active{background:rgba(16,185,129,.08);border-color:var(--em)}
+    [data-theme="light"] .wz-step-card.wz-done{background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .dz-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .panel-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .result-card{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.18)}
+    [data-theme="light"] .result-card:hover{background:rgba(255,255,255,.95)}
+    [data-theme="light"] .result-card.selected{background:rgba(16,185,129,.07);border-color:var(--em)}
+    [data-theme="light"] .email-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.18)}
+    [data-theme="light"] .email-body{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.09)}
+    [data-theme="light"] .step-divider{border-color:rgba(0,0,0,.09)}
+    [data-theme="light"] .stat-pill{background:rgba(255,255,255,.65);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .hero-title{background:linear-gradient(135deg,#0f2d1f 0%,var(--em-d) 55%,#0d9488 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    [data-theme="light"] .footer-bar{border-color:rgba(0,0,0,.09);color:var(--muted)}
+    [data-theme="light"] .footer-bar a{color:var(--muted)}
+
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}
+    [data-theme="light"] .icon-moon{display:block}
+
+    /* Transitions */
+    body{transition:background .45s ease,color .45s ease}
+    .topnav{transition:background .45s ease,border-color .45s ease}
+    .hero-card,.wz-step-card,.dz-card,.panel-card,.result-card,.email-card{transition:background .4s ease,border-color .4s ease}
+
+    /* Flash */
+    #theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none}
+    #theme-flash.flash-dark{animation:fOut .38s ease forwards;background:rgba(0,0,0,.15)}
+    #theme-flash.flash-light{animation:fOut .38s ease forwards;background:rgba(255,255,255,.2)}
+    @keyframes fOut{0%{opacity:1}100%{opacity:0}}
+
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Plus Jakarta Sans',sans-serif;
+      background:var(--bg);color:var(--text);
+      min-height:100vh;overflow-x:hidden;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -5%,rgba(16,185,129,.15) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 40% at 5% 60%,rgba(20,184,166,.07) 0%,transparent 50%),
+        radial-gradient(ellipse 35% 35% at 95% 85%,rgba(16,185,129,.06) 0%,transparent 50%),
+        linear-gradient(180deg,#030d12 0%,#050f14 100%)
+    }
+
+    /* ── TOP NAV ── */
+    .topnav{
+      position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      background:rgba(3,13,18,.8);backdrop-filter:blur(28px) saturate(1.5);
+      border-bottom:1px solid rgba(16,185,129,.12);
+    }
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.2rem;font-weight:900;letter-spacing:-.5px;
+      background:linear-gradient(135deg,var(--em-l),var(--teal));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{
+      display:flex;align-items:center;gap:.45rem;
+      padding:.42rem .85rem;border-radius:8px;font-size:.85rem;font-weight:500;
+      color:var(--dim);text-decoration:none;transition:all .2s;position:relative;
+      white-space:nowrap;
+    }
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--text);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.55rem;flex-shrink:0}
+    .icon-btn{
+      width:36px;height:36px;border-radius:9px;
+      background:var(--glass);border:1px solid var(--gb);
+      display:flex;align-items:center;justify-content:center;
+      cursor:pointer;transition:all .2s;color:var(--dim);
+    }
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .avatar{
+      width:34px;height:34px;border-radius:50%;
+      background:linear-gradient(135deg,var(--em-d),var(--em));
+      display:flex;align-items:center;justify-content:center;
+      font-size:.7rem;font-weight:700;color:#fff;cursor:pointer;
+      box-shadow:0 0 16px rgba(16,185,129,.3);transition:box-shadow .2s;
+    }
+    .avatar:hover{box-shadow:0 0 26px rgba(16,185,129,.5)}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:2rem 2rem 4rem}
+
+    /* Entrance */
+    .fi{opacity:0;transform:translateY(20px);animation:fadeUp .6s cubic-bezier(.16,1,.3,1) forwards}
+    .fi1{animation-delay:.05s}.fi2{animation-delay:.14s}.fi3{animation-delay:.23s}.fi4{animation-delay:.32s}
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+    /* ── HERO ── */
+    .hero{
+      text-align:center;padding:7rem 1.5rem 5rem;
+      position:relative;overflow:hidden;
+    }
+    .hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+    .hero::before{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      background:
+        radial-gradient(ellipse 80% 70% at 50% 0%,rgba(16,185,129,.28) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 40% at 20% 80%,rgba(20,184,166,.1) 0%,transparent 55%),
+        radial-gradient(ellipse 50% 40% at 80% 90%,rgba(16,185,129,.08) 0%,transparent 55%);
+    }
+    .hero::after{
+      content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+      width:60%;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(16,185,129,.4),transparent);
+      pointer-events:none;
+    }
+    .hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
+
+    /* Sparkles */
+    .sp{position:absolute;color:var(--em-l);pointer-events:none;opacity:.35;animation:spFloat 5s ease-in-out infinite}
+    .sp:nth-child(1){top:10%;left:6%;animation-delay:0s;font-size:1.2rem}
+    .sp:nth-child(2){top:15%;right:7%;animation-delay:1.6s;font-size:1.5rem}
+    .sp:nth-child(3){top:65%;left:4%;animation-delay:.9s;font-size:.8rem}
+    .sp:nth-child(4){top:55%;right:5%;animation-delay:2.5s;font-size:1.2rem}
+    .sp:nth-child(5){bottom:20%;left:20%;animation-delay:1.8s;font-size:.75rem}
+    @keyframes spFloat{0%,100%{transform:translateY(0) rotate(0deg);opacity:.35}50%{transform:translateY(-14px) rotate(22deg);opacity:.65}}
+
+    /* Title */
+    .hero-title{
+      font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:900;line-height:1.08;
+      letter-spacing:-.05em;margin-bottom:1.4rem;
+      background:linear-gradient(160deg,#ffffff 0%,#e2fdf2 25%,var(--em-l) 62%,#14b8a6 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 50px rgba(16,185,129,.25));
+    }
+    .hero-sub{
+      font-size:1.05rem;color:var(--muted);line-height:1.75;
+      max-width:440px;margin:0 auto 2.75rem;
+    }
+
+    /* CTAs */
+    .hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+
+    /* Buttons */
+    .btn-em{
+      display:inline-flex;align-items:center;gap:.6rem;
+      background:linear-gradient(135deg,var(--em-d) 0%,var(--em) 60%,#34d399 100%);
+      color:#fff;font-size:1rem;font-weight:700;letter-spacing:.01em;
+      padding:.9rem 2.2rem;border-radius:13px;border:none;cursor:pointer;
+      font-family:inherit;
+      box-shadow:0 4px 32px rgba(16,185,129,.5),0 1px 0 rgba(255,255,255,.15) inset;
+      transition:all .25s cubic-bezier(.16,1,.3,1);
+    }
+    .btn-em:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 44px rgba(16,185,129,.65),0 1px 0 rgba(255,255,255,.15) inset}
+    .btn-em:active{transform:translateY(0) scale(1)}
+    .btn-ghost{
+      display:inline-flex;align-items:center;gap:.6rem;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+      color:var(--text);font-size:1rem;font-weight:600;
+      padding:.9rem 2rem;border-radius:13px;cursor:pointer;
+      font-family:inherit;text-decoration:none;backdrop-filter:blur(8px);
+      transition:all .2s;
+    }
+    .btn-ghost:hover{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.5);color:var(--em-l)}
+    .btn-danger{
+      display:inline-flex;align-items:center;gap:.4rem;
+      background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.22);
+      color:#fca5a5;font-size:.84rem;font-weight:600;
+      padding:.55rem .95rem;border-radius:9px;cursor:pointer;
+      font-family:inherit;transition:all .2s;
+    }
+    .btn-danger:hover{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.38)}
+
+    /* Stats pills */
+    .hero-stats{
+      display:flex;justify-content:center;flex-wrap:wrap;gap:.75rem;
+      max-width:860px;margin:0 auto;width:100%;position:relative;z-index:1;
+    }
+    .stat-pill{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+      border-radius:14px;padding:18px 20px;text-align:center;flex:1;
+      transition:all .25s;cursor:default;backdrop-filter:blur(10px);
+    }
+    .stat-pill:hover{
+      background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);
+      transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.12);
+    }
+    .stat-icon{
+      width:38px;height:38px;margin:0 auto 10px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.2);
+    }
+    .stat-icon svg{width:18px;height:18px;stroke:var(--em-l);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+    /* icon animations */
+    @keyframes boltFlash{0%,100%{opacity:1;filter:drop-shadow(0 0 0 transparent)}50%{opacity:.5;filter:drop-shadow(0 0 6px var(--em-l))}}
+    @keyframes spinTarget{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes starPulse{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(180deg)}}
+    @keyframes mailBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}70%{transform:translateY(2px)}}
+
+    .stat-icon.si-bolt svg{animation:boltFlash 2.2s ease-in-out infinite}
+    .stat-icon.si-target svg{animation:spinTarget 4s linear infinite}
+    .stat-icon.si-star svg{animation:starPulse 3s ease-in-out infinite}
+    .stat-icon.si-mail svg{animation:mailBounce 2.8s ease-in-out infinite}
+
+    .stat-pill:hover .stat-icon{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
+
+    .stat-num{
+      font-size:1.65rem;font-weight:900;line-height:1;
+      background:linear-gradient(135deg,#fff 0%,var(--em-l) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .stat-label{font-size:.65rem;color:var(--muted);font-weight:600;margin-top:5px;letter-spacing:.05em;text-transform:uppercase}
+
+    /* ── WIZARD STEPS ── */
+    .wizard-wrap{margin-bottom:2rem}
+
+    /* 4-column step cards */
+    .wz-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;
+      margin-bottom:1.25rem;
+    }
+    .wz-step-card{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;padding:1rem 1rem .85rem;
+      cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);
+      position:relative;overflow:hidden;
+      opacity:.45;pointer-events:none;
+    }
+    .wz-step-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.04) 0%,transparent 60%);
+      opacity:0;transition:opacity .3s;
+    }
+    .wz-step-card.wz-done{opacity:.65;pointer-events:auto}
+    .wz-step-card.wz-done:hover{opacity:1;border-color:rgba(16,185,129,.3);transform:translateY(-2px)}
+    .wz-step-card.wz-active{
+      opacity:1;pointer-events:auto;
+      background:rgba(16,185,129,.08);
+      border-color:rgba(16,185,129,.4);
+      box-shadow:0 0 0 1px rgba(16,185,129,.15),0 8px 28px rgba(16,185,129,.12);
+    }
+    .wz-step-card.wz-active::before{opacity:1}
+    .wz-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+    .wz-num{
+      width:30px;height:30px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.78rem;font-weight:800;
+      background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);color:var(--muted);
+      transition:all .3s;flex-shrink:0;
+    }
+    .wz-step-card.wz-active .wz-num{
+      background:var(--em);border-color:var(--em);color:#fff;
+      box-shadow:0 0 0 3px rgba(16,185,129,.22);
+    }
+    .wz-step-card.wz-done .wz-num{
+      background:rgba(16,185,129,.16);border-color:var(--em);color:var(--em-l);
+    }
+    .wz-icon{
+      width:32px;height:32px;border-radius:9px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+      display:flex;align-items:center;justify-content:center;color:var(--muted);
+      transition:all .3s;
+    }
+    .wz-icon svg{width:15px;height:15px;stroke-width:1.8}
+    .wz-step-card.wz-active .wz-icon{
+      background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.28);color:var(--em-l);
+    }
+    .wz-step-card.wz-done .wz-icon{
+      background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.22);color:var(--em-l);
+    }
+    .wz-card-label{font-size:.82rem;font-weight:700;color:var(--dim);line-height:1.2;margin-bottom:.2rem}
+    .wz-step-card.wz-active .wz-card-label{color:var(--em-l)}
+    .wz-step-card.wz-done .wz-card-label{color:var(--em-l);opacity:.75}
+    .wz-card-sub{font-size:.68rem;color:var(--muted)}
+
+    /* Progress bar */
+    .wz-bar{height:3px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+    .wz-bar-fill{height:100%;background:linear-gradient(90deg,var(--em-d),var(--em-l));border-radius:999px;width:0%;transition:width .5s cubic-bezier(.16,1,.3,1)}
+
+    /* ── STEP PANELS ── */
+    .step-panel{display:none}
+    .step-panel.active{display:block;animation:sUp .4s cubic-bezier(.16,1,.3,1) both}
+    @keyframes sUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ── STEP 1: DROPZONE ── */
+    .dz-card{
+      border-radius:22px;
+      background:rgba(255,255,255,.03);
+      border:2px dashed rgba(16,185,129,.22);
+      padding:2.5rem 2rem;text-align:center;cursor:pointer;
+      position:relative;overflow:hidden;
+      transition:all .3s cubic-bezier(.16,1,.3,1);
+    }
+    .dz-card::before{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 50% at 50% 120%,rgba(16,185,129,.07) 0%,transparent 70%);
+      transition:opacity .3s;
+    }
+    /* Animated border shimmer */
+    .dz-card::after{
+      content:'';position:absolute;
+      top:-1px;left:-100%;width:60%;height:calc(100% + 2px);
+      background:linear-gradient(90deg,transparent,rgba(16,185,129,.2),transparent);
+      transition:left .5s ease;
+    }
+    .dz-card:hover::after,.dz-card.dragover::after{left:150%}
+    .dz-card:hover,.dz-card.dragover{
+      border-color:var(--em);
+      background:rgba(16,185,129,.04);
+      box-shadow:0 0 0 4px rgba(16,185,129,.1),0 24px 60px rgba(16,185,129,.1);
+      transform:translateY(-2px);
+    }
+    .dz-card:hover::before,.dz-card.dragover::before{opacity:2}
+
+    /* Upload icon with float animation */
+    .dz-icon{
+      width:72px;height:72px;border-radius:18px;margin:0 auto 1.25rem;
+      background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(20,184,166,.08));
+      border:1px solid rgba(16,185,129,.25);
+      display:flex;align-items:center;justify-content:center;color:var(--em-l);
+      animation:iconFloat 3s ease-in-out infinite;
+      box-shadow:0 8px 32px rgba(16,185,129,.15);
+      position:relative;
+    }
+    .dz-icon::after{
+      content:'';position:absolute;inset:-8px;border-radius:28px;
+      background:radial-gradient(ellipse,rgba(16,185,129,.12) 0%,transparent 70%);
+      animation:iconGlow 3s ease-in-out infinite;
+    }
+    @keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+    @keyframes iconGlow{0%,100%{opacity:.6}50%{opacity:1}}
+    .dz-icon svg{width:30px;height:30px;stroke-width:1.5;position:relative;z-index:1}
+
+    .dz-card:hover .dz-icon{animation-play-state:paused;transform:scale(1.06);box-shadow:0 12px 40px rgba(16,185,129,.28)}
+
+    .dz-title{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:.5rem;letter-spacing:-.02em}
+    .dz-sub{font-size:.88rem;color:var(--muted);margin-bottom:1.75rem;line-height:1.7}
+    .dz-hint{
+      display:inline-flex;align-items:center;gap:.4rem;margin-top:1.2rem;
+      font-size:.7rem;color:var(--muted);padding:.35rem .9rem;border-radius:8px;
+      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+    }
+    .dz-hint svg{width:11px;height:11px;flex-shrink:0;opacity:.7}
+
+    /* File preview */
+    .fp-inner{display:flex;flex-direction:column;align-items:center;gap:.9rem}
+    .fp-icon{
+      width:64px;height:64px;border-radius:16px;
+      background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.28);
+      display:flex;align-items:center;justify-content:center;color:var(--em-l);
+    }
+    .fp-icon svg{width:28px;height:28px;stroke-width:1.7}
+    .fp-name{font-size:.95rem;font-weight:700;color:var(--text)}
+    .fp-size{font-size:.75rem;color:var(--muted);margin-top:1px}
+    .fp-actions{display:flex;gap:.55rem;margin-top:.5rem}
+
+    /* ── STEP 2: ANALYSIS ── */
+    .panel-card{
+      max-width:660px;margin:0 auto;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+      border-radius:20px;padding:2.5rem;
+      backdrop-filter:blur(20px);
+    }
+    .spin-wrap{display:flex;flex-direction:column;align-items:center;gap:1.25rem;text-align:center;padding:.5rem 0}
+    .ring-wrap{width:68px;height:68px;position:relative}
+    .ring-wrap svg{width:68px;height:68px;transform:rotate(-90deg)}
+    .ring-wrap circle{fill:none;stroke-width:4}
+    .ring-track{stroke:rgba(255,255,255,.07)}
+    .ring-fill{stroke:var(--em);stroke-linecap:round;stroke-dasharray:188;stroke-dashoffset:188;transition:stroke-dashoffset .6s cubic-bezier(.16,1,.3,1)}
+    .spin-label{font-size:1rem;font-weight:700;color:var(--text)}
+    .spin-sub{font-size:.83rem;color:var(--muted);margin-top:.2rem}
+    .prog-track{width:100%;max-width:320px;height:4px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;margin-top:.4rem}
+    .prog-fill{height:100%;background:linear-gradient(90deg,var(--em-d),var(--em-l));border-radius:999px;width:0%;transition:width .5s cubic-bezier(.16,1,.3,1)}
+    .profile-box{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);border-radius:14px;padding:1.2rem;margin-bottom:1.2rem}
+    .profile-box-title{display:flex;align-items:center;gap:7px;font-size:.8rem;font-weight:700;color:var(--em-l);margin-bottom:.85rem}
+    .profile-box-title svg{width:14px;height:14px;flex-shrink:0}
+
+    /* ── STEP 3: RESULTS ── */
+    .results-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+    .results-title{font-size:1rem;font-weight:800;letter-spacing:-.01em}
+    .results-sub{font-size:.78rem;color:var(--muted);margin-top:2px}
+    .result-card{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;padding:1.1rem 1.2rem;cursor:pointer;
+      transition:all .22s cubic-bezier(.16,1,.3,1);margin-bottom:.7rem;
+    }
+    .result-card:hover{border-color:rgba(16,185,129,.35);background:rgba(255,255,255,.07);transform:translateY(-2px);box-shadow:0 8px 28px rgba(16,185,129,.1)}
+    .result-card.selected{border-color:var(--em);background:rgba(16,185,129,.07);box-shadow:0 0 0 3px rgba(16,185,129,.14)}
+    .count-badge{background:rgba(255,255,255,.18);border-radius:999px;padding:2px 8px;font-size:.73rem;font-weight:700;margin-left:5px}
+
+    /* ── STEP 4: EMAILS ── */
+    .email-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1.2rem;margin-bottom:1rem}
+    .email-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.9rem}
+    .email-body{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:.9rem;font-size:.83rem;line-height:1.75;white-space:pre-wrap;color:var(--dim);min-height:80px;margin-bottom:.75rem}
+    .email-actions{display:flex;gap:.5rem;justify-content:flex-end}
+
+    /* ── STEP NAV ── */
+    .step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;padding-top:1.25rem}
+    .step-divider{border-top:1px solid rgba(255,255,255,.07)}
+
+    /* Loading generic */
+    .load-center{display:flex;flex-direction:column;align-items:center;gap:1.25rem;padding:3rem;text-align:center}
+
+    /* ── FOOTER ── */
+    .footer-bar{
+      position:relative;z-index:1;max-width:860px;margin:0 auto;
+      padding:1.5rem 1.5rem;border-top:1px solid rgba(255,255,255,.07);
+      display:flex;justify-content:space-between;align-items:center;
+      flex-wrap:wrap;gap:.75rem;font-size:.72rem;color:var(--muted);
+    }
+    .footer-links{display:flex;gap:1.25rem}
+    .footer-links a{color:var(--muted);text-decoration:none;transition:color .2s}
+    .footer-links a:hover{color:var(--em-l)}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.28);border-radius:2px}
+
+    @media(max-width:860px){
+      .nav-links .nav-link span:not(.badge){display:none}
+      .wz-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:560px){
+      .topnav{padding:0 1rem}
+      .page{padding:1.5rem 1rem 4rem}
+      .wz-grid{grid-template-columns:repeat(2,1fr)}
+      .hero{padding:2.5rem 1rem 2rem}
+      .dz-card{padding:2.5rem 1rem}
+    }
+  </style>
+</head>
+<body>
+<div id="theme-flash"></div>
+
+<!-- ── TOP NAV ── -->
+<nav class="topnav">
+  <a href="index.html" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="9" fill="url(#lg)"/>
+      <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+    </svg>
+    <span class="nav-logo-text">W-JOB</span>
+  </a>
+  <div class="nav-links">
+    <a href="applications.html" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>Démarrer</span>
+    </a>
+    <a href="index.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="jobs.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Emplois</span><span class="badge">12</span>
+    </a>
+    <a href="candidatures.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Candidatures</span><span class="badge">5</span>
+    </a>
+    <a href="recruiters.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Recruteurs</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="settings.html" class="icon-btn" title="Paramètres">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></a>
+    <button class="icon-btn" id="themeToggle" title="Changer le thème" aria-label="Changer le thème">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="avatar" id="user-avatar" title="Déconnexion">MM</div>
+  </div>
+</nav>
+
+<!-- ── HERO (full-width, hors container) ── -->
+<section class="hero fi fi1">
+    <canvas id="hero-canvas"></canvas>
+    <span class="sp">✦</span><span class="sp">✦</span><span class="sp">✶</span><span class="sp">✦</span><span class="sp">✶</span>
+    <div class="hero-inner">
+      <h1 class="hero-title">Votre recherche<br>d'emploi, simplifiée</h1>
+      <p class="hero-sub">Déposez votre CV. L'agent analyse votre profil, identifie les meilleures opportunités et rédige vos candidatures — automatiquement.</p>
+      <div class="hero-ctas">
+        <button class="btn-em" onclick="document.getElementById('step-1').scrollIntoView({behavior:'smooth'})">
+          Commencer maintenant
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <a href="jobs.html" class="btn-ghost">
+          Voir les offres
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </a>
+      </div>
+    </div>
+  <div class="hero-stats">
+    <div class="stat-pill">
+      <div class="stat-icon si-bolt"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div class="stat-num">30s</div><div class="stat-label">Analyse CV</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-icon si-target"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <div class="stat-num">100%</div><div class="stat-label">Contrôle humain</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-icon si-star"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
+      <div class="stat-num">1 clic</div><div class="stat-label">Pour candidater</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-icon si-mail"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></div>
+      <div class="stat-num">IA</div><div class="stat-label">Emails sur-mesure</div>
+    </div>
+  </div>
+  </section>
+
+<!-- ── PAGE ── -->
+<div class="page">
+
+  <!-- WIZARD PROGRESS -->
+  <div class="wizard-wrap fi fi2">
+    <div class="wz-grid">
+      <!-- Step 1 -->
+      <div class="wz-step-card wz-active step-wizard-item" data-step="1" onclick="goToStep(1)">
+        <div class="wz-card-top">
+          <div class="wz-num" id="wz-num-1">
+            <span class="wz-ni">1</span>
+            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="wz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          </div>
+        </div>
+        <div class="wz-card-label">Upload CV</div>
+        <div class="wz-card-sub">PDF · Max 10 MB</div>
+      </div>
+      <!-- Step 2 -->
+      <div class="wz-step-card step-wizard-item" data-step="2" onclick="goToStep(2)">
+        <div class="wz-card-top">
+          <div class="wz-num" id="wz-num-2">
+            <span class="wz-ni">2</span>
+            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="wz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          </div>
+        </div>
+        <div class="wz-card-label">Analyse IA</div>
+        <div class="wz-card-sub">Extraction compétences</div>
+      </div>
+      <!-- Step 3 -->
+      <div class="wz-step-card step-wizard-item" data-step="3" onclick="goToStep(3)">
+        <div class="wz-card-top">
+          <div class="wz-num" id="wz-num-3">
+            <span class="wz-ni">3</span>
+            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="wz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+        </div>
+        <div class="wz-card-label">Résultats</div>
+        <div class="wz-card-sub">Offres compatibles</div>
+      </div>
+      <!-- Step 4 -->
+      <div class="wz-step-card step-wizard-item" data-step="4" onclick="goToStep(4)">
+        <div class="wz-card-top">
+          <div class="wz-num" id="wz-num-4">
+            <span class="wz-ni">4</span>
+            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="wz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+        </div>
+        <div class="wz-card-label">Candidater</div>
+        <div class="wz-card-sub">Emails générés par IA</div>
+      </div>
+    </div>
+    <!-- Progress bar -->
+    <div class="wz-bar"><div class="wz-bar-fill" id="wz-bar-fill" style="width:12%"></div></div>
+  </div>
+
+  <!-- ══ STEP 1 : Upload CV ══ -->
+  <div class="step-panel active fi fi3" id="step-1">
+    <div class="dz-card" id="cv-upload-area">
+      <input type="file" id="cv-file-input" accept=".pdf" style="display:none">
+
+      <!-- Default -->
+      <div id="dropzone-content">
+        <div class="dz-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+        </div>
+        <h2 class="dz-title">Déposez votre CV ici</h2>
+        <p class="dz-sub">Glissez-déposez votre fichier ou cliquez pour parcourir</p>
+        <button class="btn-em" onclick="event.stopPropagation();document.getElementById('cv-file-input').click()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Sélectionner un fichier
+        </button>
+        <div class="dz-hint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          PDF uniquement · Max 10 MB
+        </div>
+      </div>
+
+      <!-- File selected -->
+      <div id="file-preview" class="hidden">
+        <div class="fp-inner">
+          <div class="fp-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 12 18 15 15"/><line x1="12" y1="12" x2="12" y2="18"/></svg>
+          </div>
+          <div>
+            <div id="file-name" class="fp-name">mon_cv.pdf</div>
+            <div id="file-size" class="fp-size">1.2 MB</div>
+          </div>
+          <div class="fp-actions">
+            <button class="btn-em" id="start-analysis-btn">
+              Lancer l'analyse IA
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+            <button class="btn-danger" id="remove-file-btn">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2 : Analyse IA ══ -->
+  <div class="step-panel" id="step-2">
+    <div class="panel-card">
+      <!-- Loading -->
+      <div id="analysis-loading" class="spin-wrap">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 68 68">
+            <circle class="ring-track" cx="34" cy="34" r="30"/>
+            <circle id="ring-fill-el" class="ring-fill" cx="34" cy="34" r="30"/>
+          </svg>
+        </div>
+        <div>
+          <div class="spin-label">Analyse en cours…</div>
+          <div id="analysis-status-text" class="spin-sub">Lecture du CV…</div>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="analysis-bar"></div></div>
+      </div>
+      <!-- Results -->
+      <div id="analysis-results" class="hidden">
+        <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:8px;font-size:1rem;font-weight:800;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--em-l)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/><path d="M22 2 12 12"/></svg>
+          Résultats de l'analyse
+        </h3>
+        <div id="ai-profile"></div>
+        <div class="step-nav step-divider">
+          <button class="btn-ghost" onclick="goToStep(1)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Retour
+          </button>
+          <button class="btn-em" onclick="startSearch()">
+            Rechercher des emplois
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3 : Résultats ══ -->
+  <div class="step-panel" id="step-3">
+    <div id="search-loading" class="load-center">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 68 68">
+          <circle class="ring-track" cx="34" cy="34" r="30"/>
+          <circle class="ring-fill" cx="34" cy="34" r="30" style="stroke-dashoffset:60;animation:spinR 1.2s linear infinite"/>
+        </svg>
+      </div>
+      <div>
+        <div class="spin-label">Recherche en cours…</div>
+        <div class="spin-sub">L'IA explore les offres et les recruteurs…</div>
+      </div>
+    </div>
+    <div id="search-results" class="hidden">
+      <div class="results-hdr">
+        <div>
+          <div class="results-title">Opportunités trouvées</div>
+          <p id="results-count" class="results-sub">0 résultats</p>
+        </div>
+        <button class="btn-em" id="apply-selected-btn" onclick="goToStep(4)" disabled>
+          Candidater aux sélectionnés
+          <span class="count-badge" id="selected-count">0</span>
+        </button>
+      </div>
+      <div id="results-grid"></div>
+      <div class="step-nav step-divider">
+        <button class="btn-ghost" onclick="goToStep(2)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Retour
+        </button>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 4 : Candidater ══ -->
+  <div class="step-panel" id="step-4">
+    <div style="max-width:740px;margin:0 auto">
+      <div style="margin-bottom:1.5rem">
+        <h3 style="font-size:1rem;font-weight:800;margin-bottom:.35rem;display:flex;align-items:center;gap:8px;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--em-l)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Générer vos candidatures
+        </h3>
+        <p style="font-size:.82rem;color:var(--muted)">L'IA génère un email personnalisé pour chaque offre sélectionnée.</p>
+      </div>
+      <div id="email-drafts"></div>
+      <div class="step-nav step-divider">
+        <button class="btn-ghost" onclick="goToStep(3)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Retour
+        </button>
+        <button class="btn-em" onclick="sendAllApplications()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer toutes les candidatures
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<footer class="footer-bar">
+  <div class="footer-links">
+    <a href="#">Confidentialité</a>
+    <a href="#">CGU</a>
+    <a href="#">Mentions légales</a>
+  </div>
+  <div>© 2026 W-JOB. Tous droits réservés.</div>
+</footer>
+
+<div id="toast-container"></div>
+
+<!-- Particle canvas -->
+<script>
+(function(){
+  var c=document.getElementById('hero-canvas');if(!c)return;
+  var ctx=c.getContext('2d'),pts=[],N=55;
+  var dpr=window.devicePixelRatio||1;
+  function resize(){var w=c.offsetWidth,h=c.offsetHeight;c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);c.style.width=w+'px';c.style.height=h+'px'}
+  function P(){this.r()}
+  P.prototype.r=function(){this.x=Math.random()*c.width;this.y=Math.random()*c.height;this.vx=(Math.random()-.5)*.38;this.vy=(Math.random()-.5)*.38;this.rad=Math.random()*1.8+.4;this.a=Math.random()*.3+.06}
+  P.prototype.u=function(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>c.width)this.vx*=-1;if(this.y<0||this.y>c.height)this.vy*=-1}
+  P.prototype.d=function(){ctx.beginPath();ctx.arc(this.x,this.y,this.rad,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,'+this.a+')';ctx.fill()}
+  function init(){pts=[];for(var i=0;i<N;i++)pts.push(new P())}
+  function lines(){for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<125){ctx.beginPath();ctx.strokeStyle='rgba(16,185,129,'+(0.065*(1-d/125))+')';ctx.lineWidth=.6;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}}}
+  function loop(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(function(p){p.u();p.d()});lines();requestAnimationFrame(loop)}
+  new ResizeObserver(function(){resize();init()}).observe(c.parentElement);
+  resize();init();loop();
+  var s=document.createElement('style');s.textContent='@keyframes spinR{from{stroke-dashoffset:188}to{stroke-dashoffset:-188}}';document.head.appendChild(s);
+})();
+</script>
+
+<!-- Wizard UI sync -->
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  setTimeout(function(){
+    var _orig=window.goToStep;
+    window.goToStep=function(step){
+      _orig&&_orig(step);
+      // Step cards
+      document.querySelectorAll('.wz-step-card').forEach(function(el){
+        var s=parseInt(el.dataset.step);
+        el.classList.remove('wz-active','wz-done');
+        var numEl=document.getElementById('wz-num-'+s);
+        if(numEl){
+          var ni=numEl.querySelector('.wz-ni'),ck=numEl.querySelector('.wz-ck');
+          if(s<step){el.classList.add('wz-done');if(ck)ck.style.display='block';if(ni)ni.style.display='none'}
+          else{if(ck)ck.style.display='none';if(ni)ni.style.display='block'}
+          if(s===step)el.classList.add('wz-active');
+        }
+      });
+      // Progress bar
+      var pct=[12,37,62,88][step-1]||12;
+      var bar=document.getElementById('wz-bar-fill');if(bar)bar.style.width=pct+'%';
+      // Ring sync
+      var ab=document.getElementById('analysis-bar'),rf=document.getElementById('ring-fill-el');
+      if(ab&&rf){var p=parseInt(ab.style.width)||0;rf.style.strokeDashoffset=188-(188*p/100)}
+    };
+  },120);
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/applications.js"></script>
+
+<!-- Theme toggle -->
+<script>
+const root=document.documentElement;
+root.dataset.theme=localStorage.getItem('wjob-theme')||'dark';
+function navBg(){
+  const light=root.dataset.theme==='light',scrolled=window.scrollY>10;
+  document.querySelector('.topnav').style.background=scrolled
+    ?(light?'rgba(240,253,248,.97)':'rgba(3,13,18,.92)')
+    :(light?'rgba(240,253,248,.9)':'rgba(3,13,18,.8)');
+}
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  const next=root.dataset.theme==='dark'?'light':'dark';
+  const flash=document.getElementById('theme-flash');
+  flash.className=next==='light'?'flash-light':'flash-dark';
+  flash.addEventListener('animationend',()=>{flash.className='';},{once:true});
+  root.dataset.theme=next;localStorage.setItem('wjob-theme',next);navBg();
+});
+window.addEventListener('scroll',navBg);
+document.getElementById('user-avatar') && document.getElementById('user-avatar').addEventListener('click', async () => {
+  if (confirm('Se déconnecter ?')) { try { await API.logout(); } catch(e) {} window.location.href = 'login.html'; }
+});
+
+</script>
+</body>
+</html>

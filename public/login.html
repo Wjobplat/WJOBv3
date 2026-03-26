@@ -391,7 +391,7 @@
       if (isLogin) {
         await API.login(email, password);
         showToast('Connexion réussie !', 'success');
-        window.location.href = '/settings';
+        window.location.href = '/applications';
       } else {
         await API.signup(email, password, name);
         showToast('Compte créé ! Vérifie tes emails.', 'success');

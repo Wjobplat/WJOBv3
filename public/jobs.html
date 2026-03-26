@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>W-JOB — Emplois</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;
+      --bg:#030d12;
+      --glass:rgba(255,255,255,.052);--gb:rgba(16,185,129,.16);--gh:rgba(255,255,255,.085);
+      --text:#f0fdf8;--muted:#6b9e8e;--dim:#a3c4bc;
+    }
+
+    /* ── LIGHT MODE ── */
+    [data-theme="light"]{--bg:#f0fdf8;--glass:rgba(0,0,0,.04);--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);--text:#0f172a;--muted:#4b7a6c;--dim:#2d5c4e}
+    [data-theme="light"] body::before{background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.09) 0%,transparent 55%),radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.06) 0%,transparent 50%),linear-gradient(160deg,#f0fdf8 0%,#e5f7f0 100%)}
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.88);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .nav-link:hover{background:rgba(0,0,0,.05);color:var(--text)}
+    [data-theme="light"] .nav-link.active{color:var(--em);background:rgba(16,185,129,.1)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .stat-pill,[data-theme="light"] .job-card,[data-theme="light"] .sidebar-filter{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .job-card:hover{background:rgba(255,255,255,.95)}
+    [data-theme="light"] .filter-btn{background:rgba(255,255,255,.6);color:var(--dim)}
+    [data-theme="light"] .search-bar{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .job-tag{background:rgba(0,0,0,.06);color:var(--muted)}
+    [data-theme="light"] .job-footer{border-top-color:rgba(0,0,0,.07)}
+    [data-theme="light"] .sidebar-label{color:var(--muted)}
+
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}[data-theme="light"] .icon-moon{display:block}
+
+    body{transition:background .45s ease,color .45s ease}
+    .topnav{transition:background .45s ease,border-color .45s ease}
+    .job-card,.stat-pill{transition:background .45s ease,border-color .45s ease,transform .32s cubic-bezier(.16,1,.3,1),box-shadow .32s}
+
+    #theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(255,255,255,0)}
+    #theme-flash.flash-dark{animation:flashOut .4s ease forwards;background:rgba(0,0,0,.18)}
+    #theme-flash.flash-light{animation:flashOut .4s ease forwards;background:rgba(255,255,255,.22)}
+    @keyframes flashOut{0%{opacity:1}100%{opacity:0}}
+
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.14) 0%,transparent 55%),
+                 radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.09) 0%,transparent 50%),
+                 linear-gradient(160deg,#030d12 0%,#071a20 100%)}
+
+    /* ── TOP NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      background:rgba(3,13,18,.8);backdrop-filter:blur(28px) saturate(1.5);
+      border-bottom:1px solid rgba(16,185,129,.11)}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.25rem;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--em-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{display:flex;align-items:center;gap:.45rem;padding:.42rem .85rem;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap}
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--text);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+    .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--dim)}
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 0 16px rgba(16,185,129,.32)}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:2rem 2rem 4rem}
+
+    .fade-in{opacity:0;transform:translateY(16px);animation:fadeIn .55s cubic-bezier(.16,1,.3,1) forwards}
+    .fi1{animation-delay:.05s}.fi2{animation-delay:.12s}.fi3{animation-delay:.2s}.fi4{animation-delay:.28s}
+    @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+    /* PAGE HEADER */
+    .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+    .page-header h2{font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+    .page-header p{color:var(--muted);margin-top:.3rem;font-size:.875rem}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+    .stat-pill{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:1rem 1.25rem;backdrop-filter:blur(20px);display:flex;align-items:center;gap:.9rem;transition:all .3s cubic-bezier(.16,1,.3,1);cursor:default}
+    .stat-pill:hover{transform:translateY(-3px);border-color:rgba(16,185,129,.35);box-shadow:0 12px 35px rgba(16,185,129,.12)}
+    .stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s}
+    .stat-pill:hover .stat-icon{transform:scale(1.1) rotate(-6deg)}
+    .stat-icon svg{width:17px;height:17px;stroke-width:2}
+    .stat-val{font-size:1.6rem;font-weight:800;line-height:1}
+    .stat-lbl{font-size:.7rem;color:var(--muted);font-weight:500;margin-top:.15rem}
+
+    /* SEARCH BAR */
+    .search-bar{display:flex;align-items:center;gap:.75rem;background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:.8rem 1.2rem;margin-bottom:1.25rem;backdrop-filter:blur(20px);transition:border-color .2s}
+    .search-bar:focus-within{border-color:rgba(16,185,129,.4)}
+    .search-bar svg{width:18px;height:18px;stroke-width:1.8;color:var(--muted);flex-shrink:0}
+    .search-bar input{background:none;border:none;outline:none;font-family:'Inter',sans-serif;font-size:.9rem;color:var(--text);flex:1}
+    .search-bar input::placeholder{color:var(--muted)}
+    .search-bar-divider{width:1px;height:20px;background:var(--gb)}
+
+    /* FILTERS */
+    .filters{display:flex;gap:.5rem;margin-bottom:1.75rem;flex-wrap:wrap}
+    .filter-btn{padding:.4rem .9rem;border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--gb);background:var(--glass);color:var(--dim);transition:all .22s;backdrop-filter:blur(10px);display:flex;align-items:center;gap:.35rem}
+    .filter-btn svg{width:12px;height:12px;stroke-width:2}
+    .filter-btn:hover,.filter-btn.active{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.38);color:var(--em-l)}
+
+    /* LAYOUT: list + sidebar */
+    .content-layout{display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start}
+
+    /* JOB LIST */
+    .jobs-count{font-size:.82rem;color:var(--muted);margin-bottom:1rem;font-weight:500}
+    .jobs-count span{color:var(--em-l);font-weight:700}
+    .job-card{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:1.25rem 1.4rem;margin-bottom:.85rem;backdrop-filter:blur(20px);cursor:pointer;position:relative;overflow:hidden}
+    .job-card::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);transition:left .55s}
+    .job-card:hover::after{left:130%}
+    .job-card:hover{border-color:rgba(16,185,129,.32);box-shadow:0 8px 32px rgba(16,185,129,.1);transform:translateY(-2px)}
+    .job-card.featured{border-color:rgba(16,185,129,.28);background:linear-gradient(135deg,rgba(16,185,129,.07),rgba(20,184,166,.03))}
+
+    .job-top{display:flex;align-items:flex-start;gap:1rem;margin-bottom:.85rem}
+    .job-logo{width:44px;height:44px;border-radius:11px;background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(20,184,166,.1));border:1px solid rgba(16,185,129,.22);display:flex;align-items:center;justify-content:center;color:var(--em-l);flex-shrink:0;transition:transform .25s}
+    .job-card:hover .job-logo{transform:scale(1.08) rotate(-5deg)}
+    .job-logo svg{width:20px;height:20px;stroke-width:1.8}
+    .job-info{flex:1}
+    .job-role{font-size:.95rem;font-weight:700;line-height:1.35;margin-bottom:.2rem}
+    .job-meta{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;font-size:.75rem;color:var(--muted)}
+    .job-meta svg{width:12px;height:12px;stroke-width:2;flex-shrink:0}
+    .job-meta-item{display:flex;align-items:center;gap:.25rem}
+    .job-score{flex-shrink:0;text-align:right}
+    .score-ring{width:44px;height:44px;position:relative;display:flex;align-items:center;justify-content:center}
+    .score-ring svg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
+    .score-val{font-size:.72rem;font-weight:800;color:var(--em-l);position:relative;z-index:1}
+    .job-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem}
+    .job-tag{font-size:.65rem;font-weight:600;padding:.15rem .52rem;border-radius:6px;background:rgba(255,255,255,.06);color:var(--dim)}
+    .job-tag.highlight{background:rgba(16,185,129,.12);color:var(--em-l);border:1px solid rgba(16,185,129,.2)}
+    .job-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.05)}
+    .job-date{font-size:.7rem;color:var(--muted);display:flex;align-items:center;gap:.3rem}
+    .job-date svg{width:11px;height:11px;stroke-width:2}
+    .job-actions{display:flex;gap:.5rem}
+    .btn-save{padding:.38rem .7rem;border-radius:8px;border:1px solid var(--gb);background:var(--glass);color:var(--dim);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.3rem;font-size:.72rem;font-weight:600}
+    .btn-save svg{width:13px;height:13px;stroke-width:2}
+    .btn-save:hover{border-color:rgba(16,185,129,.4);color:var(--em-l)}
+    .btn-apply{padding:.38rem 1rem;border-radius:8px;background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;border:none;cursor:pointer;font-size:.72rem;font-weight:700;transition:all .25s;font-family:'Inter',sans-serif}
+    .btn-apply:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(16,185,129,.4)}
+
+    /* SIDEBAR */
+    .sidebar-filter{background:var(--glass);border:1px solid var(--gb);border-radius:16px;padding:1.25rem;backdrop-filter:blur(20px)}
+    .sidebar-section{margin-bottom:1.5rem}
+    .sidebar-section:last-child{margin-bottom:0}
+    .sidebar-label{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem;display:block}
+    .check-item{display:flex;align-items:center;gap:.6rem;padding:.35rem 0;cursor:pointer;font-size:.82rem;color:var(--dim);transition:color .2s}
+    .check-item:hover{color:var(--text)}
+    .check-box{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--gb);background:var(--glass);flex-shrink:0;transition:all .2s;display:flex;align-items:center;justify-content:center}
+    .check-item.checked .check-box{background:var(--em);border-color:var(--em)}
+    .check-item.checked .check-box::after{content:'';width:8px;height:5px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px);display:block}
+    .check-item.checked{color:var(--text)}
+    .range-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin:0.5rem 0;position:relative}
+    .range-fill{height:100%;background:linear-gradient(90deg,var(--em-d),var(--em));border-radius:2px;width:70%}
+    .range-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted)}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.3);border-radius:2px}
+    @media(max-width:1024px){.content-layout{grid-template-columns:1fr}.sidebar-filter{display:none}}
+    @media(max-width:900px){.stats-row{grid-template-columns:repeat(2,1fr)}.nav-links .nav-link span{display:none}}
+    @media(max-width:600px){.topnav{padding:0 1rem}}
+  </style>
+</head>
+<body>
+<div id="theme-flash"></div>
+
+  <!-- ── TOP NAV ── -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="url(#lg)"/>
+        <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+      </svg>
+      <span class="nav-logo-text">W-JOB</span>
+    </a>
+    <div class="nav-links">
+      <a href="applications.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>Démarrer</span>
+      </a>
+      <a href="index.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="jobs.html" class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Emplois</span>
+        <span class="badge">12</span>
+      </a>
+      <a href="candidatures.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Candidatures</span>
+        <span class="badge">5</span>
+      </a>
+      <a href="recruiters.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Recruteurs</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="settings.html" class="icon-btn" title="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </a>
+      <button class="icon-btn" id="themeToggle" title="Mode clair / sombre" aria-label="Changer le thème">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <div class="avatar" id="user-avatar" title="Déconnexion">MM</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- PAGE HEADER -->
+    <div class="page-header fade-in fi1">
+      <div>
+        <h2>Offres d'emploi</h2>
+        <p>50 offres correspondant à votre profil — mises à jour en temps réel</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row fade-in fi2">
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(16,185,129,.14);color:var(--em-l)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        <div><div class="stat-val" style="color:var(--em-l)">50</div><div class="stat-lbl">Offres trouvées</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(251,191,36,.12);color:#fbbf24"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div><div class="stat-val" style="color:#fbbf24">12</div><div class="stat-lbl">Nouvelles aujourd'hui</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(59,130,246,.14);color:#93c5fd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+        <div><div class="stat-val" style="color:#93c5fd">91%</div><div class="stat-lbl">Match moyen</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(167,139,250,.14);color:#c4b5fd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div><div class="stat-val" style="color:#c4b5fd">18</div><div class="stat-lbl">Entreprises</div></div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="search-bar fade-in fi3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="filter-search" placeholder="Rechercher un poste, une entreprise, une compétence…"/>
+      <div class="search-bar-divider"></div>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <input type="text" id="filter-location" placeholder="Localisation" style="max-width:160px"/>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters fade-in fi3">
+      <button class="filter-btn active">Tous types</button>
+      <button class="filter-btn">CDI</button>
+      <button class="filter-btn">CDD</button>
+      <button class="filter-btn">Stage</button>
+      <button class="filter-btn">Alternance</button>
+      <button class="filter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="11" y2="18"/></svg>
+        Filtres avancés
+      </button>
+    </div>
+
+    <!-- CONTENT LAYOUT -->
+    <div class="content-layout">
+      <!-- JOBS LIST -->
+      <div>
+        <div class="jobs-count fade-in fi4"><span id="results-count">50</span> offres trouvées pour votre profil</div>
+        <div id="job-grid">
+
+        <!-- Job 1 - featured -->
+        <div class="job-card featured fade-in fi4">
+          <div class="job-top">
+            <div class="job-logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+            <div class="job-info">
+              <div class="job-role">Ingénieur Conception Mécanique Jr</div>
+              <div class="job-meta">
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Bosch Rexroth</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Lyon · France</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> CDI</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 38–45k€</span>
+              </div>
+            </div>
+            <div class="job-score">
+              <div class="score-ring">
+                <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(16,185,129,.12)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="10" stroke-linecap="round"/></svg>
+                <span class="score-val">91%</span>
+              </div>
+            </div>
+          </div>
+          <div class="job-tags">
+            <span class="job-tag highlight">CAO CREO</span>
+            <span class="job-tag highlight">Windchill</span>
+            <span class="job-tag">Hydraulique</span>
+            <span class="job-tag">SolidWorks</span>
+            <span class="job-tag">Anglais</span>
+          </div>
+          <div class="job-footer">
+            <span class="job-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Publié il y a 1j</span>
+            <div class="job-actions">
+              <button class="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Sauvegarder</button>
+              <button class="btn-apply">Candidater</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job 2 -->
+        <div class="job-card fade-in fi4" style="animation-delay:.35s">
+          <div class="job-top">
+            <div class="job-logo" style="background:rgba(245,158,11,.12);color:#fbbf24"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg></div>
+            <div class="job-info">
+              <div class="job-role">Ingénieur Matériaux et Conception</div>
+              <div class="job-meta">
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Michelin</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Clermont-Ferrand</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> CDI</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 42–50k€</span>
+              </div>
+            </div>
+            <div class="job-score">
+              <div class="score-ring">
+                <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(16,185,129,.12)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="11" stroke-linecap="round"/></svg>
+                <span class="score-val">90%</span>
+              </div>
+            </div>
+          </div>
+          <div class="job-tags">
+            <span class="job-tag highlight">CAO CREO</span>
+            <span class="job-tag">Matériaux composites</span>
+            <span class="job-tag">Simulation FEM</span>
+            <span class="job-tag">Python</span>
+          </div>
+          <div class="job-footer">
+            <span class="job-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Publié il y a 2j</span>
+            <div class="job-actions">
+              <button class="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Sauvegarder</button>
+              <button class="btn-apply">Candidater</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job 3 -->
+        <div class="job-card fade-in fi4" style="animation-delay:.45s">
+          <div class="job-top">
+            <div class="job-logo" style="background:rgba(59,130,246,.14);color:#93c5fd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+            <div class="job-info">
+              <div class="job-role">Concepteur Mécanique Automatisation</div>
+              <div class="job-meta">
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Safran Aerospace</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Villaroche · IDF</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg> CDI</span>
+                <span class="job-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> 45–55k€</span>
+              </div>
+            </div>
+            <div class="job-score">
+              <div class="score-ring">
+                <svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="rgba(16,185,129,.12)" stroke-width="3"/><circle cx="22" cy="22" r="18" fill="none" stroke="#10b981" stroke-width="3" stroke-dasharray="113" stroke-dashoffset="13" stroke-linecap="round"/></svg>
+                <span class="score-val">89%</span>
+              </div>
+            </div>
+          </div>
+          <div class="job-tags">
+            <span class="job-tag highlight">CREO</span>
+            <span class="job-tag highlight">CAO</span>
+            <span class="job-tag">PDM</span>
+            <span class="job-tag">Aéronautique</span>
+            <span class="job-tag">Anglais B2</span>
+          </div>
+          <div class="job-footer">
+            <span class="job-date"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Publié il y a 3j</span>
+            <div class="job-actions">
+              <button class="btn-save"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> Sauvegarder</button>
+              <button class="btn-apply">Candidater</button>
+            </div>
+          </div>
+        </div>
+        </div><!-- end #job-grid -->
+      </div>
+
+      <!-- SIDEBAR FILTERS -->
+      <div class="sidebar-filter fade-in fi4" style="animation-delay:.5s;position:sticky;top:76px">
+        <div class="sidebar-section">
+          <span class="sidebar-label">Type de contrat</span>
+          <div class="check-item checked">
+            <div class="check-box"></div> CDI
+          </div>
+          <div class="check-item checked">
+            <div class="check-box"></div> CDD
+          </div>
+          <div class="check-item">
+            <div class="check-box"></div> Stage
+          </div>
+          <div class="check-item">
+            <div class="check-box"></div> Alternance
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <span class="sidebar-label">Salaire annuel</span>
+          <div class="range-bar"><div class="range-fill"></div></div>
+          <div class="range-labels"><span>30k€</span><span>70k€</span></div>
+        </div>
+        <div class="sidebar-section">
+          <span class="sidebar-label">Localisation</span>
+          <div class="check-item checked"><div class="check-box"></div> Île-de-France</div>
+          <div class="check-item checked"><div class="check-box"></div> Auvergne-Rhône-Alpes</div>
+          <div class="check-item"><div class="check-box"></div> Occitanie</div>
+          <div class="check-item"><div class="check-box"></div> Bretagne</div>
+        </div>
+        <div class="sidebar-section">
+          <span class="sidebar-label">Score de match</span>
+          <div class="check-item checked"><div class="check-box"></div> Excellent (≥90%)</div>
+          <div class="check-item checked"><div class="check-box"></div> Bon (80–89%)</div>
+          <div class="check-item"><div class="check-box"></div> Correct (70–79%)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // Check items toggle
+    document.querySelectorAll('.check-item').forEach(item => {
+      item.addEventListener('click', () => item.classList.toggle('checked'));
+    });
+
+    // ── THEME TOGGLE ──
+    const root = document.documentElement;
+    root.dataset.theme = localStorage.getItem('wjob-theme') || 'dark';
+
+    function navBg() {
+      const light = root.dataset.theme === 'light';
+      const scrolled = window.scrollY > 10;
+      document.querySelector('.topnav').style.background = scrolled
+        ? (light ? 'rgba(240,253,248,.96)' : 'rgba(3,13,18,.9)')
+        : (light ? 'rgba(240,253,248,.88)' : 'rgba(3,13,18,.75)');
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      const flash = document.getElementById('theme-flash');
+      flash.className = next === 'light' ? 'flash-light' : 'flash-dark';
+      flash.addEventListener('animationend', () => { flash.className = ''; }, { once: true });
+      root.dataset.theme = next;
+      localStorage.setItem('wjob-theme', next);
+      navBg();
+    });
+
+    window.addEventListener('scroll', navBg);
+
+    // Logout
+    const av = document.getElementById('user-avatar');
+    if (av) av.addEventListener('click', async () => {
+      if (confirm('Se déconnecter ?')) { try { await API.logout(); } catch(e) {} window.location.href = 'login.html'; }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/jobs.js"></script>
+</body>
+</html>

@@ -889,21 +889,3 @@ tr:hover td { background:rgba(255,255,255,0.025); color:var(--t1); }
   .step-wizard-label { font-size:0.65rem; }
   .hero-app-title { font-size:2rem; }
 }
-
-
-/* ── LOGO BADGE ── */
-.logo-badge {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 2px;
-  background: rgba(16,185,129,0.08);
-  border: 1px solid rgba(16,185,129,0.25);
-  border-radius: 8px;
-  padding: 5px 12px 5px 10px;
-  line-height: 1;
-  text-decoration: none;
-}
-.logo-w   { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -1px; }
-.logo-job { font-size: 12px; font-weight: 700; color: #10b981; letter-spacing: 2.5px; }
-[data-theme="light"] .logo-badge { background: rgba(16,185,129,0.12); border-color: rgba(16,185,129,0.35); }
-[data-theme="light"] .logo-w { color: #0f172a; }

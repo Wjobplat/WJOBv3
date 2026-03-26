@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>W-JOB — Recruteurs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;
+      --bg:#030d12;
+      --glass:rgba(255,255,255,.052);--gb:rgba(16,185,129,.16);--gh:rgba(255,255,255,.085);
+      --text:#f0fdf8;--muted:#6b9e8e;--dim:#a3c4bc;
+    }
+
+    /* ── LIGHT MODE ── */
+    [data-theme="light"]{--bg:#f0fdf8;--glass:rgba(0,0,0,.04);--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);--text:#0f172a;--muted:#4b7a6c;--dim:#2d5c4e}
+    [data-theme="light"] body::before{background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.09) 0%,transparent 55%),radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.06) 0%,transparent 50%),linear-gradient(160deg,#f0fdf8 0%,#e5f7f0 100%)}
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.88);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .nav-link:hover{background:rgba(0,0,0,.05);color:var(--text)}
+    [data-theme="light"] .nav-link.active{color:var(--em);background:rgba(16,185,129,.1)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .stat-pill,[data-theme="light"] .recruiter-card{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .recruiter-card:hover{background:rgba(255,255,255,.95)}
+    [data-theme="light"] .recruiter-company{color:var(--muted)}
+    [data-theme="light"] .recruiter-role{color:var(--muted)}
+    [data-theme="light"] .rec-tag{background:rgba(0,0,0,.06);color:var(--muted)}
+    [data-theme="light"] .rec-footer{border-top-color:rgba(0,0,0,.07)}
+    [data-theme="light"] .search-bar{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .filter-btn{background:rgba(255,255,255,.6);color:var(--dim)}
+    [data-theme="light"] .page-header p{color:var(--muted)}
+
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}[data-theme="light"] .icon-moon{display:block}
+
+    body{transition:background .45s ease,color .45s ease}
+    .topnav{transition:background .45s ease,border-color .45s ease}
+    .recruiter-card,.stat-pill{transition:background .45s ease,border-color .45s ease,transform .32s cubic-bezier(.16,1,.3,1),box-shadow .32s}
+
+    #theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(255,255,255,0)}
+    #theme-flash.flash-dark{animation:flashOut .4s ease forwards;background:rgba(0,0,0,.18)}
+    #theme-flash.flash-light{animation:flashOut .4s ease forwards;background:rgba(255,255,255,.22)}
+    @keyframes flashOut{0%{opacity:1}100%{opacity:0}}
+
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.14) 0%,transparent 55%),
+                 radial-gradient(ellipse 45% 40% at 88% 105%,rgba(20,184,166,.09) 0%,transparent 50%),
+                 linear-gradient(160deg,#030d12 0%,#071a20 100%)}
+
+    /* ── TOP NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      background:rgba(3,13,18,.8);backdrop-filter:blur(28px) saturate(1.5);
+      border-bottom:1px solid rgba(16,185,129,.11)}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.25rem;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--em-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{display:flex;align-items:center;gap:.45rem;padding:.42rem .85rem;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap}
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--text);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+    .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--dim)}
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 0 16px rgba(16,185,129,.32)}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:2rem 2rem 4rem}
+
+    .fade-in{opacity:0;transform:translateY(16px);animation:fadeIn .55s cubic-bezier(.16,1,.3,1) forwards}
+    .fi1{animation-delay:.05s}.fi2{animation-delay:.12s}.fi3{animation-delay:.2s}.fi4{animation-delay:.28s}
+    @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+    /* PAGE HEADER */
+    .page-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+    .page-header h2{font-size:1.6rem;font-weight:800;letter-spacing:-.5px}
+    .page-header p{color:var(--muted);margin-top:.3rem;font-size:.875rem}
+    .btn{padding:.6rem 1.2rem;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;text-decoration:none;transition:all .25s;border:none;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:.4rem;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.07);transform:translateX(-110%) skewX(-15deg);transition:transform .4s}
+    .btn:hover::after{transform:translateX(110%) skewX(-15deg)}
+    .btn-primary{background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;box-shadow:0 0 22px rgba(16,185,129,.3)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 36px rgba(16,185,129,.5)}
+    .btn svg{width:15px;height:15px;stroke-width:2}
+
+    /* STATS */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.75rem}
+    .stat-pill{background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:1rem 1.25rem;backdrop-filter:blur(20px);display:flex;align-items:center;gap:.9rem;cursor:default}
+    .stat-pill:hover{transform:translateY(-3px);border-color:rgba(16,185,129,.35);box-shadow:0 12px 35px rgba(16,185,129,.12)}
+    .stat-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s}
+    .stat-pill:hover .stat-icon{transform:scale(1.1) rotate(-6deg)}
+    .stat-icon svg{width:17px;height:17px;stroke-width:2}
+    .stat-val{font-size:1.6rem;font-weight:800;line-height:1}
+    .stat-lbl{font-size:.7rem;color:var(--muted);font-weight:500;margin-top:.15rem}
+
+    /* SEARCH + FILTERS */
+    .search-bar{display:flex;align-items:center;gap:.75rem;background:var(--glass);border:1px solid var(--gb);border-radius:14px;padding:.8rem 1.2rem;margin-bottom:1.25rem;backdrop-filter:blur(20px);transition:border-color .2s}
+    .search-bar:focus-within{border-color:rgba(16,185,129,.4)}
+    .search-bar svg{width:18px;height:18px;stroke-width:1.8;color:var(--muted);flex-shrink:0}
+    .search-bar input{background:none;border:none;outline:none;font-family:'Inter',sans-serif;font-size:.9rem;color:var(--text);flex:1}
+    .search-bar input::placeholder{color:var(--muted)}
+    .filters{display:flex;gap:.5rem;margin-bottom:1.75rem;flex-wrap:wrap}
+    .filter-btn{padding:.4rem .9rem;border-radius:999px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--gb);background:var(--glass);color:var(--dim);transition:all .22s;backdrop-filter:blur(10px)}
+    .filter-btn:hover,.filter-btn.active{background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.38);color:var(--em-l)}
+
+    /* RECRUITER GRID */
+    .rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+
+    /* RECRUITER CARD */
+    .recruiter-card{background:var(--glass);border:1px solid var(--gb);border-radius:18px;padding:1.4rem;backdrop-filter:blur(20px);cursor:pointer;position:relative;overflow:hidden}
+    .recruiter-card::after{content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);transition:left .55s}
+    .recruiter-card:hover::after{left:130%}
+    .recruiter-card:hover{border-color:rgba(16,185,129,.32);box-shadow:0 8px 32px rgba(16,185,129,.1);transform:translateY(-3px)}
+
+    .rec-top{display:flex;align-items:flex-start;gap:.85rem;margin-bottom:1rem}
+    .rec-avatar{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;flex-shrink:0;transition:transform .25s}
+    .recruiter-card:hover .rec-avatar{transform:scale(1.08)}
+    .rec-info{flex:1}
+    .rec-name{font-size:.92rem;font-weight:700;margin-bottom:.15rem}
+    .rec-role{font-size:.75rem;color:var(--muted);margin-bottom:.12rem}
+    .rec-company{font-size:.78rem;color:var(--dim);font-weight:600;display:flex;align-items:center;gap:.3rem}
+    .rec-company svg{width:12px;height:12px;stroke-width:2}
+    .status-badge{padding:.22rem .6rem;border-radius:6px;font-size:.65rem;font-weight:700;flex-shrink:0}
+    .s-new{background:rgba(16,185,129,.14);color:var(--em-l);border:1px solid rgba(16,185,129,.22)}
+    .s-contacted{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.2)}
+    .s-replied{background:rgba(167,139,250,.12);color:#c4b5fd;border:1px solid rgba(167,139,250,.2)}
+    .s-pending{background:rgba(245,158,11,.1);color:#fbbf24;border:1px solid rgba(245,158,11,.18)}
+
+    .rec-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.9rem}
+    .rec-tag{font-size:.63rem;font-weight:600;padding:.14rem .48rem;border-radius:5px;background:rgba(255,255,255,.06);color:var(--dim)}
+
+    .rec-footer{display:flex;justify-content:space-between;align-items:center;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.05)}
+    .rec-date{font-size:.68rem;color:var(--muted)}
+    .rec-actions{display:flex;gap:.4rem}
+    .btn-contact{padding:.35rem .75rem;border-radius:8px;background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;border:none;cursor:pointer;font-size:.7rem;font-weight:700;transition:all .22s;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:.3rem}
+    .btn-contact svg{width:12px;height:12px;stroke-width:2}
+    .btn-contact:hover{transform:translateY(-1px);box-shadow:0 0 18px rgba(16,185,129,.4)}
+    .btn-view{padding:.35rem .75rem;border-radius:8px;border:1px solid var(--gb);background:var(--glass);color:var(--dim);cursor:pointer;font-size:.7rem;font-weight:600;transition:all .22s;font-family:'Inter',sans-serif}
+    .btn-view:hover{border-color:var(--em);color:var(--em-l)}
+
+    ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.3);border-radius:2px}
+    @media(max-width:600px){.rec-grid{grid-template-columns:1fr}}
+    @media(max-width:900px){.stats-row{grid-template-columns:repeat(2,1fr)}.nav-links .nav-link span{display:none}}
+    @media(max-width:600px){.topnav{padding:0 1rem}.rec-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div id="theme-flash"></div>
+
+  <!-- ── TOP NAV ── -->
+  <nav class="topnav">
+    <a href="index.html" class="nav-logo">
+      <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="32" height="32" rx="9" fill="url(#lg)"/>
+        <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+      </svg>
+      <span class="nav-logo-text">W-JOB</span>
+    </a>
+    <div class="nav-links">
+      <a href="applications.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        <span>Démarrer</span>
+      </a>
+      <a href="index.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </a>
+      <a href="jobs.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Emplois</span>
+        <span class="badge">12</span>
+      </a>
+      <a href="candidatures.html" class="nav-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Candidatures</span>
+        <span class="badge">5</span>
+      </a>
+      <a href="recruiters.html" class="nav-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Recruteurs</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="settings.html" class="icon-btn" title="Paramètres">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </a>
+      <button class="icon-btn" id="themeToggle" title="Mode clair / sombre" aria-label="Changer le thème">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <div class="avatar" id="user-avatar" title="Déconnexion">MM</div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- PAGE HEADER -->
+    <div class="page-header fade-in fi1">
+      <div>
+        <h2>Recruteurs</h2>
+        <p>Gérez vos contacts et interactions avec les recruteurs</p>
+      </div>
+      <button class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Ajouter un recruteur
+      </button>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row fade-in fi2">
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(16,185,129,.14);color:var(--em-l)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div><div class="stat-val" id="total-recruiters" style="color:var(--em-l)">51</div><div class="stat-lbl">Recruteurs · Réseau</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(59,130,246,.14);color:#93c5fd">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div><div class="stat-val" id="total-contacts" style="color:#93c5fd">8</div><div class="stat-lbl">Contactés</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(167,139,250,.14);color:#c4b5fd">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div><div class="stat-val" style="color:#c4b5fd">3</div><div class="stat-lbl">Réponses reçues</div></div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-icon" style="background:rgba(245,158,11,.12);color:#fbbf24">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div><div class="stat-val" style="color:#fbbf24">38%</div><div class="stat-lbl">Taux de réponse</div></div>
+      </div>
+    </div>
+
+    <!-- SEARCH + FILTERS -->
+    <div class="search-bar fade-in fi3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Rechercher un recruteur, une entreprise…"/>
+    </div>
+
+    <div class="filters fade-in fi3">
+      <button class="filter-btn active">Tous</button>
+      <button class="filter-btn">Nouveaux</button>
+      <button class="filter-btn">Contactés</button>
+      <button class="filter-btn">Réponses</button>
+      <button class="filter-btn">En attente</button>
+    </div>
+
+    <!-- RECRUITER GRID -->
+    <div class="rec-grid" id="recruiters-container">
+
+      <!-- Card 1 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.1s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#059669,#10b981)">SL</div>
+          <div class="rec-info">
+            <div class="rec-name">Sophie Laurent</div>
+            <div class="rec-role">Talent Acquisition Manager</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Bosch Rexroth · Lyon</div>
+          </div>
+          <span class="status-badge s-replied">Répondu</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Mécanique</span><span class="rec-tag">Hydraulique</span><span class="rec-tag">CAO</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Contacté le 22 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Relancer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.18s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#2563eb,#3b82f6)">MB</div>
+          <div class="rec-info">
+            <div class="rec-name">Marc Bernard</div>
+            <div class="rec-role">Recruteur Ingénierie</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Michelin · Clermont-Ferrand</div>
+          </div>
+          <span class="status-badge s-contacted">Contacté</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Matériaux</span><span class="rec-tag">R&D</span><span class="rec-tag">Innovation</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Contacté le 22 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Relancer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.26s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">CA</div>
+          <div class="rec-info">
+            <div class="rec-name">Claire Aubry</div>
+            <div class="rec-role">HR Business Partner</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Safran Aerospace · Villaroche</div>
+          </div>
+          <span class="status-badge s-replied">Répondu</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Aéronautique</span><span class="rec-tag">Structures</span><span class="rec-tag">CREO</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Contacté le 21 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Message</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.34s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#d97706,#fbbf24)">TM</div>
+          <div class="rec-info">
+            <div class="rec-name">Thomas Martin</div>
+            <div class="rec-role">Chargé de recrutement</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Siemens · Nantes</div>
+          </div>
+          <span class="status-badge s-pending">En attente</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Automatisation</span><span class="rec-tag">PLC</span><span class="rec-tag">Industrie 4.0</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Contacté le 20 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Relancer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.42s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#0891b2,#22d3ee)">ND</div>
+          <div class="rec-info">
+            <div class="rec-name">Nathalie Dupuis</div>
+            <div class="rec-role">Senior Recruiter</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> GE Aviation · Villepinte</div>
+          </div>
+          <span class="status-badge s-new">Nouveau</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Moteurs</span><span class="rec-tag">Thermique</span><span class="rec-tag">CFD</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Découvert le 23 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Contacter</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="recruiter-card fade-in fi4" style="animation-delay:.5s">
+        <div class="rec-top">
+          <div class="rec-avatar" style="background:linear-gradient(135deg,#be185d,#f472b6)">ER</div>
+          <div class="rec-info">
+            <div class="rec-name">Emma Roche</div>
+            <div class="rec-role">Talent Sourcer</div>
+            <div class="rec-company"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> Airbus · Toulouse</div>
+          </div>
+          <span class="status-badge s-new">Nouveau</span>
+        </div>
+        <div class="rec-tags">
+          <span class="rec-tag">Structures</span><span class="rec-tag">Composite</span><span class="rec-tag">CATIA</span>
+        </div>
+        <div class="rec-footer">
+          <span class="rec-date">Découvert le 23 mars</span>
+          <div class="rec-actions">
+            <button class="btn-view">Voir profil</button>
+            <button class="btn-contact"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> Contacter</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // Filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    // ── THEME TOGGLE ──
+    const root = document.documentElement;
+    root.dataset.theme = localStorage.getItem('wjob-theme') || 'dark';
+
+    function navBg() {
+      const light = root.dataset.theme === 'light';
+      const scrolled = window.scrollY > 10;
+      document.querySelector('.topnav').style.background = scrolled
+        ? (light ? 'rgba(240,253,248,.96)' : 'rgba(3,13,18,.9)')
+        : (light ? 'rgba(240,253,248,.88)' : 'rgba(3,13,18,.75)');
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      const flash = document.getElementById('theme-flash');
+      flash.className = next === 'light' ? 'flash-light' : 'flash-dark';
+      flash.addEventListener('animationend', () => { flash.className = ''; }, { once: true });
+      root.dataset.theme = next;
+      localStorage.setItem('wjob-theme', next);
+      navBg();
+    });
+
+    window.addEventListener('scroll', navBg);
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-client.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/recruiters.js"></script>
+  <script>
+    const root=document.documentElement;
+    root.dataset.theme=localStorage.getItem('wjob-theme')||'dark';
+    const av=document.getElementById('user-avatar');
+    if(av)av.addEventListener('click',async()=>{if(confirm('Se deconnecter ?')){try{await API.logout();}catch(e){}window.location.href='login.html';}});
+  </script>
+</body>
+</html>
