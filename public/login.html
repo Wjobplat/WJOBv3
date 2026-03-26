@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>W-JOB — Connexion</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080B14;
+      --surface: #0F1420;
+      --surface-2: #141B2A;
+      --border: rgba(255,255,255,0.07);
+      --border-focus: rgba(99,102,241,0.5);
+      --indigo: #6366F1;
+      --indigo-light: #818CF8;
+      --indigo-dark: #4F46E5;
+      --emerald: #10B981;
+      --text: #F0F4FF;
+      --text-muted: #6B7280;
+      --text-soft: #9CA3AF;
+      --error: #EF4444;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* Background ambiance */
+    .bg-glow {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    }
+    .bg-glow::before {
+      content: '';
+      position: absolute;
+      top: -20%; left: -10%;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%);
+    }
+    .bg-glow::after {
+      content: '';
+      position: absolute;
+      bottom: -20%; right: -10%;
+      width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 65%);
+    }
+
+    /* Grid layout */
+    .page {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* Left panel — branding */
+    .panel-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+      background: linear-gradient(160deg, rgba(99,102,241,0.04) 0%, transparent 60%);
+    }
+    .panel-left .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .logo-mark {
+      width: 36px; height: 36px;
+      background: var(--indigo);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-mark svg { width: 20px; height: 20px; }
+    .logo-text {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .logo-text span { color: var(--indigo-light); }
+
+    .panel-left .tagline {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem 0;
+    }
+    .tagline-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--indigo-light);
+      margin-bottom: 1.25rem;
+    }
+    .tagline h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+    }
+    .tagline h2 .accent {
+      background: linear-gradient(135deg, var(--indigo-light), #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline p {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 340px;
+    }
+
+    .features-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+      margin-top: 2.5rem;
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-soft);
+    }
+    .feature-item .check {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-item .check svg { width: 10px; height: 10px; color: var(--indigo-light); }
+
+    .panel-left .footer-note {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    /* Right panel — form */
+    .panel-right {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+      overflow-y: auto;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 400px;
+      animation: fadeUp 0.5s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .auth-header {
+      margin-bottom: 2rem;
+    }
+    .auth-header h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+    }
+    .auth-header p {
+      color: var(--text-soft);
+      font-size: 0.9rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-soft);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.01em;
+    }
+    .form-input {
+      width: 100%;
+      height: 46px;
+      padding: 0 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .form-input::placeholder { color: var(--text-muted); }
+    .form-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 48px;
+      border-radius: 10px;
+      border: none;
+      background: var(--indigo);
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: var(--indigo-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .toggle-link {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-soft);
+    }
+    .toggle-link a {
+      color: var(--indigo-light);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .toggle-link a:hover { text-decoration: underline; }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    /* Toast */
+    #toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .toast {
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      max-width: 320px;
+    }
+    .toast.show { transform: translateX(0); }
+    .toast-success { border-color: rgba(16,185,129,0.3); }
+    .toast-error { border-color: rgba(239,68,68,0.3); color: #FCA5A5; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      html, body { overflow: auto; }
+      .page { grid-template-columns: 1fr; }
+      .panel-left { display: none; }
+      .panel-right { min-height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="page">
+
+  <!-- LEFT — Branding -->
+  <div class="panel-left">
+    <a href="welcome.html" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 5L7 15L10 8L13 15L17 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="logo-text">W<span>-JOB</span></span>
+    </a>
+
+    <div class="tagline">
+      <div class="tagline-label">Propulsé par Claude AI</div>
+      <h2>Trouve le job qui te<br /><span class="accent">correspond vraiment</span></h2>
+      <p>Dépose ton CV, laisse l'IA analyser ton profil et identifier les meilleures opportunités. Tu valides, on envoie.</p>
+
+      <div class="features-list">
+        <div class="feature-item">
+          <div class="check">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+            </svg>
+          </div>
+          Analyse CV en 30 secondes
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+            </svg>
+          </div>
+          Score de compatibilité par offre
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+            </svg>
+          </div>
+          Emails personnalisés par Claude
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1.5,5 4,7.5 8.5,2.5"/>
+            </svg>
+          </div>
+          Tu valides tout avant envoi
+        </div>
+      </div>
+    </div>
+
+    <p class="footer-note">© 2026 W-JOB · <a href="privacy.html" style="color:inherit;text-decoration:none;">Confidentialité</a> · <a href="terms.html" style="color:inherit;text-decoration:none;">CGU</a></p>
+  </div>
+
+  <!-- RIGHT — Form -->
+  <div class="panel-right">
+    <div class="auth-box">
+
+      <a href="welcome.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Retour à l'accueil
+      </a>
+
+      <div class="auth-header">
+        <h1 id="auth-title">Bon retour 👋</h1>
+        <p id="auth-subtitle">Connecte-toi pour accéder à ton espace</p>
+      </div>
+
+      <form id="auth-form">
+        <div class="form-group" id="name-group" style="display:none;">
+          <label class="form-label" for="name">Nom complet</label>
+          <input type="text" id="name" class="form-input" placeholder="Ton prénom et nom" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Adresse email</label>
+          <input type="email" id="email" class="form-input" placeholder="toi@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Mot de passe</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-submit" id="submit-btn">
+          <span id="btn-text">Se connecter</span>
+        </button>
+      </form>
+
+      <div class="divider">ou</div>
+
+      <p class="toggle-link" id="toggle-text">
+        Pas encore de compte ?
+        <a id="toggle-btn">Créer un compte</a>
+      </p>
+
+    </div>
+  </div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script src="api.js"></script>
+<script>
+  let isLogin = true;
+
+  function setMode(login) {
+    isLogin = login;
+    document.getElementById('auth-title').textContent = login ? 'Bon retour 👋' : 'Créer un compte';
+    document.getElementById('auth-subtitle').textContent = login
+      ? 'Connecte-toi pour accéder à ton espace'
+      : 'Rejoins W-JOB, c\'est gratuit';
+    document.getElementById('btn-text').textContent = login ? 'Se connecter' : 'Créer mon compte';
+    document.getElementById('name-group').style.display = login ? 'none' : 'block';
+    document.getElementById('name').required = !login;
+    document.getElementById('toggle-text').innerHTML = login
+      ? 'Pas encore de compte ? <a id="toggle-btn">Créer un compte</a>'
+      : 'Déjà un compte ? <a id="toggle-btn">Se connecter</a>';
+    document.getElementById('toggle-btn').addEventListener('click', () => setMode(!isLogin));
+    document.getElementById('password').setAttribute('autocomplete', login ? 'current-password' : 'new-password');
+  }
+
+  document.getElementById('toggle-btn').addEventListener('click', () => setMode(!isLogin));
+
+  document.getElementById('auth-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value.trim();
+    const btn = document.getElementById('submit-btn');
+    const btnText = document.getElementById('btn-text');
+
+    btn.disabled = true;
+    btnText.textContent = 'Chargement…';
+
+    try {
+      if (isLogin) {
+        await API.login(email, password);
+        showToast('Connexion réussie !', 'success');
+        window.location.href = 'index.html';
+      } else {
+        await API.signup(email, password, name);
+        showToast('Compte créé ! Vérifie tes emails.', 'success');
+        btn.disabled = false;
+        btnText.textContent = 'Créer mon compte';
+      }
+    } catch (err) {
+      showToast(err.message || 'Une erreur est survenue', 'error');
+      btn.disabled = false;
+      btnText.textContent = isLogin ? 'Se connecter' : 'Créer mon compte';
+    }
+  });
+
+  // Check action param for signup redirect
+  const action = new URLSearchParams(window.location.search).get('action');
+  if (action === 'signup') setMode(false);
+</script>
+</body>
+</html>
