@@ -58,6 +58,27 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
 });
 
+// ── Auth helpers globaux ───────────────────────────────────────────────────
+async function requireAuth() {
+    try {
+        const { data: { session } } = await window.wjob.auth.getSession();
+        if (!session) {
+            window.location.replace('/login');
+            return null;
+        }
+        return session.user;
+    } catch (e) {
+        console.error('[W-JOB] requireAuth error:', e);
+        window.location.replace('/login');
+        return null;
+    }
+}
+
+async function logout() {
+    try { await window.wjob.auth.signOut(); } catch (e) {}
+    window.location.replace('/login');
+}
+
 // ── Thème persisté ────────────────────────────────────────────────────────
 (function () {
     const saved = localStorage.getItem('wjob-theme');
