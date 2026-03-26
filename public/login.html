@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    const _sb = window.supabase.createClient(
+    window.wjob = window.supabase.createClient(
       'https://bqobpkwkwypiuhtprjva.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJxb2Jwa3drd3lwaXVodHByanZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4NjQ3NDMsImV4cCI6MjA4NDQ0MDc0M30.51PFJRHCKHYbLhHB3hw8FdeECmk5HORQ_wJBtJK1yUM'
     );
@@ -394,11 +394,11 @@
 
     try {
       if (isLogin) {
-        const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+        const { data, error } = await window.wjob.auth.signInWithPassword({ email, password });
         if (error) throw error;
         window.location.href = '/applications';
       } else {
-        const { data, error } = await _sb.auth.signUp({
+        const { data, error } = await window.wjob.auth.signUp({
           email, password,
           options: { data: { name } }
         });

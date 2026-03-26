@@ -7,10 +7,9 @@ const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 // URL de l'agent IA (Edge Function Supabase)
 const AI_AGENT_URL  = 'https://bqobpkwkwypiuhtprjva.supabase.co/functions/v1/ai-agent';
 
-// Initialise le client Supabase global (accessible via window.supabase)
-const _lib = window.supabase;
-window.supabase = _lib.createClient(SUPABASE_URL, SUPABASE_ANON);
-const supabase = window.supabase;
+// Initialise le client Supabase — stocké sur window.wjob pour éviter tout conflit
+window.wjob = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const supabase = window.wjob;
 
 // ── Auto-configure le webhook ──────────────────────────────────────────────
 // Dès que l'utilisateur est connecté, on s'assure que le webhook pointe
