@@ -389,16 +389,22 @@
 
     try {
       if (isLogin) {
-        await API.login(email, password);
-        showToast('Connexion réussie !', 'success');
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
         window.location.href = '/applications';
       } else {
-        await API.signup(email, password, name);
-        showToast('Compte créé ! Vérifie tes emails.', 'success');
+        const { data, error } = await supabase.auth.signUp({
+          email, password,
+          options: { data: { name } }
+        });
+        if (error) throw error;
+        showToast('Compte créé ! Tu peux te connecter.', 'success');
+        setMode(true);
         btn.disabled = false;
-        btnText.textContent = 'Créer mon compte';
+        btnText.textContent = 'Se connecter';
       }
     } catch (err) {
+      console.error('[W-JOB] Auth error:', err);
       showToast(err.message || 'Une erreur est survenue', 'error');
       btn.disabled = false;
       btnText.textContent = isLogin ? 'Se connecter' : 'Créer mon compte';
