@@ -1,11 +1,9 @@
 {
   "version": 2,
+  "outputDirectory": "public",
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/public/welcome.html" },
-    { "source": "/login", "destination": "/public/login.html" },
-    { "source": "/settings", "destination": "/public/settings.html" },
-    { "source": "/((?!api/).*)", "destination": "/public/$1" }
+    { "source": "/", "destination": "/welcome.html" }
   ]
 }
