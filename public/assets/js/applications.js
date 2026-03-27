@@ -5,6 +5,7 @@ let selectedFile = null;
 let analysisData = null;
 let searchResults = [];
 let selectedJobs = new Set();
+let activeFilter = 'all';
 
 document.addEventListener('DOMContentLoaded', () => {
     // auth-guard.js gère déjà la redirection si non connecté
@@ -237,126 +238,244 @@ function displayAnalysis(data) {
 // =============================================
 // STEP 3: SEARCH RESULTS
 // =============================================
+function computeCompatibility(job, profile) {
+    let score = 0;
+    const jobTitle = (job.title || '').toLowerCase();
+    const jobDesc = (job.description || '').toLowerCase();
+    const jobSkillsArr = (job.skills || []).map(s => (typeof s === 'string' ? s : s.name || '').toLowerCase());
+    const allJobText = jobTitle + ' ' + jobDesc + ' ' + jobSkillsArr.join(' ');
+
+    // Title match (40pts)
+    const jobTitles = profile.job_titles || [];
+    const keywords = profile.search_keywords || [];
+    const allProfileTitles = [...jobTitles, ...keywords].map(t => t.toLowerCase());
+    const titleHit = allProfileTitles.some(t => allJobText.includes(t) || t.includes(jobTitle.split(' ')[0]));
+    if (titleHit) score += 40;
+    else if (allProfileTitles.some(t => allJobText.split(' ').some(w => t.includes(w) && w.length > 3))) score += 18;
+
+    // Skills match (60pts)
+    const profileSkills = (profile.skills || []).map(s => s.toLowerCase());
+    const matchedSkills = [];
+    for (const skill of profileSkills) {
+        if (skill.length > 2 && allJobText.includes(skill)) matchedSkills.push(skill);
+    }
+    if (profileSkills.length > 0) {
+        score += Math.round((matchedSkills.length / Math.min(profileSkills.length, 8)) * 60);
+    }
+
+    // Clamp between 28-97
+    score = Math.min(97, Math.max(28, score));
+    return { score, matchedSkills: matchedSkills.slice(0, 4) };
+}
+
 async function startSearch() {
     maxStep = 3;
     goToStep(3);
+    selectedJobs.clear();
+    activeFilter = 'all';
 
     document.getElementById('search-loading').classList.remove('hidden');
     document.getElementById('search-results').classList.add('hidden');
 
+    // Reset loading steps
+    ['astep-1','astep-2','astep-3','astep-4'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove('active','done');
+    });
+
+    function stepActive(id) {
+        const el = document.getElementById(id);
+        if (el) { el.classList.remove('done'); el.classList.add('active'); }
+    }
+    function stepDone(id) {
+        const el = document.getElementById(id);
+        if (el) { el.classList.remove('active'); el.classList.add('done'); }
+    }
+
     try {
-        // Fetch real jobs from Supabase
+        // Step 1: Read profile
+        stepActive('astep-1');
+        await delay(700);
+        stepDone('astep-1');
+
+        // Step 2: Fetch jobs
+        stepActive('astep-2');
         const jobs = await API.getJobs();
         let recruiters = [];
-        try { recruiters = await API.getRecruiters(); } catch (e) { /* table may not exist */ }
+        try { recruiters = await API.getRecruiters(); } catch {}
+        stepDone('astep-2');
 
-        // Map jobs to the format expected by the UI
-        searchResults = jobs.map((job, i) => {
-            // Try to find a matching recruiter by company name
-            const recruiter = recruiters.find(r => r.company && job.company && r.company.toLowerCase() === job.company.toLowerCase())
+        // Step 3: Compute compatibility
+        stepActive('astep-3');
+        const profile = (analysisData && analysisData.profile) ? analysisData.profile : {};
+
+        searchResults = jobs.map(job => {
+            const recruiter = recruiters.find(r => r.company && job.company &&
+                r.company.toLowerCase() === job.company.toLowerCase())
                 || { name: 'Recruteur', email: 'contact@' + (job.company || 'entreprise').toLowerCase().replace(/\s+/g, '') + '.com', linkedin: '' };
 
+            const compat = computeCompatibility(job, profile);
             return {
                 id: job.id,
                 title: job.title,
                 company: job.company,
-                location: job.location || 'Non sp\u00e9cifi\u00e9',
+                location: job.location || 'Non spécifié',
                 contract: job.contractType || job.contract_type || 'CDI',
-                description: job.description || 'Aucune description disponible.',
-                recruiter: { name: recruiter.name, email: recruiter.email, linkedin: recruiter.linkedin || '' },
-                strengths: (job.skills || []).slice(0, 3).map(s => typeof s === 'string' ? s : s.name || s),
-                weaknesses: []
+                description: job.description || '',
+                recruiter: { name: recruiter.name, email: recruiter.email },
+                skills: (job.skills || []).slice(0, 6).map(s => typeof s === 'string' ? s : s.name || s),
+                score: compat.score,
+                matchedSkills: compat.matchedSkills
             };
         });
 
+        // Sort by score desc
+        searchResults.sort((a, b) => b.score - a.score);
+        await delay(550);
+        stepDone('astep-3');
+
+        // Step 4: Recruiter info
+        stepActive('astep-4');
+        await delay(450);
+        stepDone('astep-4');
+        await delay(280);
+
+        // Show results
         document.getElementById('search-loading').classList.add('hidden');
         document.getElementById('search-results').classList.remove('hidden');
 
-        if (searchResults.length === 0) {
-            document.getElementById('results-count').textContent = "Aucun emploi trouv\u00e9. Ajoutez des offres dans l'onglet Emplois.";
-        } else {
-            document.getElementById('results-count').textContent = `${searchResults.length} r\u00e9sultat(s) trouv\u00e9(s)`;
-        }
+        // Reset filter pills to "Toutes"
+        document.querySelectorAll('.sr-pill').forEach(p => p.classList.remove('active'));
+        const allPill = document.querySelector('.sr-pill[data-filter="all"]');
+        if (allPill) allPill.classList.add('active');
+
+        document.getElementById('results-count').textContent =
+            searchResults.length > 0
+                ? `${searchResults.length} offre(s) — triées par compatibilité`
+                : 'Aucune offre disponible';
 
         renderResults();
+        setupFilters();
+
     } catch (e) {
         console.error('Search error:', e);
-        showToast('Erreur lors de la recherche', 'error');
         document.getElementById('search-loading').classList.add('hidden');
         document.getElementById('search-results').classList.remove('hidden');
-        document.getElementById('results-count').textContent = 'Erreur de chargement des offres.';
+        document.getElementById('results-count').textContent = 'Erreur de chargement';
+        const errEl = document.getElementById('sr-error');
+        if (errEl) errEl.classList.remove('hidden');
     }
 }
 
 function renderResults() {
     const grid = document.getElementById('results-grid');
-    grid.innerHTML = '';
+    // Clear only result cards (preserve empty/error state divs)
+    grid.querySelectorAll('.result-card').forEach(c => c.remove());
 
-    searchResults.forEach((job, i) => {
+    const emptyEl = document.getElementById('sr-empty');
+    const errorEl = document.getElementById('sr-error');
+    if (emptyEl) emptyEl.classList.add('hidden');
+    if (errorEl) errorEl.classList.add('hidden');
+
+    let list = searchResults;
+    if (activeFilter === 'top') {
+        list = list.filter(j => j.score >= 75);
+    } else if (['CDI','CDD','Alternance'].includes(activeFilter)) {
+        list = list.filter(j => (j.contract || '').toLowerCase() === activeFilter.toLowerCase());
+    }
+
+    if (list.length === 0) {
+        if (emptyEl) {
+            const sub = emptyEl.querySelector('.sr-state-sub');
+            if (sub) sub.textContent = activeFilter === 'all'
+                ? 'Aucune offre disponible pour le moment.'
+                : 'Aucun résultat pour ce filtre. Essayez "Toutes".';
+            emptyEl.classList.remove('hidden');
+        }
+        document.getElementById('results-count').textContent = '0 résultat';
+        return;
+    }
+
+    document.getElementById('results-count').textContent =
+        `${list.length} offre(s)${activeFilter !== 'all' ? ' filtrées' : ' — triées par compatibilité'}`;
+
+    list.forEach((job, i) => {
+        const compatClass = job.score >= 75 ? 'high' : job.score >= 50 ? 'mid' : 'low';
+        const isSelected = selectedJobs.has(job.id);
+
         const card = document.createElement('div');
-        card.className = `result-card ${selectedJobs.has(job.id) ? 'selected' : ''}`;
+        card.className = `result-card${isSelected ? ' selected' : ''}`;
+        card.dataset.jobId = job.id;
         card.style.opacity = '0';
-        card.onclick = () => toggleJobSelection(job.id);
+        card.onclick = () => toggleJobSelection(job.id, card);
 
         card.innerHTML = `
-            <div style="margin-bottom: var(--space-lg);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--space-sm);">
+            <div class="rc-top">
+                <div>
+                    <div class="rc-company">${job.company}</div>
+                    <div class="rc-title">${job.title}</div>
+                </div>
+                <div class="rc-compat ${compatClass}">${job.score}%</div>
+            </div>
+            <div class="rc-meta">
+                <span class="rc-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    ${job.location}
+                </span>
+                <span class="rc-contract">${job.contract}</span>
+            </div>
+            ${job.matchedSkills.length > 0 ? `
+            <div class="rc-skills">
+                ${job.matchedSkills.map(s => `<span class="rc-skill">${s}</span>`).join('')}
+            </div>` : ''}
+            <div class="rc-footer">
+                <div class="rc-recruiter">
+                    <div class="rc-avatar">${job.recruiter.name.charAt(0).toUpperCase()}</div>
                     <div>
-                        <div style="color: var(--color-text-secondary); font-size: 0.82rem; font-weight: 600;">${job.company}</div>
-                        <div style="font-size: 1.1rem; font-weight: 700;">${job.title}</div>
+                        <div class="rc-rec-name">${job.recruiter.name}</div>
+                        <div class="rc-rec-email">${job.recruiter.email}</div>
                     </div>
-                    <span class="badge badge-sent">${job.contract}</span>
                 </div>
-                <div style="display: flex; gap: var(--space-md); color: var(--color-text-secondary); font-size: 0.82rem; margin-bottom: var(--space-md);">
-                    <span>\ud83d\udccd ${job.location}</span>
-                </div>
-                <p style="color: var(--color-text-secondary); font-size: 0.85rem; line-height: 1.6; margin-bottom: var(--space-md);">${job.description}</p>
-            </div>
-
-            <div style="margin-bottom: var(--space-lg);">
-                <div style="margin-bottom: var(--space-sm);">
-                    ${job.strengths.map(s => `<span class="result-tag tag-strength">\u2713 ${s}</span>`).join('')}
-                </div>
-                <div>
-                    ${job.weaknesses.map(w => `<span class="result-tag tag-weakness">\u26a0 ${w}</span>`).join('')}
-                </div>
-            </div>
-
-            <div style="padding-top: var(--space-md); border-top: 1px solid var(--glass-border); display: flex; align-items: center; gap: var(--space-md);">
-                <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.8rem;">${job.recruiter.name.charAt(0)}</div>
-                <div>
-                    <div style="font-weight: 600; font-size: 0.85rem;">${job.recruiter.name}</div>
-                    <div style="color: var(--color-text-muted); font-size: 0.75rem;">${job.recruiter.email}</div>
+                <div class="rc-check">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
             </div>
         `;
 
         grid.appendChild(card);
 
-        // Stagger animation
         setTimeout(() => {
-            card.style.transition = 'all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            card.style.transition = 'opacity .35s ease, transform .35s cubic-bezier(.16,1,.3,1)';
             card.style.opacity = '1';
-        }, i * 100);
+        }, i * 55);
     });
 }
 
-function toggleJobSelection(id) {
+function toggleJobSelection(id, card) {
+    if (!card) card = document.querySelector(`.result-card[data-job-id="${id}"]`);
+
     if (selectedJobs.has(id)) {
         selectedJobs.delete(id);
+        if (card) card.classList.remove('selected');
     } else {
         selectedJobs.add(id);
+        if (card) card.classList.add('selected');
     }
 
-    // Update card visuals
-    document.querySelectorAll('.result-card').forEach((card, i) => {
-        card.classList.toggle('selected', selectedJobs.has(searchResults[i].id));
-    });
-
-    // Update button
     const count = selectedJobs.size;
     document.getElementById('selected-count').textContent = count;
     document.getElementById('apply-selected-btn').disabled = count === 0;
+}
+
+function setupFilters() {
+    document.querySelectorAll('.sr-pill').forEach(pill => {
+        pill.onclick = () => {
+            document.querySelectorAll('.sr-pill').forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            activeFilter = pill.dataset.filter;
+            renderResults();
+        };
+    });
 }
 
 // =============================================
