@@ -490,80 +490,87 @@
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
+
+    /* ── DASHBOARD NAV VARS ── */
+    :root{--em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;--dim:#a3c4bc;--gb:rgba(16,185,129,.16);--gh:rgba(255,255,255,.085);--dtext:#f0fdf8}
+    [data-theme="light"]{--dim:#2d5c4e;--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);--dtext:#0f172a}
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.88);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .nav-link:hover{background:rgba(0,0,0,.05);color:var(--dtext)}
+    [data-theme="light"] .nav-link.active{color:var(--em);background:rgba(16,185,129,.1)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.2)}
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}[data-theme="light"] .icon-moon{display:block}
+    body{transition:background .45s ease,color .45s ease}
+    .topnav{transition:background .45s ease,border-color .45s ease}
+    /* ── TOP NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;background:rgba(3,13,18,.8);backdrop-filter:blur(28px) saturate(1.5);border-bottom:1px solid rgba(16,185,129,.12)}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.2rem;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,var(--em-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{display:flex;align-items:center;gap:.45rem;padding:.42rem .85rem;border-radius:8px;font-size:.85rem;font-weight:500;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap}
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--dtext);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+    .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--gb);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--dim);text-decoration:none}
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .icon-btn.settings-active{color:var(--em-l);background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.3)}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em));display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;cursor:pointer;box-shadow:0 0 16px rgba(16,185,129,.32);transition:box-shadow .2s}
+    .avatar:hover{box-shadow:0 0 28px rgba(16,185,129,.5)}
+    @media(max-width:860px){.nav-links .nav-link span:not(.badge){display:none}}
+    @media(max-width:560px){.topnav{padding:0 1rem}}
     </style>
 </head>
 
 <body>
-    <nav class="top-nav">
-        <div class="top-nav-inner">
-            <a href="/dashboard" class="top-nav-brand">
-                <img src="assets/img/favicon.svg" alt="W-JOB">
-            </a>
-            <div class="top-nav-links">
-                <a href="/applications" class="top-nav-link">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path>
-                    </svg>
-                    Démarrer
-                </a>
-                <a href="/dashboard" class="top-nav-link">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>
-                        <rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect>
-                    </svg>
-                    Dashboard
-                </a>
-                <a href="/jobs" class="top-nav-link">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                    Emplois
-                </a>
-                <a href="/candidatures" class="top-nav-link">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line>
-                    </svg>
-                    Candidatures
-                </a>
-                <a href="/recruiters" class="top-nav-link">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
-                    Recruteurs
-                </a>
-            </div>
-            <div class="top-nav-actions">
-                <button class="top-nav-action" onclick="toggleTheme()" title="Thème">
-                    <svg class="nav-icon" data-theme-icon viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                </button>
-                <a href="/settings" class="top-nav-action active" title="Paramètres">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
-                </a>
-                <button onclick="API.logout()" class="top-nav-action" title="Déconnexion">
-                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                        <polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                </button>
-            </div>
-            <button class="top-nav-toggle" onclick="document.getElementById('mobile-menu').classList.toggle('open')"><span></span><span></span><span></span></button>
-        </div>
-    </nav>
-    <div id="mobile-menu" class="top-nav-mobile-menu">
-        <a href="/applications" class="top-nav-link">Démarrer</a>
-        <a href="/dashboard" class="top-nav-link">Dashboard</a>
-        <a href="/jobs" class="top-nav-link">Emplois</a>
-        <a href="/candidatures" class="top-nav-link">Candidatures</a>
-        <a href="/recruiters" class="top-nav-link">Recruteurs</a>
-        <a href="/settings" class="top-nav-link active">Paramètres</a>
-    </div>
+<div id="theme-flash"></div>
+
+<nav class="topnav">
+  <a href="/dashboard" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="9" fill="url(#lg-s)"/>
+      <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs><linearGradient id="lg-s" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+    </svg>
+    <span class="nav-logo-text">W-JOB</span>
+  </a>
+  <div class="nav-links">
+    <a href="/applications" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>Démarrer</span>
+    </a>
+    <a href="/dashboard" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="/jobs" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Emplois</span>
+    </a>
+    <a href="/candidatures" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span>Candidatures</span>
+    </a>
+    <a href="/recruiters" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Recruteurs</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="/settings" class="icon-btn settings-active" title="Paramètres">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </a>
+    <button class="icon-btn" id="themeToggle" title="Changer le thème" aria-label="Changer le thème">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="avatar" id="user-avatar" title="Déconnexion">MM</div>
+  </div>
+</nav>
 
     <div class="app-container">
         <main class="main-content">
