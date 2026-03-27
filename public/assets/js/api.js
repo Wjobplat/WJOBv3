@@ -1,6 +1,5 @@
 // JobFlow API Module - Supabase Version
-// window.wjob est le client Supabase initialisé dans supabase-client.js
-const supabase = window.wjob;
+// supabase = window.supabase = window.wjob (client, set by supabase-client.js)
 
 var API = {
     // Auth
