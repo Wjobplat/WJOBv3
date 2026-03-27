@@ -6,9 +6,8 @@ let analysisData = null;
 let searchResults = [];
 let selectedJobs = new Set();
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = await requireAuth();
-    if (!user) return;
+document.addEventListener('DOMContentLoaded', () => {
+    // auth-guard.js gère déjà la redirection si non connecté
     setupFileUpload();
 });
 
