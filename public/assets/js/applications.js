@@ -170,10 +170,11 @@ async function startAnalysis() {
             maxStep = 3;
         }
     } catch (e) {
-        console.error('Analyse error:', e);
-        setProgress('Erreur', 0);
-        showToast("Erreur lors de l'analyse: " + (e.message || ''), 'error');
-        goToStep(1);
+        const msg = e?.message || e?.error || String(e);
+        console.error('Analyse error:', msg, e);
+        setProgress('❌ ' + msg, 0);
+        showToast('Erreur analyse: ' + msg, 'error');
+        setTimeout(() => goToStep(1), 4000);
     }
 }
 
