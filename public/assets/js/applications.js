@@ -238,6 +238,7 @@ function displayAnalysis(data) {
 // STEP 3: SEARCH RESULTS
 // =============================================
 async function startSearch() {
+    maxStep = 3;
     goToStep(3);
 
     document.getElementById('search-loading').classList.remove('hidden');
@@ -260,7 +261,7 @@ async function startSearch() {
                 title: job.title,
                 company: job.company,
                 location: job.location || 'Non sp\u00e9cifi\u00e9',
-                contract: job.contract_type || 'CDI',
+                contract: job.contractType || job.contract_type || 'CDI',
                 description: job.description || 'Aucune description disponible.',
                 recruiter: { name: recruiter.name, email: recruiter.email, linkedin: recruiter.linkedin || '' },
                 strengths: (job.skills || []).slice(0, 3).map(s => typeof s === 'string' ? s : s.name || s),
