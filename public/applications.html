@@ -593,20 +593,6 @@
         <div class="wz-card-label">Résultats</div>
         <div class="wz-card-sub">Offres compatibles</div>
       </div>
-      <!-- Step 4 -->
-      <div class="wz-step-card step-wizard-item" data-step="4" onclick="goToStep(4)">
-        <div class="wz-card-top">
-          <div class="wz-num" id="wz-num-4">
-            <span class="wz-ni">4</span>
-            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="wz-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-        </div>
-        <div class="wz-card-label">Candidater</div>
-        <div class="wz-card-sub">Emails générés par IA</div>
-      </div>
     </div>
     <!-- Progress bar -->
     <div class="wz-bar"><div class="wz-bar-fill" id="wz-bar-fill" style="width:12%"></div></div>
@@ -721,8 +707,8 @@
           <div class="results-title">Opportunités trouvées</div>
           <p id="results-count" class="results-sub">0 résultats</p>
         </div>
-        <button class="btn-em" id="apply-selected-btn" onclick="goToStep(4)" disabled>
-          Candidater aux sélectionnés
+        <button class="btn-em" id="apply-selected-btn" onclick="applySelectedJobs()" disabled>
+          Postuler aux sélectionnés
           <span class="count-badge" id="selected-count">0</span>
         </button>
       </div>
@@ -737,29 +723,6 @@
     </div>
   </div>
 
-  <!-- ══ STEP 4 : Candidater ══ -->
-  <div class="step-panel" id="step-4">
-    <div style="max-width:740px;margin:0 auto">
-      <div style="margin-bottom:1.5rem">
-        <h3 style="font-size:1rem;font-weight:800;margin-bottom:.35rem;display:flex;align-items:center;gap:8px;">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--em-l)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          Générer vos candidatures
-        </h3>
-        <p style="font-size:.82rem;color:var(--muted)">L'IA génère un email personnalisé pour chaque offre sélectionnée.</p>
-      </div>
-      <div id="email-drafts"></div>
-      <div class="step-nav step-divider">
-        <button class="btn-ghost" onclick="goToStep(3)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-          Retour
-        </button>
-        <button class="btn-em" onclick="sendAllApplications()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Envoyer toutes les candidatures
-        </button>
-      </div>
-    </div>
-  </div>
 
 </div><!-- /page -->
 

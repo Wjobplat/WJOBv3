@@ -326,119 +326,25 @@ function toggleJobSelection(id) {
 // =============================================
 // STEP 4: APPLY
 // =============================================
-async function generateEmails() {
-    const container = document.getElementById('email-drafts');
-    container.innerHTML = '';
+// Crée les candidatures sélectionnées (statut draft) et redirige vers /candidatures
+async function applySelectedJobs() {
+    const btn = document.getElementById('apply-selected-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
 
     const selected = searchResults.filter(j => selectedJobs.has(j.id));
+    let ok = 0;
 
-    for (const [i, job] of selected.entries()) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'card';
-        wrapper.style.marginBottom = 'var(--space-lg)';
-        wrapper.style.opacity = '0';
-        wrapper.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-                <div>
-                    <div style="font-weight: 700;">${job.title}</div>
-                    <div style="color: var(--color-text-secondary); font-size: 0.85rem;">${job.company} \u2014 ${job.recruiter.name}</div>
-                </div>
-                <span class="badge badge-pending">Brouillon</span>
-            </div>
-            <div id="email-content-${job.id}" style="background: var(--color-bg-tertiary); padding: var(--space-lg); border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.7; white-space: pre-wrap; margin-bottom: var(--space-md);">
-                G\u00e9n\u00e9ration en cours...
-            </div>
-            <div style="display: flex; gap: var(--space-sm); justify-content: flex-end;">
-                <button class="btn btn-secondary btn-sm" onclick="editEmail(${job.id})">Modifier</button>
-                <button class="btn btn-primary btn-sm" onclick="sendSingleApplication(${job.id})">Envoyer</button>
-            </div>
-        `;
-        container.appendChild(wrapper);
-
-        setTimeout(() => {
-            wrapper.style.transition = 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            wrapper.style.opacity = '1';
-        }, i * 150);
-
-        // Generate email via Claude API
+    for (const job of selected) {
         try {
-            const res = await API.generateAiEmail({ job, profile: analysisData?.profile || {} });
-            document.getElementById(`email-content-${job.id}`).textContent = res.email;
+            await API.createApplication({ jobId: job.id, status: 'draft', notes: '' });
+            ok++;
         } catch (e) {
-            document.getElementById(`email-content-${job.id}`).textContent = 'Erreur de g\u00e9n\u00e9ration.';
-        }
-    }
-}
-
-// Navigate to step 4 and generate
-const originalGoToStep = goToStep;
-// Override: when going to step 4, also generate emails
-const _goToStep = goToStep;
-goToStep = function (step) {
-    _goToStep(step);
-    if (step === 4) {
-        maxStep = 4;
-        generateEmails();
-    }
-};
-
-function editEmail(jobId) {
-    const el = document.getElementById(`email-content-${jobId}`);
-    const currentText = el.textContent;
-    el.innerHTML = `<textarea style="width:100%; min-height: 200px; background: transparent; border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: var(--space-md); color: var(--color-text-primary); font-family: var(--font-sans); font-size: 0.9rem; resize: vertical;" onblur="this.parentElement.textContent = this.value">${currentText}</textarea>`;
-    el.querySelector('textarea').focus();
-}
-
-async function sendSingleApplication(jobId) {
-    const job = searchResults.find(j => j.id === jobId);
-    if (!job) return;
-
-    try {
-        const emailEl = document.getElementById(`email-content-${jobId}`);
-        const emailText = emailEl?.textContent || '';
-
-        await API.createApplication({
-            jobId: job.id,
-            status: 'sent',
-            customEmail: emailText,
-            notes: ''
-        });
-
-        showToast(`Candidature envoy\u00e9e pour ${job.title}`, 'success');
-    } catch (e) {
-        console.error('Send error:', e);
-        showToast("Erreur lors de l'envoi", 'error');
-    }
-}
-
-async function sendAllApplications() {
-    const count = selectedJobs.size;
-    let sent = 0;
-
-    for (const jobId of selectedJobs) {
-        const job = searchResults.find(j => j.id === jobId);
-        if (!job) continue;
-
-        try {
-            const emailEl = document.getElementById(`email-content-${jobId}`);
-            const emailText = emailEl?.textContent || '';
-
-            await API.createApplication({
-                jobId: job.id,
-                status: 'sent',
-                customEmail: emailText,
-                notes: ''
-            });
-            sent++;
-        } catch (e) {
-            console.error(`Error sending application for job ${jobId}:`, e);
+            console.error('Apply error:', e);
         }
     }
 
-    showToast(`${sent}/${count} candidature(s) envoy\u00e9e(s) avec succ\u00e8s !`, 'success');
-    setTimeout(() => {
-        window.location.href = '/candidatures';
-    }, 2000);
+    showToast(`${ok} candidature(s) créée(s) ! Redirection…`, 'success');
+    setTimeout(() => { window.location.href = '/candidatures'; }, 1800);
 }
 
 // =============================================
