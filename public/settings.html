@@ -639,6 +639,44 @@
                     </div>
                 </div>
 
+                <!-- ══ API IA SECTION ════════════════════════════ -->
+                <div class="settings-section stagger-2 fade-in">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="section-icon section-icon-purple">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+                                    </svg>
+                                </div>
+                                Clé API Intelligence Artificielle
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label">Clé API Anthropic (Claude)</label>
+                                <div style="display:flex;gap:0.5rem;align-items:center;">
+                                    <input type="password" id="anthropic-api-key" class="form-input" placeholder="sk-ant-..." style="flex:1;font-family:monospace;font-size:0.85rem;">
+                                    <button class="btn btn-secondary" onclick="toggleKeyVisibility()" id="toggle-key-btn" title="Afficher/Masquer" style="flex-shrink:0;padding:0.5rem 0.75rem;">
+                                        <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </button>
+                                </div>
+                                <p style="margin-top:0.5rem;font-size:0.78rem;color:var(--color-text-muted);">Utilisée pour l'analyse de CV et la génération d'emails. Stockée localement dans votre navigateur.</p>
+                            </div>
+                            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;">
+                                <button class="btn btn-primary" onclick="saveApiKey()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                                    Enregistrer la clé
+                                </button>
+                                <button class="btn btn-secondary" onclick="testApiKey()" id="test-key-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                                    Tester la clé
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ══ WEBHOOK SECTION ════════════════════════════ -->
                 <div class="settings-section stagger-2 fade-in">
                     <div class="card">
@@ -893,6 +931,7 @@
             loadWebhookConfig();
             loadConsent();
             updateWebhookStatus();
+            loadApiKey();
 
             // Theme toggle
             const themeToggle = document.getElementById('themeToggle');
@@ -918,6 +957,48 @@
                 });
             }
         });
+
+        // API KEY FUNCTIONS
+        function loadApiKey() {
+            const key = localStorage.getItem('wjob_anthropic_key') || '';
+            if (key) document.getElementById('anthropic-api-key').value = key;
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('anthropic-api-key').value.trim();
+            if (!key) { showToast('Entrez une clé API', 'error'); return; }
+            if (!key.startsWith('sk-ant-')) { showToast('Clé invalide (doit commencer par sk-ant-)', 'error'); return; }
+            localStorage.setItem('wjob_anthropic_key', key);
+            showToast('Clé API enregistrée', 'success');
+        }
+
+        function toggleKeyVisibility() {
+            const input = document.getElementById('anthropic-api-key');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        async function testApiKey() {
+            const key = localStorage.getItem('wjob_anthropic_key');
+            if (!key) { showToast('Aucune clé enregistrée', 'error'); return; }
+            const btn = document.getElementById('test-key-btn');
+            btn.disabled = true; btn.textContent = 'Test en cours…';
+            try {
+                const res = await fetch('/api/analyze-cv', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cvBase64: 'dGVzdA==', apiKey: key, testOnly: true })
+                });
+                const data = await res.json();
+                if (res.ok || data.keyValid) {
+                    showToast('Clé API valide ✓', 'success');
+                } else {
+                    showToast('Clé invalide : ' + (data.error || 'erreur inconnue'), 'error');
+                }
+            } catch(e) {
+                showToast('Erreur de connexion', 'error');
+            }
+            btn.disabled = false; btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Tester la clé';
+        }
 
         // PROFILE FUNCTIONS
         function saveProfile() {

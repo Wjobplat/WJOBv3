@@ -1,11 +1,25 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { cvBase64 } = req.body;
+  const { cvBase64, apiKey, testOnly } = req.body;
+
+  const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!resolvedKey) return res.status(400).json({ error: 'Clé API Anthropic manquante. Configurez-la dans Paramètres.' });
+
+  const client = new Anthropic({ apiKey: resolvedKey });
+
+  // Mode test : juste valider la clé
+  if (testOnly) {
+    try {
+      await client.messages.create({ model: 'claude-haiku-4-5-20251001', max_tokens: 1, messages: [{ role: 'user', content: 'hi' }] });
+      return res.status(200).json({ keyValid: true });
+    } catch (err) {
+      return res.status(401).json({ error: 'Clé invalide', keyValid: false });
+    }
+  }
+
   if (!cvBase64) return res.status(400).json({ error: 'CV manquant' });
 
   try {

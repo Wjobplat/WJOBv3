@@ -417,10 +417,11 @@ var API = {
             reader.readAsDataURL(file);
         });
 
+        const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const response = await fetch('/api/analyze-cv', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ cvBase64 })
+            body: JSON.stringify({ cvBase64, apiKey })
         });
 
         if (!response.ok) {
