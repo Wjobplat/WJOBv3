@@ -136,7 +136,7 @@ function buildJobCard(job, index) {
     // Événements
     div.querySelector('.btn-apply').addEventListener('click', (e) => {
         e.stopPropagation();
-        window.location.href = `applications.html?job_id=${job.id}`;
+        window.location.href = `/applications?job_id=${job.id}`;
     });
     div.querySelector('.btn-save').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -146,7 +146,7 @@ function buildJobCard(job, index) {
         showToast('Offre sauvegardée !', 'success');
     });
     div.addEventListener('click', () => {
-        window.location.href = `applications.html?job_id=${job.id}`;
+        window.location.href = `/applications?job_id=${job.id}`;
     });
 
     return div;

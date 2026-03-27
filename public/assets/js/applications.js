@@ -437,7 +437,7 @@ async function sendAllApplications() {
 
     showToast(`${sent}/${count} candidature(s) envoy\u00e9e(s) avec succ\u00e8s !`, 'success');
     setTimeout(() => {
-        window.location.href = 'candidatures.html';
+        window.location.href = '/candidatures';
     }, 2000);
 }
 

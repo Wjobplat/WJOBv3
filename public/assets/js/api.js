@@ -31,14 +31,14 @@ var API = {
             console.error('Sign out error:', e);
         }
         localStorage.removeItem('wjob_token');
-        window.location.href = 'login.html';
+        window.location.href = '/login';
     },
 
     getMe: async function () {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
             localStorage.removeItem('wjob_token');
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             throw new Error('Unauthorized');
         }
         return {
