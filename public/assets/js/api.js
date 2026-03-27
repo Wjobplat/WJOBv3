@@ -409,83 +409,33 @@ var API = {
         const file = formData.get('cv');
         if (!file) throw new Error('Aucun fichier CV fourni');
 
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error('Utilisateur non connecté');
+        // Convertit le PDF en base64 pour l'envoyer à Claude
+        const cvBase64 = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
 
-        // 1. Upload CV to Supabase Storage
-        const fileName = `cv-${Date.now()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-            .from('cvs')
-            .upload(`${user.id}/${fileName}`, file, { upsert: true });
+        const response = await fetch('/api/analyze-cv', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cvBase64 })
+        });
 
-        let cvUrl = null;
-        if (!uploadError) {
-            const { data: signedData } = await supabase.storage
-                .from('cvs')
-                .createSignedUrl(`${user.id}/${fileName}`, 3600);
-            cvUrl = signedData?.signedUrl || null;
-        } else {
-            console.warn('CV upload to storage failed, continuing without URL:', uploadError.message);
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || 'Erreur analyse CV');
         }
 
-        // 2. Send to AI Agent webhook and READ the response
-        let webhookSent = false;
-        try {
-            const config = await this.getWebhookConfig();
-            if (config.enabled && config.outgoingUrl) {
-                const payload = {
-                    event: 'cv.uploaded',
-                    data: {
-                        user_id: user.id,
-                        file_name: file.name,
-                        file_size: file.size,
-                        cv_url: cvUrl,
-                        timestamp: new Date().toISOString()
-                    }
-                };
+        const result = await response.json();
+        const analysis = result.analysis || {};
 
-                const headers = { 'Content-Type': 'application/json' };
-                if (config.secret) headers['X-Webhook-Secret'] = config.secret;
-
-                const response = await fetch(config.outgoingUrl, {
-                    method: 'POST',
-                    headers,
-                    body: JSON.stringify(payload)
-                });
-
-                console.log(`[W-JOB] Webhook cv.uploaded → status: ${response.status}`);
-
-                // ✅ FIX: Read the agent's response and return real data
-                if (response.ok) {
-                    const agentResult = await response.json();
-                    console.log('[W-JOB] Agent response:', agentResult);
-
-                    return {
-                        success: true,
-                        analysis: agentResult.profile?.summary || agentResult.analysis || agentResult.message || "CV analysé avec succès par l'agent IA.",
-                        recommendations: agentResult.profile?.skills || [],
-                        jobs_found: agentResult.jobs_found || 0,
-                        profile: agentResult.profile || {},
-                        webhookSent: true,
-                        cvUrl
-                    };
-                }
-            } else {
-                console.log('[W-JOB] Webhook sortant non configuré ou désactivé.');
-            }
-        } catch (webhookErr) {
-            console.error('[W-JOB] Erreur envoi webhook:', webhookErr.message);
-        }
-
-        // Fallback if webhook fails or not configured
         return {
             success: true,
-            analysis: webhookSent
-                ? "CV envoyé à l'agent IA pour analyse. Vous recevrez les résultats prochainement."
-                : "CV uploadé avec succès. Configurez le webhook sortant dans les Paramètres pour activer l'analyse par l'agent IA.",
-            recommendations: [],
-            webhookSent,
-            cvUrl
+            analysis: analysis.summary || 'CV analysé avec succès.',
+            recommendations: analysis.skills || [],
+            profile: analysis
         };
     },
 
