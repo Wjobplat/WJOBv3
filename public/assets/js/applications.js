@@ -358,12 +358,18 @@ async function startSearch() {
         setupFilters();
 
     } catch (e) {
-        console.error('Search error:', e);
+        const msg = e?.message || e?.details || (typeof e === 'string' ? e : JSON.stringify(e));
+        console.error('Search error:', msg, e);
         document.getElementById('search-loading').classList.add('hidden');
         document.getElementById('search-results').classList.remove('hidden');
         document.getElementById('results-count').textContent = 'Erreur de chargement';
         const errEl = document.getElementById('sr-error');
-        if (errEl) errEl.classList.remove('hidden');
+        if (errEl) {
+            errEl.classList.remove('hidden');
+            const sub = errEl.querySelector('.sr-state-sub');
+            if (sub && msg) sub.textContent = msg;
+        }
+        showToast('Erreur recherche : ' + msg, 'error');
     }
 }
 
