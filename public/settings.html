@@ -893,6 +893,30 @@
             loadWebhookConfig();
             loadConsent();
             updateWebhookStatus();
+
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const root = document.documentElement;
+                    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+                    const flash = document.getElementById('theme-flash');
+                    if (flash) { flash.className = next === 'light' ? 'flash-light' : 'flash-dark'; flash.addEventListener('animationend', () => { flash.className = ''; }, { once: true }); }
+                    root.dataset.theme = next;
+                    localStorage.setItem('wjob-theme', next);
+                });
+            }
+
+            // Avatar logout
+            const avatar = document.getElementById('user-avatar');
+            if (avatar) {
+                avatar.addEventListener('click', async function() {
+                    if (confirm('Se déconnecter ?')) {
+                        try { await API.logout(); } catch(e) {}
+                        window.location.href = '/login';
+                    }
+                });
+            }
         });
 
         // PROFILE FUNCTIONS
