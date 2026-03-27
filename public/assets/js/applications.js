@@ -180,21 +180,57 @@ function displayAnalysis(data) {
     document.getElementById('analysis-loading').classList.add('hidden');
     document.getElementById('analysis-results').classList.remove('hidden');
 
+    const p = data.profile || {};
+    const skills = data.recommendations || p.skills || [];
+    const name = p.name || '';
+    const title = p.title || '';
+    const summary = data.analysis || p.summary || '';
+    const exp = p.experience_years != null ? p.experience_years : null;
+    const education = p.education || '';
+    const languages = p.languages || [];
+    const jobTitles = p.job_titles || [];
+
+    const initials = name ? name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : 'CV';
+
     const profile = document.getElementById('ai-profile');
     profile.innerHTML = `
-        <div style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-lg); padding: var(--space-xl); margin-bottom: var(--space-lg);">
-            <h4 style="margin-bottom: var(--space-md); color: var(--color-primary-light); display:flex; align-items:center; gap:0.4rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg> R\u00e9sultat</h4>
-            <p style="line-height: 1.8;">${data.analysis}</p>
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+
+        <!-- Header identité -->
+        <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:linear-gradient(135deg,rgba(16,185,129,.1) 0%,rgba(20,184,166,.06) 100%);border:1px solid rgba(16,185,129,.2);border-radius:14px;">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 20px rgba(16,185,129,.35);">${initials}</div>
+          <div style="flex:1;min-width:0;">
+            ${name ? `<div style="font-size:1.1rem;font-weight:700;color:#f0fdf8;margin-bottom:2px;">${name}</div>` : ''}
+            ${title ? `<div style="font-size:0.82rem;color:#34d399;font-weight:500;">${title}</div>` : ''}
+          </div>
+          ${exp !== null ? `<div style="text-align:center;flex-shrink:0;"><div style="font-size:1.5rem;font-weight:800;color:#34d399;line-height:1;">${exp}</div><div style="font-size:0.65rem;color:#6b9e8e;font-weight:600;text-transform:uppercase;letter-spacing:.05em;">ans exp.</div></div>` : ''}
         </div>
-        <div>
-            <h4 style="margin-bottom: var(--space-md); display:flex; align-items:center; gap:0.4rem;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg> Comp\u00e9tences identifi\u00e9es</h4>
-            <div style="display: flex; flex-wrap: wrap; gap: var(--space-sm);">
-                ${data.recommendations && data.recommendations.length > 0
-            ? data.recommendations.map(r => `<span class="skill-tag">${r}</span>`).join('')
-            : '<span style="color: var(--color-text-muted);">En attente de l\'analyse par l\'agent IA</span>'
-        }
-            </div>
-        </div>
+
+        <!-- Résumé -->
+        ${summary ? `
+        <div style="padding:1rem 1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;">
+          <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b9e8e;margin-bottom:0.5rem;">Profil</div>
+          <p style="font-size:0.88rem;line-height:1.7;color:#a3c4bc;margin:0;">${summary}</p>
+        </div>` : ''}
+
+        <!-- Compétences -->
+        ${skills.length > 0 ? `
+        <div style="padding:1rem 1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;">
+          <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b9e8e;margin-bottom:0.75rem;">Compétences</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            ${skills.map(s => `<span style="padding:.28rem .7rem;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);border-radius:999px;font-size:.75rem;font-weight:600;color:#34d399;">${s}</span>`).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Infos complémentaires -->
+        ${(education || languages.length > 0 || jobTitles.length > 0) ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0.75rem;">
+          ${education ? `<div style="padding:.9rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;"><div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b9e8e;margin-bottom:.35rem;">Formation</div><div style="font-size:.8rem;color:#a3c4bc;">${education}</div></div>` : ''}
+          ${languages.length > 0 ? `<div style="padding:.9rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;"><div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b9e8e;margin-bottom:.35rem;">Langues</div><div style="font-size:.8rem;color:#a3c4bc;">${languages.join(', ')}</div></div>` : ''}
+          ${jobTitles.length > 0 ? `<div style="padding:.9rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;"><div style="font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6b9e8e;margin-bottom:.35rem;">Postes recherchés</div><div style="font-size:.8rem;color:#a3c4bc;">${jobTitles.slice(0,3).join(', ')}</div></div>` : ''}
+        </div>` : ''}
+
+      </div>
     `;
 }
 
