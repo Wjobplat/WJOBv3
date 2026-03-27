@@ -1,13 +1,13 @@
-// Auth guard — protège les pages internes, utilise window.wjob
-(async () => {
+// Auth guard — synchrone, lit directement localStorage (Supabase v2)
+// Zéro async, zéro race condition possible
+(function () {
+  var KEY = 'sb-bqobpkwkwypiuhtprjva-auth-token';
+  var raw = localStorage.getItem(KEY);
+  if (!raw) { window.location.replace('/login'); return; }
   try {
-    const { data: { session } } = await window.wjob.auth.getSession();
-    if (!session) {
-      console.warn('[W-JOB] Pas de session → login');
-      window.location.href = '/login';
-    }
+    var s = JSON.parse(raw);
+    if (!s || !s.access_token) { window.location.replace('/login'); }
   } catch (e) {
-    console.error('[W-JOB] Auth guard error:', e);
-    window.location.href = '/login';
+    window.location.replace('/login');
   }
 })();

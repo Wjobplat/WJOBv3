@@ -60,15 +60,14 @@ supabase.auth.onAuthStateChange((event, session) => {
 
 // ── Auth helpers globaux ───────────────────────────────────────────────────
 async function requireAuth() {
+    var KEY = 'sb-bqobpkwkwypiuhtprjva-auth-token';
+    var raw = localStorage.getItem(KEY);
+    if (!raw) { window.location.replace('/login'); return null; }
     try {
-        const { data: { session } } = await window.wjob.auth.getSession();
-        if (!session) {
-            window.location.replace('/login');
-            return null;
-        }
-        return session.user;
+        var s = JSON.parse(raw);
+        if (!s || !s.access_token) { window.location.replace('/login'); return null; }
+        return s.user || null;
     } catch (e) {
-        console.error('[W-JOB] requireAuth error:', e);
         window.location.replace('/login');
         return null;
     }
