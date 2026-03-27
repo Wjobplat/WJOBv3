@@ -2,5 +2,10 @@
   "version": 2,
   "outputDirectory": "public",
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "functions": {
+    "api/analyze-cv.js": {
+      "maxDuration": 30
+    }
+  }
 }
