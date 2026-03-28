@@ -128,58 +128,59 @@
     .fi1{animation-delay:.05s}.fi2{animation-delay:.14s}.fi3{animation-delay:.23s}.fi4{animation-delay:.32s}
     @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-    /* ── HERO ── */
-    .hero{
-      text-align:center;padding:7rem 1.5rem 5rem;
+    /* ── PAGE HEADER (compact, no hero) ── */
+    .pg-header{
       position:relative;overflow:hidden;
+      padding:3.5rem 2rem 2.75rem;
     }
-    .hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-    .hero::before{
+    .pg-header::before{
       content:'';position:absolute;inset:0;pointer-events:none;
       background:
-        radial-gradient(ellipse 80% 70% at 50% 0%,rgba(16,185,129,.28) 0%,transparent 60%),
-        radial-gradient(ellipse 50% 40% at 20% 80%,rgba(20,184,166,.1) 0%,transparent 55%),
-        radial-gradient(ellipse 50% 40% at 80% 90%,rgba(16,185,129,.08) 0%,transparent 55%);
+        radial-gradient(ellipse 55% 80% at 10% 60%,rgba(16,185,129,.13) 0%,transparent 60%),
+        radial-gradient(ellipse 40% 50% at 85% 20%,rgba(20,184,166,.07) 0%,transparent 50%);
     }
-    .hero::after{
-      content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-      width:60%;height:1px;
-      background:linear-gradient(90deg,transparent,rgba(16,185,129,.4),transparent);
-      pointer-events:none;
+    .pg-header::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent 0%,rgba(16,185,129,.28) 30%,rgba(16,185,129,.28) 70%,transparent 100%);
     }
-    .hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
-
-    /* ── HERO BADGE ── */
-    .hero-badge{
-      display:inline-flex;align-items:center;gap:.5rem;
-      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);
-      border-radius:999px;padding:.3rem .95rem;
-      font-size:.73rem;font-weight:700;color:var(--em-l);
-      margin-bottom:1.75rem;letter-spacing:.02em;
+    .pg-hdr-inner{
+      position:relative;z-index:1;max-width:860px;margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;gap:3rem;
     }
-    .hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--em-l);animation:rdPulse 1.8s ease infinite;flex-shrink:0}
-
-    /* Title */
-    .hero-title{
-      font-size:clamp(2.4rem,4.8vw,3.6rem);font-weight:900;line-height:1.06;
-      letter-spacing:-.045em;margin-bottom:1.4rem;
-      background:linear-gradient(160deg,#ffffff 0%,#e2fdf2 25%,var(--em-l) 62%,#14b8a6 100%);
+    .pg-hdr-left{flex:1;min-width:0}
+    .pg-badge{
+      display:inline-flex;align-items:center;gap:.45rem;
+      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
+      border-radius:999px;padding:.28rem .85rem;font-size:.72rem;font-weight:700;color:var(--em-l);
+      margin-bottom:1.1rem;
+    }
+    .pg-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--em-l);animation:rdPulse 1.8s ease infinite;flex-shrink:0}
+    .pg-title{
+      font-size:clamp(1.9rem,3.8vw,2.7rem);font-weight:900;line-height:1.1;
+      letter-spacing:-.04em;margin-bottom:.6rem;
+      background:linear-gradient(155deg,#ffffff 0%,#e2fdf2 35%,var(--em-l) 70%,#14b8a6 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-      filter:drop-shadow(0 0 50px rgba(16,185,129,.25));
     }
-    .ht-light{
-      display:block;font-size:.58em;font-weight:300;
-      background:none;-webkit-text-fill-color:rgba(240,253,248,.42);
-      letter-spacing:.01em;margin-bottom:.25rem;
-    }
-    .ht-bold{display:block}
-    .hero-sub{
-      font-size:1.02rem;color:var(--muted);line-height:1.8;
-      max-width:440px;margin:0 auto 2.75rem;
-    }
+    .pg-sub{font-size:.9rem;color:var(--muted);line-height:1.75;max-width:380px}
 
-    /* CTAs */
-    .hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+    /* Right: metric grid 2×2 */
+    .pg-hdr-right{flex-shrink:0}
+    .pg-metrics{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
+    .pg-metric{
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;padding:.85rem .9rem;text-align:center;
+      transition:all .2s;
+    }
+    .pg-metric:hover{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.25);transform:translateY(-2px)}
+    .pm-num{
+      display:block;font-size:1.25rem;font-weight:900;line-height:1;
+      background:linear-gradient(135deg,#fff,var(--em-l));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    }
+    .pm-lbl{display:block;font-size:.63rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
+
+    /* CTAs (kept for compatibility) */
+    .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:0}
 
     /* Buttons */
     .btn-em{
@@ -211,21 +212,37 @@
     }
     .btn-danger:hover{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.38)}
 
-    /* ── HERO STATS STRIP ── */
-    .hero-stats{
-      display:flex;justify-content:center;
-      max-width:860px;margin:0 auto;width:100%;position:relative;z-index:1;
+    /* ── BENTO LAYOUT (step 1) ── */
+    .bento-layout{
+      display:grid;
+      grid-template-columns:1fr 195px;
+      gap:.75rem;
     }
-    .hero-strip{
-      display:inline-flex;align-items:center;
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
-      border-radius:999px;padding:.45rem .55rem;
-      backdrop-filter:blur(12px);
+    .bento-side{display:flex;flex-direction:column;gap:.75rem}
+    .bs-card{
+      flex:1;border-radius:18px;padding:1.2rem;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      display:flex;flex-direction:column;gap:.28rem;
+      transition:all .25s cubic-bezier(.16,1,.3,1);
+      position:relative;overflow:hidden;
     }
-    .hs-item{display:flex;align-items:center;gap:.5rem;padding:.18rem .85rem}
-    .hs-num{font-size:1rem;font-weight:900;color:#fff;line-height:1;white-space:nowrap}
-    .hs-lbl{font-size:.67rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
-    .hs-sep{width:1px;height:26px;background:rgba(255,255,255,.1);flex-shrink:0}
+    .bs-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.04) 0%,transparent 60%);
+      opacity:0;transition:opacity .3s;
+    }
+    .bs-card:hover{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.22);transform:translateX(3px)}
+    .bs-card:hover::before{opacity:1}
+    .bs-icon{
+      width:30px;height:30px;border-radius:8px;
+      background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.18);
+      display:flex;align-items:center;justify-content:center;color:#34d399;
+      margin-bottom:.2rem;
+    }
+    .bs-icon svg{width:13px;height:13px;stroke-width:2;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+    .bs-num{font-size:1.25rem;font-weight:900;color:#fff;line-height:1}
+    .bs-lbl{font-size:.73rem;font-weight:700;color:var(--em-l)}
+    .bs-desc{font-size:.67rem;color:var(--muted);line-height:1.5;margin-top:1px}
 
     /* ── WIZARD HORIZONTAL STEPPER ── */
     .wizard-wrap{margin-bottom:2rem}
@@ -273,61 +290,62 @@
     .step-panel.active{display:block;animation:sUp .4s cubic-bezier(.16,1,.3,1) both}
     @keyframes sUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
-    /* ── STEP 1: DROPZONE ── */
+    /* ── STEP 1: DROPZONE (centered + dot-grid) ── */
     .dz-card{
-      border-radius:24px;background:rgba(255,255,255,.025);
-      border:1px solid rgba(16,185,129,.18);
-      padding:0;cursor:pointer;position:relative;overflow:hidden;
-      transition:all .4s cubic-bezier(.16,1,.3,1);
+      border-radius:22px;cursor:pointer;overflow:hidden;
+      position:relative;transition:border-color .35s,box-shadow .35s;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(16,185,129,.16);
     }
+    /* dot-grid + top glow */
     .dz-card::before{
       content:'';position:absolute;inset:0;pointer-events:none;
-      background:radial-gradient(ellipse 70% 55% at 50% 110%,rgba(16,185,129,.09) 0%,transparent 65%);
+      background:
+        radial-gradient(ellipse 70% 50% at 50% -5%,rgba(16,185,129,.14) 0%,transparent 55%),
+        radial-gradient(circle at 1px 1px,rgba(16,185,129,.1) 1px,transparent 0);
+      background-size:100% 100%, 28px 28px;
+      transition:opacity .4s;
     }
     .dz-card:hover,.dz-card.dragover{
-      border-color:rgba(16,185,129,.45);background:rgba(16,185,129,.03);
-      box-shadow:0 0 0 4px rgba(16,185,129,.08),0 30px 80px rgba(16,185,129,.1);
+      border-color:rgba(16,185,129,.42);
+      box-shadow:0 0 0 4px rgba(16,185,129,.07),0 20px 60px rgba(16,185,129,.1);
     }
-    /* Split layout */
-    .dz-split{display:flex;align-items:stretch;min-height:300px}
-    .dz-visual{
-      width:200px;flex-shrink:0;
-      display:flex;align-items:center;justify-content:center;
-      background:linear-gradient(135deg,rgba(16,185,129,.07) 0%,rgba(20,184,166,.04) 100%);
-      border-right:1px solid rgba(16,185,129,.12);
-      padding:2rem;position:relative;overflow:hidden;
-    }
-    .dz-visual::before{
-      content:'';position:absolute;
-      width:200px;height:200px;border-radius:50%;
-      background:radial-gradient(circle,rgba(16,185,129,.18) 0%,transparent 70%);
-      pointer-events:none;
-    }
-    .dz-icon-box{
+    .dz-card:hover::before,.dz-card.dragover::before{opacity:1.4}
+
+    /* Centered drop zone */
+    .dz-zone{
+      padding:4rem 2rem 2.5rem;
+      display:flex;flex-direction:column;align-items:center;text-align:center;
       position:relative;z-index:1;
-      width:76px;height:76px;border-radius:22px;
-      background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(20,184,166,.12));
-      border:1px solid rgba(16,185,129,.32);
+    }
+    .dz-zone-icon{
+      width:84px;height:84px;border-radius:24px;margin-bottom:1.75rem;
+      background:linear-gradient(145deg,rgba(16,185,129,.2),rgba(20,184,166,.08));
+      border:1px solid rgba(16,185,129,.3);
       display:flex;align-items:center;justify-content:center;color:#34d399;
-      box-shadow:0 0 40px rgba(16,185,129,.25),inset 0 1px 0 rgba(255,255,255,.1);
+      box-shadow:0 0 50px rgba(16,185,129,.22),inset 0 1px 0 rgba(255,255,255,.08);
       animation:iconPulse 3.5s ease-in-out infinite;
     }
-    .dz-icon-box svg{width:30px;height:30px;stroke-width:1.5}
-    @keyframes iconPulse{0%,100%{box-shadow:0 0 32px rgba(16,185,129,.2),inset 0 1px 0 rgba(255,255,255,.1)}50%{box-shadow:0 0 55px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.1)}}
-    .dz-body{
-      flex:1;padding:2.25rem 2rem;display:flex;flex-direction:column;justify-content:center;
+    .dz-zone-icon svg{width:34px;height:34px;stroke-width:1.4;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+    @keyframes iconPulse{0%,100%{box-shadow:0 0 32px rgba(16,185,129,.18),inset 0 1px 0 rgba(255,255,255,.08)}50%{box-shadow:0 0 58px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.08)}}
+    .dz-zone-title{font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:.45rem;letter-spacing:-.025em}
+    .dz-zone-sub{font-size:.88rem;color:var(--muted);line-height:1.7;margin-bottom:2rem}
+    .dz-hint{display:block;margin-top:.8rem;font-size:.69rem;color:rgba(107,158,142,.55)}
+
+    /* Feature strip at bottom of dz-card */
+    .dz-features{
+      border-top:1px solid rgba(255,255,255,.06);
+      padding:.85rem 1.5rem;
+      display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;
+      position:relative;z-index:1;
+      background:rgba(0,0,0,.12);
     }
-    .dz-title{font-size:1.38rem;font-weight:800;color:var(--text);margin-bottom:.55rem;letter-spacing:-.03em;line-height:1.2}
-    .dz-sub{font-size:.86rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.75}
-    /* Feature badges */
-    .dz-features{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem}
     .dz-feat{
-      display:flex;align-items:center;gap:.32rem;padding:.26rem .7rem;
+      display:flex;align-items:center;gap:.3rem;padding:.24rem .68rem;
       background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
       border-radius:999px;font-size:.71rem;font-weight:600;color:#a3c4bc;
     }
-    .dz-feat svg{width:10px;height:10px;color:#34d399;flex-shrink:0}
-    .dz-hint{display:block;margin-top:.75rem;font-size:.7rem;color:rgba(107,158,142,.6)}
+    .dz-feat svg{width:10px;height:10px;color:#34d399;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
     /* ── FILE PREVIEW — CLEAN SIMPLE ── */
     @keyframes fpIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -368,11 +386,13 @@
     [data-theme="light"] .fp-new{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     [data-theme="light"] .fp-sep{background:rgba(0,0,0,.07)}
     [data-theme="light"] .fp-name{color:#0f172a}
-    [data-theme="light"] .hero-badge{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
-    [data-theme="light"] .hero-strip{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09)}
-    [data-theme="light"] .hs-num{color:#0f172a}
+    [data-theme="light"] .pg-badge{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .pg-metric{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+    [data-theme="light"] .pm-num{background:linear-gradient(135deg,#0f2d1f,var(--em-d));-webkit-background-clip:text;background-clip:text}
     [data-theme="light"] .wz-stepper{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
-    [data-theme="light"] .dz-visual{background:linear-gradient(135deg,rgba(16,185,129,.06) 0%,rgba(20,184,166,.03) 100%);border-right-color:rgba(16,185,129,.15)}
+    [data-theme="light"] .bs-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.18)}
+    [data-theme="light"] .dz-card{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.25)}
+    [data-theme="light"] .dz-features{background:rgba(0,0,0,.03);border-top-color:rgba(0,0,0,.08)}
     /* AI SEARCH LOADING */
     .ai-search-loading{max-width:540px;margin:0 auto;padding:2rem 1rem;text-align:center}
     .ai-pulse-ring{position:relative;width:88px;height:88px;margin:0 auto 1.5rem}
@@ -489,20 +509,23 @@
       .nav-links .nav-link span:not(.badge){display:none}
       .wz-stepper{padding:1rem 1.1rem}
       .wz-card-sub{display:none}
+      .pg-hdr-inner{flex-direction:column;align-items:flex-start;gap:1.5rem}
+      .pg-metrics{grid-template-columns:repeat(4,1fr)}
     }
     @media(max-width:640px){
-      .dz-split{flex-direction:column}
-      .dz-visual{width:100%;min-height:130px;border-right:none;border-bottom:1px solid rgba(16,185,129,.12)}
-      .dz-body{padding:1.75rem 1.5rem}
-      .hero-strip .hs-lbl{display:none}
-      .hs-item{padding:.15rem .6rem}
+      .bento-layout{grid-template-columns:1fr}
+      .bento-side{flex-direction:row}
+      .bs-desc{display:none}
+      .pg-hdr-right{width:100%}
     }
     @media(max-width:560px){
       .topnav{padding:0 1rem}
       .page{padding:1.5rem 1rem 4rem}
-      .hero{padding:2.5rem 1rem 2rem}
+      .pg-header{padding:2.5rem 1rem 2rem}
       .wz-stepper{gap:.25rem}
       .step-wizard-connector{max-width:30px}
+      .bento-side{gap:.5rem}
+      .dz-zone{padding:3rem 1.5rem 2rem}
     }
 
     /* ── STEP 3: FILTER PILLS ── */
@@ -640,39 +663,37 @@
   </div>
 </nav>
 
-<!-- ── HERO (full-width, hors container) ── -->
-<section class="hero fi fi1">
-  <canvas id="hero-canvas"></canvas>
-  <div class="hero-inner">
-    <div class="hero-badge">
-      <span class="hero-badge-dot"></span>
-      Propulsé par Claude AI · Beta
+<!-- ── PAGE HEADER ── -->
+<canvas id="hero-canvas" style="display:none"></canvas>
+<section class="pg-header fi fi1">
+  <div class="pg-hdr-inner">
+    <div class="pg-hdr-left">
+      <div class="pg-badge">
+        <span class="pg-badge-dot"></span>
+        Propulsé par Claude AI · Beta
+      </div>
+      <h1 class="pg-title">Analysez votre CV,<br>postulez en un clic.</h1>
+      <p class="pg-sub">L'agent IA extrait vos compétences, trouve les meilleures offres et rédige vos emails de candidature.</p>
     </div>
-    <h1 class="hero-title">
-      <span class="ht-light">Votre recherche d'emploi,</span>
-      <span class="ht-bold">simplifiée.</span>
-    </h1>
-    <p class="hero-sub">Déposez votre CV. L'agent analyse votre profil, identifie les meilleures opportunités et rédige vos candidatures — automatiquement.</p>
-    <div class="hero-ctas">
-      <button class="btn-em" onclick="document.getElementById('step-1').scrollIntoView({behavior:'smooth'})">
-        Commencer maintenant
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-      <a href="/jobs" class="btn-ghost">
-        Voir les offres
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </a>
-    </div>
-  </div>
-  <div class="hero-stats">
-    <div class="hero-strip">
-      <div class="hs-item"><span class="hs-num">30s</span><span class="hs-lbl">Analyse CV</span></div>
-      <div class="hs-sep"></div>
-      <div class="hs-item"><span class="hs-num">100%</span><span class="hs-lbl">Contrôle humain</span></div>
-      <div class="hs-sep"></div>
-      <div class="hs-item"><span class="hs-num">1 clic</span><span class="hs-lbl">Pour candidater</span></div>
-      <div class="hs-sep"></div>
-      <div class="hs-item"><span class="hs-num">IA</span><span class="hs-lbl">Emails sur-mesure</span></div>
+    <div class="pg-hdr-right">
+      <div class="pg-metrics">
+        <div class="pg-metric">
+          <span class="pm-num">30s</span>
+          <span class="pm-lbl">Analyse CV</span>
+        </div>
+        <div class="pg-metric">
+          <span class="pm-num">100%</span>
+          <span class="pm-lbl">Contrôle</span>
+        </div>
+        <div class="pg-metric">
+          <span class="pm-num">1 clic</span>
+          <span class="pm-lbl">Candidature</span>
+        </div>
+        <div class="pg-metric">
+          <span class="pm-num">IA</span>
+          <span class="pm-lbl">Emails</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -725,63 +746,79 @@
 
   <!-- ══ STEP 1 : Upload CV ══ -->
   <div class="step-panel active fi fi3" id="step-1">
-    <div class="dz-card" id="cv-upload-area">
-      <input type="file" id="cv-file-input" accept=".pdf" style="display:none">
+    <div class="bento-layout">
 
-      <div id="dropzone-content">
-        <div class="dz-split">
-          <div class="dz-visual">
-            <div class="dz-icon-box">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-              </svg>
+      <!-- Drop zone (left / main) -->
+      <div class="dz-card" id="cv-upload-area">
+        <input type="file" id="cv-file-input" accept=".pdf" style="display:none">
+
+        <div id="dropzone-content">
+          <div class="dz-zone">
+            <div class="dz-zone-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             </div>
-          </div>
-          <div class="dz-body">
-            <h2 class="dz-title">Votre CV, analysé par l'IA</h2>
-            <p class="dz-sub">Déposez votre fichier PDF et laissez l'agent identifier vos compétences et trouver les meilleures offres.</p>
-            <div class="dz-features">
-              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Analyse IA</div>
-              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Instantané</div>
-              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Matching précis</div>
-              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>100% privé</div>
-            </div>
+            <h2 class="dz-zone-title">Glissez votre CV ici</h2>
+            <p class="dz-zone-sub">ou cliquez pour parcourir vos fichiers.<br>L'IA analyse et trouve les meilleures offres.</p>
             <button class="btn-em" onclick="event.stopPropagation();document.getElementById('cv-file-input').click()">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Déposer mon CV
+              Parcourir les fichiers
             </button>
             <span class="dz-hint">PDF uniquement · Max 10 MB · Données non conservées</span>
+          </div>
+          <div class="dz-features">
+            <div class="dz-feat"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Analyse IA</div>
+            <div class="dz-feat"><svg viewBox="0 0 24 24"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Instantané</div>
+            <div class="dz-feat"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Matching précis</div>
+            <div class="dz-feat"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>100% privé</div>
+          </div>
+        </div>
+
+        <div id="file-preview" class="hidden">
+          <div class="fp-new">
+            <div class="fp-top">
+              <div class="fp-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div class="fp-meta">
+                <div id="file-name" class="fp-name">mon_cv.pdf</div>
+                <div class="fp-size"><span id="file-size">1.2 MB</span> · PDF · IA compatible</div>
+              </div>
+              <div class="fp-badge"><span class="fp-badge-dot"></span>Prêt</div>
+            </div>
+            <div class="fp-sep"></div>
+            <div class="fp-actions">
+              <button class="btn-em" id="start-analysis-btn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Lancer l'analyse IA
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+              <button class="btn-danger" id="remove-file-btn" title="Supprimer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="file-preview" class="hidden">
-        <div class="fp-new">
-          <div class="fp-top">
-            <div class="fp-icon">
-              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
-            <div class="fp-meta">
-              <div id="file-name" class="fp-name">mon_cv.pdf</div>
-              <div class="fp-size"><span id="file-size">1.2 MB</span> · PDF · IA compatible</div>
-            </div>
-            <div class="fp-badge">
-              <span class="fp-badge-dot"></span>
-              Prêt
-            </div>
-          </div>
-          <div class="fp-sep"></div>
-          <div class="fp-actions">
-            <button class="btn-em" id="start-analysis-btn">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              Lancer l'analyse IA
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-            </button>
-            <button class="btn-danger" id="remove-file-btn" title="Supprimer le fichier">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-            </button>
-          </div>
+      <!-- Bento sidebar (right) -->
+      <div class="bento-side">
+        <div class="bs-card">
+          <div class="bs-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <div class="bs-num">30s</div>
+          <div class="bs-lbl">Analyse rapide</div>
+          <div class="bs-desc">Extraction complète de vos compétences</div>
+        </div>
+        <div class="bs-card">
+          <div class="bs-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+          <div class="bs-num">100%</div>
+          <div class="bs-lbl">Matching IA</div>
+          <div class="bs-desc">Offres filtrées pour votre profil exact</div>
+        </div>
+        <div class="bs-card">
+          <div class="bs-icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></div>
+          <div class="bs-num">IA</div>
+          <div class="bs-lbl">Emails sur-mesure</div>
+          <div class="bs-desc">Lettres générées pour chaque offre</div>
         </div>
       </div>
     </div>
