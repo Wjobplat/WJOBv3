@@ -149,25 +149,32 @@
     }
     .hero-inner{position:relative;z-index:1;max-width:680px;margin:0 auto}
 
-    /* Sparkles */
-    .sp{position:absolute;color:var(--em-l);pointer-events:none;opacity:.35;animation:spFloat 5s ease-in-out infinite}
-    .sp:nth-child(1){top:10%;left:6%;animation-delay:0s;font-size:1.2rem}
-    .sp:nth-child(2){top:15%;right:7%;animation-delay:1.6s;font-size:1.5rem}
-    .sp:nth-child(3){top:65%;left:4%;animation-delay:.9s;font-size:.8rem}
-    .sp:nth-child(4){top:55%;right:5%;animation-delay:2.5s;font-size:1.2rem}
-    .sp:nth-child(5){bottom:20%;left:20%;animation-delay:1.8s;font-size:.75rem}
-    @keyframes spFloat{0%,100%{transform:translateY(0) rotate(0deg);opacity:.35}50%{transform:translateY(-14px) rotate(22deg);opacity:.65}}
+    /* ── HERO BADGE ── */
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);
+      border-radius:999px;padding:.3rem .95rem;
+      font-size:.73rem;font-weight:700;color:var(--em-l);
+      margin-bottom:1.75rem;letter-spacing:.02em;
+    }
+    .hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--em-l);animation:rdPulse 1.8s ease infinite;flex-shrink:0}
 
     /* Title */
     .hero-title{
-      font-size:clamp(2.2rem,4.5vw,3.4rem);font-weight:900;line-height:1.08;
-      letter-spacing:-.05em;margin-bottom:1.4rem;
+      font-size:clamp(2.4rem,4.8vw,3.6rem);font-weight:900;line-height:1.06;
+      letter-spacing:-.045em;margin-bottom:1.4rem;
       background:linear-gradient(160deg,#ffffff 0%,#e2fdf2 25%,var(--em-l) 62%,#14b8a6 100%);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
       filter:drop-shadow(0 0 50px rgba(16,185,129,.25));
     }
+    .ht-light{
+      display:block;font-size:.58em;font-weight:300;
+      background:none;-webkit-text-fill-color:rgba(240,253,248,.42);
+      letter-spacing:.01em;margin-bottom:.25rem;
+    }
+    .ht-bold{display:block}
     .hero-sub{
-      font-size:1.05rem;color:var(--muted);line-height:1.75;
+      font-size:1.02rem;color:var(--muted);line-height:1.8;
       max-width:440px;margin:0 auto 2.75rem;
     }
 
@@ -204,111 +211,61 @@
     }
     .btn-danger:hover{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.38)}
 
-    /* Stats pills */
+    /* ── HERO STATS STRIP ── */
     .hero-stats{
-      display:flex;justify-content:center;flex-wrap:wrap;gap:.75rem;
+      display:flex;justify-content:center;
       max-width:860px;margin:0 auto;width:100%;position:relative;z-index:1;
     }
-    .stat-pill{
+    .hero-strip{
+      display:inline-flex;align-items:center;
       background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
-      border-radius:14px;padding:18px 20px;text-align:center;flex:1;
-      transition:all .25s;cursor:default;backdrop-filter:blur(10px);
+      border-radius:999px;padding:.45rem .55rem;
+      backdrop-filter:blur(12px);
     }
-    .stat-pill:hover{
-      background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3);
-      transform:translateY(-2px);box-shadow:0 8px 24px rgba(16,185,129,.12);
-    }
-    .stat-icon{
-      width:38px;height:38px;margin:0 auto 10px;border-radius:10px;
-      display:flex;align-items:center;justify-content:center;
-      background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.2);
-    }
-    .stat-icon svg{width:18px;height:18px;stroke:var(--em-l);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+    .hs-item{display:flex;align-items:center;gap:.5rem;padding:.18rem .85rem}
+    .hs-num{font-size:1rem;font-weight:900;color:#fff;line-height:1;white-space:nowrap}
+    .hs-lbl{font-size:.67rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+    .hs-sep{width:1px;height:26px;background:rgba(255,255,255,.1);flex-shrink:0}
 
-    /* icon animations */
-    @keyframes boltFlash{0%,100%{opacity:1;filter:drop-shadow(0 0 0 transparent)}50%{opacity:.5;filter:drop-shadow(0 0 6px var(--em-l))}}
-    @keyframes spinTarget{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-    @keyframes starPulse{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.3) rotate(180deg)}}
-    @keyframes mailBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-4px)}70%{transform:translateY(2px)}}
-
-    .stat-icon.si-bolt svg{animation:boltFlash 2.2s ease-in-out infinite}
-    .stat-icon.si-target svg{animation:spinTarget 4s linear infinite}
-    .stat-icon.si-star svg{animation:starPulse 3s ease-in-out infinite}
-    .stat-icon.si-mail svg{animation:mailBounce 2.8s ease-in-out infinite}
-
-    .stat-pill:hover .stat-icon{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.4)}
-
-    .stat-num{
-      font-size:1.65rem;font-weight:900;line-height:1;
-      background:linear-gradient(135deg,#fff 0%,var(--em-l) 100%);
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    }
-    .stat-label{font-size:.65rem;color:var(--muted);font-weight:600;margin-top:5px;letter-spacing:.05em;text-transform:uppercase}
-
-    /* ── WIZARD STEPS ── */
+    /* ── WIZARD HORIZONTAL STEPPER ── */
     .wizard-wrap{margin-bottom:2rem}
-
-    /* 4-column step cards */
-    .wz-grid{
-      display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;
-      margin-bottom:1.25rem;
+    .wz-stepper{
+      display:flex;align-items:center;
+      background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+      border-radius:18px;padding:1.1rem 1.5rem;
+      margin-bottom:1rem;
     }
     .wz-step-card{
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-      border-radius:16px;padding:1rem 1rem .85rem;
-      cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);
-      position:relative;overflow:hidden;
-      opacity:.45;pointer-events:none;
-    }
-    .wz-step-card::before{
-      content:'';position:absolute;inset:0;
-      background:linear-gradient(135deg,rgba(16,185,129,.04) 0%,transparent 60%);
-      opacity:0;transition:opacity .3s;
+      display:flex;align-items:center;gap:.65rem;
+      cursor:pointer;transition:opacity .3s;
+      opacity:.4;pointer-events:none;flex:1;min-width:0;
     }
     .wz-step-card.wz-done{opacity:.65;pointer-events:auto}
-    .wz-step-card.wz-done:hover{opacity:1;border-color:rgba(16,185,129,.3);transform:translateY(-2px)}
-    .wz-step-card.wz-active{
-      opacity:1;pointer-events:auto;
-      background:rgba(16,185,129,.08);
-      border-color:rgba(16,185,129,.4);
-      box-shadow:0 0 0 1px rgba(16,185,129,.15),0 8px 28px rgba(16,185,129,.12);
-    }
-    .wz-step-card.wz-active::before{opacity:1}
-    .wz-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+    .wz-step-card.wz-active{opacity:1;pointer-events:auto}
     .wz-num{
-      width:30px;height:30px;border-radius:50%;
+      width:32px;height:32px;border-radius:50%;flex-shrink:0;
       display:flex;align-items:center;justify-content:center;
       font-size:.78rem;font-weight:800;
       background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);color:var(--muted);
-      transition:all .3s;flex-shrink:0;
+      transition:all .3s;
     }
     .wz-step-card.wz-active .wz-num{
       background:var(--em);border-color:var(--em);color:#fff;
-      box-shadow:0 0 0 3px rgba(16,185,129,.22);
+      box-shadow:0 0 0 4px rgba(16,185,129,.2);
     }
     .wz-step-card.wz-done .wz-num{
-      background:rgba(16,185,129,.16);border-color:var(--em);color:var(--em-l);
+      background:rgba(16,185,129,.15);border-color:var(--em);color:var(--em-l);
     }
-    .wz-icon{
-      width:32px;height:32px;border-radius:9px;
-      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
-      display:flex;align-items:center;justify-content:center;color:var(--muted);
-      transition:all .3s;
-    }
-    .wz-icon svg{width:15px;height:15px;stroke-width:1.8}
-    .wz-step-card.wz-active .wz-icon{
-      background:rgba(16,185,129,.14);border-color:rgba(16,185,129,.28);color:var(--em-l);
-    }
-    .wz-step-card.wz-done .wz-icon{
-      background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.22);color:var(--em-l);
-    }
-    .wz-card-label{font-size:.82rem;font-weight:700;color:var(--dim);line-height:1.2;margin-bottom:.2rem}
+    .wz-card-label{font-size:.82rem;font-weight:700;color:var(--dim);line-height:1.2;white-space:nowrap}
+    .wz-card-sub{font-size:.67rem;color:var(--muted);white-space:nowrap}
     .wz-step-card.wz-active .wz-card-label{color:var(--em-l)}
     .wz-step-card.wz-done .wz-card-label{color:var(--em-l);opacity:.75}
-    .wz-card-sub{font-size:.68rem;color:var(--muted)}
-
+    .step-wizard-connector{
+      flex:1;height:1px;max-width:80px;margin:0 .5rem;
+      background:rgba(255,255,255,.1);transition:background .4s;
+    }
     /* Progress bar */
-    .wz-bar{height:3px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
+    .wz-bar{height:2px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden}
     .wz-bar-fill{height:100%;background:linear-gradient(90deg,var(--em-d),var(--em-l));border-radius:999px;width:0%;transition:width .5s cubic-bezier(.16,1,.3,1)}
 
     /* ── STEP PANELS ── */
@@ -317,66 +274,60 @@
     @keyframes sUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
     /* ── STEP 1: DROPZONE ── */
-    /* ── UPLOAD ZONE ── */
     .dz-card{
       border-radius:24px;background:rgba(255,255,255,.025);
       border:1px solid rgba(16,185,129,.18);
-      padding:3rem 2rem 2.5rem;text-align:center;cursor:pointer;
-      position:relative;overflow:hidden;
+      padding:0;cursor:pointer;position:relative;overflow:hidden;
       transition:all .4s cubic-bezier(.16,1,.3,1);
     }
     .dz-card::before{
       content:'';position:absolute;inset:0;pointer-events:none;
       background:radial-gradient(ellipse 70% 55% at 50% 110%,rgba(16,185,129,.09) 0%,transparent 65%);
-      transition:opacity .4s;
     }
     .dz-card:hover,.dz-card.dragover{
       border-color:rgba(16,185,129,.45);background:rgba(16,185,129,.03);
       box-shadow:0 0 0 4px rgba(16,185,129,.08),0 30px 80px rgba(16,185,129,.1);
-      transform:translateY(-3px);
     }
-    /* Orbit animation */
-    .dz-orbit{position:relative;width:120px;height:120px;margin:0 auto 2rem}
-    .dz-orbit-ring{
-      position:absolute;inset:0;border-radius:50%;
-      border:1px solid rgba(16,185,129,.12);
-      animation:orbitSpin 10s linear infinite;
+    /* Split layout */
+    .dz-split{display:flex;align-items:stretch;min-height:300px}
+    .dz-visual{
+      width:200px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,rgba(16,185,129,.07) 0%,rgba(20,184,166,.04) 100%);
+      border-right:1px solid rgba(16,185,129,.12);
+      padding:2rem;position:relative;overflow:hidden;
     }
-    .dz-orbit-ring::before{
-      content:'';position:absolute;inset:12px;border-radius:50%;
-      border:1px dashed rgba(16,185,129,.08);
+    .dz-visual::before{
+      content:'';position:absolute;
+      width:200px;height:200px;border-radius:50%;
+      background:radial-gradient(circle,rgba(16,185,129,.18) 0%,transparent 70%);
+      pointer-events:none;
     }
-    .dz-orbit-dot{
-      position:absolute;width:7px;height:7px;border-radius:50%;
-      background:#34d399;box-shadow:0 0 10px rgba(52,211,153,.9);
-      top:50%;left:50%;margin:-3.5px;
-      animation:orbitDot 5s linear infinite;
-      animation-delay:calc(var(--i)*-1.67s);
-    }
-    @keyframes orbitSpin{to{transform:rotate(360deg)}}
-    @keyframes orbitDot{0%{transform:rotate(0deg) translateX(58px)}100%{transform:rotate(360deg) translateX(58px)}}
-    .dz-orbit-icon{
-      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-      width:68px;height:68px;border-radius:20px;
-      background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(20,184,166,.1));
-      border:1px solid rgba(16,185,129,.3);
+    .dz-icon-box{
+      position:relative;z-index:1;
+      width:76px;height:76px;border-radius:22px;
+      background:linear-gradient(135deg,rgba(16,185,129,.22),rgba(20,184,166,.12));
+      border:1px solid rgba(16,185,129,.32);
       display:flex;align-items:center;justify-content:center;color:#34d399;
-      box-shadow:0 0 40px rgba(16,185,129,.25),inset 0 1px 0 rgba(255,255,255,.08);
-      animation:iconPulse 3s ease-in-out infinite;z-index:1;
+      box-shadow:0 0 40px rgba(16,185,129,.25),inset 0 1px 0 rgba(255,255,255,.1);
+      animation:iconPulse 3.5s ease-in-out infinite;
     }
-    .dz-orbit-icon svg{width:28px;height:28px;stroke-width:1.5}
-    @keyframes iconPulse{0%,100%{box-shadow:0 0 32px rgba(16,185,129,.2)}50%{box-shadow:0 0 55px rgba(16,185,129,.45)}}
-    .dz-title{font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:.6rem;letter-spacing:-.03em;line-height:1.2}
-    .dz-sub{font-size:.88rem;color:var(--muted);margin-bottom:1.75rem;line-height:1.7}
+    .dz-icon-box svg{width:30px;height:30px;stroke-width:1.5}
+    @keyframes iconPulse{0%,100%{box-shadow:0 0 32px rgba(16,185,129,.2),inset 0 1px 0 rgba(255,255,255,.1)}50%{box-shadow:0 0 55px rgba(16,185,129,.45),inset 0 1px 0 rgba(255,255,255,.1)}}
+    .dz-body{
+      flex:1;padding:2.25rem 2rem;display:flex;flex-direction:column;justify-content:center;
+    }
+    .dz-title{font-size:1.38rem;font-weight:800;color:var(--text);margin-bottom:.55rem;letter-spacing:-.03em;line-height:1.2}
+    .dz-sub{font-size:.86rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.75}
     /* Feature badges */
-    .dz-features{display:flex;justify-content:center;gap:.45rem;flex-wrap:wrap;margin-bottom:2rem}
+    .dz-features{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.75rem}
     .dz-feat{
-      display:flex;align-items:center;gap:.35rem;padding:.28rem .75rem;
+      display:flex;align-items:center;gap:.32rem;padding:.26rem .7rem;
       background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-      border-radius:999px;font-size:.72rem;font-weight:600;color:#a3c4bc;
+      border-radius:999px;font-size:.71rem;font-weight:600;color:#a3c4bc;
     }
-    .dz-feat svg{width:11px;height:11px;color:#34d399;flex-shrink:0}
-    .dz-hint{display:block;margin-top:1rem;font-size:.7rem;color:rgba(107,158,142,.6)}
+    .dz-feat svg{width:10px;height:10px;color:#34d399;flex-shrink:0}
+    .dz-hint{display:block;margin-top:.75rem;font-size:.7rem;color:rgba(107,158,142,.6)}
 
     /* ── FILE PREVIEW — CLEAN SIMPLE ── */
     @keyframes fpIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -417,6 +368,11 @@
     [data-theme="light"] .fp-new{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     [data-theme="light"] .fp-sep{background:rgba(0,0,0,.07)}
     [data-theme="light"] .fp-name{color:#0f172a}
+    [data-theme="light"] .hero-badge{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .hero-strip{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09)}
+    [data-theme="light"] .hs-num{color:#0f172a}
+    [data-theme="light"] .wz-stepper{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
+    [data-theme="light"] .dz-visual{background:linear-gradient(135deg,rgba(16,185,129,.06) 0%,rgba(20,184,166,.03) 100%);border-right-color:rgba(16,185,129,.15)}
     /* AI SEARCH LOADING */
     .ai-search-loading{max-width:540px;margin:0 auto;padding:2rem 1rem;text-align:center}
     .ai-pulse-ring{position:relative;width:88px;height:88px;margin:0 auto 1.5rem}
@@ -531,14 +487,22 @@
 
     @media(max-width:860px){
       .nav-links .nav-link span:not(.badge){display:none}
-      .wz-grid{grid-template-columns:repeat(2,1fr)}
+      .wz-stepper{padding:1rem 1.1rem}
+      .wz-card-sub{display:none}
+    }
+    @media(max-width:640px){
+      .dz-split{flex-direction:column}
+      .dz-visual{width:100%;min-height:130px;border-right:none;border-bottom:1px solid rgba(16,185,129,.12)}
+      .dz-body{padding:1.75rem 1.5rem}
+      .hero-strip .hs-lbl{display:none}
+      .hs-item{padding:.15rem .6rem}
     }
     @media(max-width:560px){
       .topnav{padding:0 1rem}
       .page{padding:1.5rem 1rem 4rem}
-      .wz-grid{grid-template-columns:repeat(2,1fr)}
       .hero{padding:2.5rem 1rem 2rem}
-      .dz-card{padding:2.5rem 1rem}
+      .wz-stepper{gap:.25rem}
+      .step-wizard-connector{max-width:30px}
     }
 
     /* ── STEP 3: FILTER PILLS ── */
@@ -678,89 +642,81 @@
 
 <!-- ── HERO (full-width, hors container) ── -->
 <section class="hero fi fi1">
-    <canvas id="hero-canvas"></canvas>
-    <span class="sp">✦</span><span class="sp">✦</span><span class="sp">✶</span><span class="sp">✦</span><span class="sp">✶</span>
-    <div class="hero-inner">
-      <h1 class="hero-title">Votre recherche<br>d'emploi, simplifiée</h1>
-      <p class="hero-sub">Déposez votre CV. L'agent analyse votre profil, identifie les meilleures opportunités et rédige vos candidatures — automatiquement.</p>
-      <div class="hero-ctas">
-        <button class="btn-em" onclick="document.getElementById('step-1').scrollIntoView({behavior:'smooth'})">
-          Commencer maintenant
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
-        <a href="/jobs" class="btn-ghost">
-          Voir les offres
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </a>
-      </div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Propulsé par Claude AI · Beta
     </div>
-  <div class="hero-stats">
-    <div class="stat-pill">
-      <div class="stat-icon si-bolt"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-      <div class="stat-num">30s</div><div class="stat-label">Analyse CV</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-icon si-target"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
-      <div class="stat-num">100%</div><div class="stat-label">Contrôle humain</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-icon si-star"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
-      <div class="stat-num">1 clic</div><div class="stat-label">Pour candidater</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-icon si-mail"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg></div>
-      <div class="stat-num">IA</div><div class="stat-label">Emails sur-mesure</div>
+    <h1 class="hero-title">
+      <span class="ht-light">Votre recherche d'emploi,</span>
+      <span class="ht-bold">simplifiée.</span>
+    </h1>
+    <p class="hero-sub">Déposez votre CV. L'agent analyse votre profil, identifie les meilleures opportunités et rédige vos candidatures — automatiquement.</p>
+    <div class="hero-ctas">
+      <button class="btn-em" onclick="document.getElementById('step-1').scrollIntoView({behavior:'smooth'})">
+        Commencer maintenant
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <a href="/jobs" class="btn-ghost">
+        Voir les offres
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </a>
     </div>
   </div>
-  </section>
+  <div class="hero-stats">
+    <div class="hero-strip">
+      <div class="hs-item"><span class="hs-num">30s</span><span class="hs-lbl">Analyse CV</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs-item"><span class="hs-num">100%</span><span class="hs-lbl">Contrôle humain</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs-item"><span class="hs-num">1 clic</span><span class="hs-lbl">Pour candidater</span></div>
+      <div class="hs-sep"></div>
+      <div class="hs-item"><span class="hs-num">IA</span><span class="hs-lbl">Emails sur-mesure</span></div>
+    </div>
+  </div>
+</section>
 
 <!-- ── PAGE ── -->
 <div class="page">
 
   <!-- WIZARD PROGRESS -->
   <div class="wizard-wrap fi fi2">
-    <div class="wz-grid">
+    <div class="wz-stepper">
       <!-- Step 1 -->
       <div class="wz-step-card wz-active step-wizard-item" data-step="1" onclick="goToStep(1)">
-        <div class="wz-card-top">
-          <div class="wz-num" id="wz-num-1">
-            <span class="wz-ni">1</span>
-            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="wz-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          </div>
+        <div class="wz-num" id="wz-num-1">
+          <span class="wz-ni">1</span>
+          <svg class="wz-ck" style="display:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="wz-card-label">Upload CV</div>
-        <div class="wz-card-sub">PDF · Max 10 MB</div>
+        <div>
+          <div class="wz-card-label">Upload CV</div>
+          <div class="wz-card-sub">PDF · Max 10 MB</div>
+        </div>
       </div>
+      <div class="step-wizard-connector"></div>
       <!-- Step 2 -->
       <div class="wz-step-card step-wizard-item" data-step="2" onclick="goToStep(2)">
-        <div class="wz-card-top">
-          <div class="wz-num" id="wz-num-2">
-            <span class="wz-ni">2</span>
-            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="wz-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
-          </div>
+        <div class="wz-num" id="wz-num-2">
+          <span class="wz-ni">2</span>
+          <svg class="wz-ck" style="display:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="wz-card-label">Analyse IA</div>
-        <div class="wz-card-sub">Extraction compétences</div>
+        <div>
+          <div class="wz-card-label">Analyse IA</div>
+          <div class="wz-card-sub">Extraction compétences</div>
+        </div>
       </div>
+      <div class="step-wizard-connector"></div>
       <!-- Step 3 -->
       <div class="wz-step-card step-wizard-item" data-step="3" onclick="goToStep(3)">
-        <div class="wz-card-top">
-          <div class="wz-num" id="wz-num-3">
-            <span class="wz-ni">3</span>
-            <svg class="wz-ck" style="display:none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          </div>
-          <div class="wz-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </div>
+        <div class="wz-num" id="wz-num-3">
+          <span class="wz-ni">3</span>
+          <svg class="wz-ck" style="display:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
         </div>
-        <div class="wz-card-label">Résultats</div>
-        <div class="wz-card-sub">Offres compatibles</div>
+        <div>
+          <div class="wz-card-label">Résultats</div>
+          <div class="wz-card-sub">Offres compatibles</div>
+        </div>
       </div>
     </div>
     <!-- Progress bar -->
@@ -773,31 +729,31 @@
       <input type="file" id="cv-file-input" accept=".pdf" style="display:none">
 
       <div id="dropzone-content">
-        <div class="dz-orbit">
-          <div class="dz-orbit-ring"></div>
-          <div class="dz-orbit-dot" style="--i:0"></div>
-          <div class="dz-orbit-dot" style="--i:1"></div>
-          <div class="dz-orbit-dot" style="--i:2"></div>
-          <div class="dz-orbit-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
+        <div class="dz-split">
+          <div class="dz-visual">
+            <div class="dz-icon-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+          </div>
+          <div class="dz-body">
+            <h2 class="dz-title">Votre CV, analysé par l'IA</h2>
+            <p class="dz-sub">Déposez votre fichier PDF et laissez l'agent identifier vos compétences et trouver les meilleures offres.</p>
+            <div class="dz-features">
+              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Analyse IA</div>
+              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Instantané</div>
+              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Matching précis</div>
+              <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>100% privé</div>
+            </div>
+            <button class="btn-em" onclick="event.stopPropagation();document.getElementById('cv-file-input').click()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Déposer mon CV
+            </button>
+            <span class="dz-hint">PDF uniquement · Max 10 MB · Données non conservées</span>
           </div>
         </div>
-        <h2 class="dz-title">Votre CV, analysé par l'IA</h2>
-        <p class="dz-sub">Déposez votre fichier PDF et laissez l'agent intelligent<br>identifier vos compétences et trouver les meilleures offres.</p>
-        <div class="dz-features">
-          <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>Analyse IA</div>
-          <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Instantané</div>
-          <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Matching précis</div>
-          <div class="dz-feat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>100% privé</div>
-        </div>
-        <button class="btn-em" onclick="event.stopPropagation();document.getElementById('cv-file-input').click()">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          Déposer mon CV
-        </button>
-        <div class="dz-hint">PDF uniquement · Max 10 MB · Données non conservées</div>
       </div>
 
       <div id="file-preview" class="hidden">
