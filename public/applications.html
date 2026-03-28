@@ -128,59 +128,116 @@
     .fi1{animation-delay:.05s}.fi2{animation-delay:.14s}.fi3{animation-delay:.23s}.fi4{animation-delay:.32s}
     @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 
-    /* ── PAGE HEADER (compact, no hero) ── */
-    .pg-header{
+    /* ── HERO ── */
+    .hero{
       position:relative;overflow:hidden;
-      padding:3.5rem 2rem 2.75rem;
+      padding:5rem 2rem 3.5rem;
     }
-    .pg-header::before{
-      content:'';position:absolute;inset:0;pointer-events:none;
+    .hero canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.6}
+    .hero::before{
+      content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
       background:
-        radial-gradient(ellipse 55% 80% at 10% 60%,rgba(16,185,129,.13) 0%,transparent 60%),
-        radial-gradient(ellipse 40% 50% at 85% 20%,rgba(20,184,166,.07) 0%,transparent 50%);
+        radial-gradient(ellipse 60% 100% at -6% 60%,rgba(16,185,129,.2) 0%,transparent 55%),
+        radial-gradient(ellipse 55% 60% at 108% 20%,rgba(20,184,166,.13) 0%,transparent 50%),
+        radial-gradient(ellipse 35% 40% at 50% 115%,rgba(16,185,129,.07) 0%,transparent 50%);
     }
-    .pg-header::after{
-      content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-      background:linear-gradient(90deg,transparent 0%,rgba(16,185,129,.28) 30%,rgba(16,185,129,.28) 70%,transparent 100%);
+    .hero::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:1px;z-index:2;
+      background:linear-gradient(90deg,transparent,rgba(16,185,129,.35) 50%,transparent);
     }
-    .pg-hdr-inner{
-      position:relative;z-index:1;max-width:860px;margin:0 auto;
-      display:flex;align-items:center;justify-content:space-between;gap:3rem;
+    .hero-inner{
+      position:relative;z-index:2;max-width:860px;margin:0 auto;
+      display:flex;align-items:center;gap:3.5rem;
     }
-    .pg-hdr-left{flex:1;min-width:0}
-    .pg-badge{
+    .hero-left{flex:1;min-width:0}
+    .hero-right{flex-shrink:0}
+
+    /* Badge */
+    .hero-badge{
       display:inline-flex;align-items:center;gap:.45rem;
-      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
-      border-radius:999px;padding:.28rem .85rem;font-size:.72rem;font-weight:700;color:var(--em-l);
-      margin-bottom:1.1rem;
+      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);
+      border-radius:999px;padding:.28rem .88rem;font-size:.72rem;font-weight:700;color:var(--em-l);
+      margin-bottom:1.35rem;
     }
-    .pg-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--em-l);animation:rdPulse 1.8s ease infinite;flex-shrink:0}
-    .pg-title{
-      font-size:clamp(1.9rem,3.8vw,2.7rem);font-weight:900;line-height:1.1;
-      letter-spacing:-.04em;margin-bottom:.6rem;
-      background:linear-gradient(155deg,#ffffff 0%,#e2fdf2 35%,var(--em-l) 70%,#14b8a6 100%);
+    .hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--em-l);animation:rdPulse 1.8s ease infinite;flex-shrink:0}
+
+    /* Title */
+    .hero-title{
+      font-size:clamp(2rem,4.2vw,3.1rem);font-weight:900;line-height:1.1;
+      letter-spacing:-.04em;margin-bottom:.85rem;color:#fff;
+    }
+    .ht-label{display:block;font-size:.54em;font-weight:300;color:rgba(240,253,248,.38);letter-spacing:.01em;margin-bottom:.3rem}
+    .ht-em{
+      font-style:normal;
+      background:linear-gradient(130deg,var(--em-l),#14b8a6);
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
     }
-    .pg-sub{font-size:.9rem;color:var(--muted);line-height:1.75;max-width:380px}
+    .hero-sub{font-size:.93rem;color:var(--muted);line-height:1.78;max-width:390px;margin-bottom:2rem}
+    .hero-actions{display:flex;flex-direction:column;gap:.9rem;align-items:flex-start}
+    .hero-meta{display:flex;align-items:center;gap:.55rem;font-size:.72rem;color:rgba(107,158,142,.65);flex-wrap:wrap}
+    .hm-dot{width:3px;height:3px;border-radius:50%;background:rgba(107,158,142,.4);flex-shrink:0}
 
-    /* Right: metric grid 2×2 */
-    .pg-hdr-right{flex-shrink:0}
-    .pg-metrics{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}
-    .pg-metric{
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
-      border-radius:14px;padding:.85rem .9rem;text-align:center;
-      transition:all .2s;
-    }
-    .pg-metric:hover{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.25);transform:translateY(-2px)}
-    .pm-num{
-      display:block;font-size:1.25rem;font-weight:900;line-height:1;
-      background:linear-gradient(135deg,#fff,var(--em-l));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-    }
-    .pm-lbl{display:block;font-size:.63rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-top:3px}
-
-    /* CTAs (kept for compatibility) */
+    /* CTAs */
     .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:0}
+
+    /* ── HERO VISUAL (right) ── */
+    .hero-visual{position:relative;width:250px;height:305px}
+    .hv-glow{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:220px;height:220px;border-radius:50%;pointer-events:none;
+      background:radial-gradient(circle,rgba(16,185,129,.17) 0%,transparent 70%);
+    }
+    .hv-doc{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      width:162px;
+      background:rgba(8,22,17,.88);border:1px solid rgba(16,185,129,.25);
+      border-radius:18px;padding:1.35rem 1.15rem;
+      box-shadow:0 0 80px rgba(16,185,129,.12),0 24px 60px rgba(0,0,0,.5);
+      overflow:hidden;backdrop-filter:blur(20px);
+    }
+    @keyframes docScan{0%{top:-4%}100%{top:110%}}
+    .hv-scan{
+      position:absolute;left:-8%;right:-8%;height:2px;top:0;z-index:3;
+      background:linear-gradient(90deg,transparent,rgba(52,211,153,.95) 50%,transparent);
+      box-shadow:0 0 18px rgba(52,211,153,.6),0 0 40px rgba(52,211,153,.2);
+      animation:docScan 3s linear infinite;
+    }
+    .hv-doc-hdr{display:flex;align-items:center;gap:.5rem;margin-bottom:.9rem}
+    .hv-doc-icon{
+      width:30px;height:30px;border-radius:8px;flex-shrink:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(20,184,166,.1));
+      border:1px solid rgba(16,185,129,.28);
+      display:flex;align-items:center;justify-content:center;color:#34d399;
+    }
+    .hv-doc-icon svg{width:13px;height:13px;stroke-width:1.8;fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+    .hv-doc-name{font-size:.65rem;font-weight:700;color:#fff}
+    .hv-doc-type{font-size:.57rem;color:var(--muted);margin-top:1px}
+    .hv-lines{display:flex;flex-direction:column;gap:.36rem;margin-bottom:.8rem}
+    .hv-line{height:5px;border-radius:3px;background:rgba(255,255,255,.07)}
+    .hv-line-l{width:100%}
+    .hv-line-m{width:74%}
+    .hv-line-s{width:52%}
+    .hv-line-a{background:linear-gradient(90deg,rgba(16,185,129,.45),rgba(20,184,166,.2));width:88%}
+    .hv-chips{display:flex;flex-wrap:wrap;gap:.26rem}
+    .hv-chip{
+      padding:.12rem .46rem;border-radius:999px;font-size:.59rem;font-weight:700;
+      background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.28);color:#34d399;
+    }
+    /* Floating badges */
+    .hv-badge{
+      position:absolute;
+      background:rgba(5,14,11,.93);border:1px solid rgba(16,185,129,.3);
+      border-radius:10px;padding:.4rem .68rem;
+      display:flex;align-items:center;gap:.4rem;
+      font-size:.66rem;font-weight:700;color:#fff;white-space:nowrap;
+      box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 0 1px rgba(16,185,129,.07);
+      backdrop-filter:blur(20px);
+    }
+    .hv-badge svg{width:11px;height:11px;stroke:#34d399;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+    .hv-b1{top:4%;right:-20%;animation:hbf 4.5s ease-in-out infinite}
+    .hv-b2{bottom:26%;left:-24%;animation:hbf 4.5s ease-in-out infinite;animation-delay:1.8s}
+    .hv-b3{bottom:1%;right:-14%;animation:hbf 4.5s ease-in-out infinite;animation-delay:3.3s}
+    @keyframes hbf{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-9px) rotate(1deg)}}
 
     /* Buttons */
     .btn-em{
@@ -386,9 +443,12 @@
     [data-theme="light"] .fp-new{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
     [data-theme="light"] .fp-sep{background:rgba(0,0,0,.07)}
     [data-theme="light"] .fp-name{color:#0f172a}
-    [data-theme="light"] .pg-badge{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
-    [data-theme="light"] .pg-metric{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
-    [data-theme="light"] .pm-num{background:linear-gradient(135deg,#0f2d1f,var(--em-d));-webkit-background-clip:text;background-clip:text}
+    [data-theme="light"] .hero::before{background:radial-gradient(ellipse 60% 100% at -6% 60%,rgba(16,185,129,.1) 0%,transparent 55%),radial-gradient(ellipse 55% 60% at 108% 20%,rgba(20,184,166,.07) 0%,transparent 50%)}
+    [data-theme="light"] .hero-badge{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .hero-title{color:#0f172a}
+    [data-theme="light"] .hv-doc{background:rgba(240,253,248,.9);border-color:rgba(16,185,129,.3)}
+    [data-theme="light"] .hv-doc-name{color:#0f172a}
+    [data-theme="light"] .hv-badge{background:rgba(255,255,255,.95);color:#0f172a}
     [data-theme="light"] .wz-stepper{background:rgba(0,0,0,.02);border-color:rgba(0,0,0,.08)}
     [data-theme="light"] .bs-card{background:rgba(255,255,255,.7);border-color:rgba(16,185,129,.18)}
     [data-theme="light"] .dz-card{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.25)}
@@ -509,19 +569,19 @@
       .nav-links .nav-link span:not(.badge){display:none}
       .wz-stepper{padding:1rem 1.1rem}
       .wz-card-sub{display:none}
-      .pg-hdr-inner{flex-direction:column;align-items:flex-start;gap:1.5rem}
-      .pg-metrics{grid-template-columns:repeat(4,1fr)}
+      .hero-inner{flex-direction:column;align-items:flex-start;gap:2.5rem}
+      .hero-right{align-self:center}
     }
     @media(max-width:640px){
       .bento-layout{grid-template-columns:1fr}
       .bento-side{flex-direction:row}
       .bs-desc{display:none}
-      .pg-hdr-right{width:100%}
+      .hero-right{display:none}
+      .hero{padding:3.5rem 1.5rem 2.5rem}
     }
     @media(max-width:560px){
       .topnav{padding:0 1rem}
       .page{padding:1.5rem 1rem 4rem}
-      .pg-header{padding:2.5rem 1rem 2rem}
       .wz-stepper{gap:.25rem}
       .step-wizard-connector{max-width:30px}
       .bento-side{gap:.5rem}
@@ -663,35 +723,74 @@
   </div>
 </nav>
 
-<!-- ── PAGE HEADER ── -->
-<canvas id="hero-canvas" style="display:none"></canvas>
-<section class="pg-header fi fi1">
-  <div class="pg-hdr-inner">
-    <div class="pg-hdr-left">
-      <div class="pg-badge">
-        <span class="pg-badge-dot"></span>
+<!-- ── HERO ── -->
+<section class="hero fi fi1">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
         Propulsé par Claude AI · Beta
       </div>
-      <h1 class="pg-title">Analysez votre CV,<br>postulez en un clic.</h1>
-      <p class="pg-sub">L'agent IA extrait vos compétences, trouve les meilleures offres et rédige vos emails de candidature.</p>
+      <h1 class="hero-title">
+        <span class="ht-label">Votre recherche d'emploi,</span>
+        simplifiée par <em class="ht-em">l'IA.</em>
+      </h1>
+      <p class="hero-sub">Déposez votre CV. En secondes, l'agent extrait vos compétences, trouve les meilleures offres et rédige vos candidatures.</p>
+      <div class="hero-actions">
+        <button class="btn-em" onclick="document.getElementById('step-1').scrollIntoView({behavior:'smooth'})">
+          Commencer maintenant
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <div class="hero-meta">
+          <span>30s d'analyse</span>
+          <span class="hm-dot"></span>
+          <span>1 clic pour postuler</span>
+          <span class="hm-dot"></span>
+          <span>100% privé</span>
+        </div>
+      </div>
     </div>
-    <div class="pg-hdr-right">
-      <div class="pg-metrics">
-        <div class="pg-metric">
-          <span class="pm-num">30s</span>
-          <span class="pm-lbl">Analyse CV</span>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hv-glow"></div>
+        <div class="hv-doc">
+          <div class="hv-scan"></div>
+          <div class="hv-doc-hdr">
+            <div class="hv-doc-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div>
+              <div class="hv-doc-name">mon_cv.pdf</div>
+              <div class="hv-doc-type">Analyse en cours…</div>
+            </div>
+          </div>
+          <div class="hv-lines">
+            <div class="hv-line hv-line-l"></div>
+            <div class="hv-line hv-line-a"></div>
+            <div class="hv-line hv-line-m"></div>
+            <div class="hv-line hv-line-l"></div>
+            <div class="hv-line hv-line-s"></div>
+            <div class="hv-line hv-line-m"></div>
+          </div>
+          <div class="hv-chips">
+            <span class="hv-chip">React</span>
+            <span class="hv-chip">Node.js</span>
+            <span class="hv-chip">Python</span>
+            <span class="hv-chip">+8</span>
+          </div>
         </div>
-        <div class="pg-metric">
-          <span class="pm-num">100%</span>
-          <span class="pm-lbl">Contrôle</span>
+        <div class="hv-badge hv-b1">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          8 offres trouvées
         </div>
-        <div class="pg-metric">
-          <span class="pm-num">1 clic</span>
-          <span class="pm-lbl">Candidature</span>
+        <div class="hv-badge hv-b2">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Profil extrait
         </div>
-        <div class="pg-metric">
-          <span class="pm-num">IA</span>
-          <span class="pm-lbl">Emails</span>
+        <div class="hv-badge hv-b3">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          Emails rédigés
         </div>
       </div>
     </div>
@@ -981,23 +1080,89 @@
 
 <div id="toast-container"></div>
 
-<!-- Particle canvas -->
+<!-- Neural network canvas -->
 <script>
 (function(){
   var c=document.getElementById('hero-canvas');if(!c)return;
-  var ctx=c.getContext('2d'),pts=[],N=55;
+  var ctx=c.getContext('2d'),pts=[],N=70,LINK=115;
   var dpr=window.devicePixelRatio||1;
-  function resize(){var w=c.offsetWidth,h=c.offsetHeight;c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);c.style.width=w+'px';c.style.height=h+'px'}
-  function P(){this.r()}
-  P.prototype.r=function(){this.x=Math.random()*c.width;this.y=Math.random()*c.height;this.vx=(Math.random()-.5)*.38;this.vy=(Math.random()-.5)*.38;this.rad=Math.random()*1.8+.4;this.a=Math.random()*.3+.06}
-  P.prototype.u=function(){this.x+=this.vx;this.y+=this.vy;if(this.x<0||this.x>c.width)this.vx*=-1;if(this.y<0||this.y>c.height)this.vy*=-1}
-  P.prototype.d=function(){ctx.beginPath();ctx.arc(this.x,this.y,this.rad,0,Math.PI*2);ctx.fillStyle='rgba(16,185,129,'+this.a+')';ctx.fill()}
-  function init(){pts=[];for(var i=0;i<N;i++)pts.push(new P())}
-  function lines(){for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<125){ctx.beginPath();ctx.strokeStyle='rgba(16,185,129,'+(0.065*(1-d/125))+')';ctx.lineWidth=.6;ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}}}
-  function loop(){ctx.clearRect(0,0,c.width,c.height);pts.forEach(function(p){p.u();p.d()});lines();requestAnimationFrame(loop)}
-  new ResizeObserver(function(){resize();init()}).observe(c.parentElement);
+  var mouse={x:-2000,y:-2000};
+
+  function resize(){
+    var p=c.parentElement,w=p.offsetWidth,h=p.offsetHeight;
+    c.width=w*dpr;c.height=h*dpr;ctx.scale(dpr,dpr);
+    c.style.width=w+'px';c.style.height=h+'px';
+  }
+
+  function Pt(){
+    var p=c.parentElement;
+    this.x=Math.random()*(p?p.offsetWidth:860);
+    this.y=Math.random()*(p?p.offsetHeight:420);
+    this.vx=(Math.random()-.5)*.42;
+    this.vy=(Math.random()-.5)*.42;
+    this.r=Math.random()*1.5+.5;
+    this.a=Math.random()*.38+.14;
+  }
+
+  Pt.prototype.u=function(){
+    var dx=this.x-mouse.x,dy=this.y-mouse.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<100&&d>0){var f=(100-d)/100*.75;this.vx+=(dx/d)*f;this.vy+=(dy/d)*f}
+    this.vx*=.97;this.vy*=.97;
+    this.x+=this.vx;this.y+=this.vy;
+    var p=c.parentElement,w=p?p.offsetWidth:860,h=p?p.offsetHeight:420;
+    if(this.x<0){this.x=0;this.vx=Math.abs(this.vx)}
+    if(this.x>w){this.x=w;this.vx=-Math.abs(this.vx)}
+    if(this.y<0){this.y=0;this.vy=Math.abs(this.vy)}
+    if(this.y>h){this.y=h;this.vy=-Math.abs(this.vy)}
+  };
+
+  Pt.prototype.d=function(){
+    ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(52,211,153,'+this.a+')';ctx.fill();
+  };
+
+  function links(){
+    for(var i=0;i<pts.length;i++){
+      for(var j=i+1;j<pts.length;j++){
+        var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<LINK){
+          var a=.072*(1-d/LINK);
+          ctx.beginPath();
+          ctx.strokeStyle='rgba(16,185,129,'+a+')';
+          ctx.lineWidth=.7;
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function init(){
+    pts=[];
+    var p=c.parentElement,w=p?p.offsetWidth:860,h=p?p.offsetHeight:420;
+    for(var i=0;i<N;i++){var pt=new Pt();pt.x=Math.random()*w;pt.y=Math.random()*h;pts.push(pt)}
+  }
+
+  function loop(){
+    var p=c.parentElement,w=p?p.offsetWidth:860,h=p?p.offsetHeight:420;
+    ctx.clearRect(0,0,w,h);
+    links();pts.forEach(function(pt){pt.u();pt.d()});
+    requestAnimationFrame(loop);
+  }
+
+  var hero=c.parentElement;
+  hero.addEventListener('mousemove',function(e){
+    var r=c.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;
+  });
+  hero.addEventListener('mouseleave',function(){mouse.x=-2000;mouse.y=-2000});
+
+  new ResizeObserver(function(){resize();init()}).observe(hero);
   resize();init();loop();
-  var s=document.createElement('style');s.textContent='@keyframes spinR{from{stroke-dashoffset:188}to{stroke-dashoffset:-188}}';document.head.appendChild(s);
+
+  var s=document.createElement('style');
+  s.textContent='@keyframes spinR{from{stroke-dashoffset:188}to{stroke-dashoffset:-188}}';
+  document.head.appendChild(s);
 })();
 </script>
 
