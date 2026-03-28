@@ -296,34 +296,45 @@ async function startSearch() {
     try {
         // Step 1: Read profile
         stepActive('astep-1');
-        await delay(700);
+        const profile = (analysisData && analysisData.profile) ? analysisData.profile : {};
+        await delay(600);
         stepDone('astep-1');
 
-        // Step 2: Fetch jobs
+        // Step 2: AI searches the web for jobs
         stepActive('astep-2');
-        const jobs = await API.getJobs();
-        let recruiters = [];
-        try { recruiters = await API.getRecruiters(); } catch {}
+        const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
+        const searchRes = await fetch('/api/search-jobs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile, apiKey })
+        });
+        if (!searchRes.ok) {
+            const err = await searchRes.json().catch(() => ({}));
+            throw new Error(err.error || 'Erreur recherche emplois');
+        }
+        const searchData = await searchRes.json();
+        const jobs = searchData.jobs || [];
         stepDone('astep-2');
 
         // Step 3: Compute compatibility
         stepActive('astep-3');
-        const profile = (analysisData && analysisData.profile) ? analysisData.profile : {};
 
         searchResults = jobs.map(job => {
-            const recruiter = recruiters.find(r => r.company && job.company &&
-                r.company.toLowerCase() === job.company.toLowerCase())
-                || { name: 'Recruteur', email: 'contact@' + (job.company || 'entreprise').toLowerCase().replace(/\s+/g, '') + '.com', linkedin: '' };
-
             const compat = computeCompatibility(job, profile);
+            const slug = (job.company || 'entreprise').toLowerCase().replace(/[^a-z0-9]/g, '');
             return {
                 id: job.id,
                 title: job.title,
                 company: job.company,
                 location: job.location || 'Non spécifié',
-                contract: job.contractType || job.contract_type || 'CDI',
+                contract: job.contract_type || 'CDI',
                 description: job.description || '',
-                recruiter: { name: recruiter.name, email: recruiter.email },
+                salary: job.salary || null,
+                source: job.source || null,
+                recruiter: {
+                    name: job.recruiter_name || 'Service RH',
+                    email: job.recruiter_email || `recrutement@${slug}.com`
+                },
                 skills: (job.skills || []).slice(0, 6).map(s => typeof s === 'string' ? s : s.name || s),
                 score: compat.score,
                 matchedSkills: compat.matchedSkills
@@ -332,14 +343,14 @@ async function startSearch() {
 
         // Sort by score desc
         searchResults.sort((a, b) => b.score - a.score);
-        await delay(550);
+        await delay(400);
         stepDone('astep-3');
 
         // Step 4: Recruiter info
         stepActive('astep-4');
-        await delay(450);
+        await delay(350);
         stepDone('astep-4');
-        await delay(280);
+        await delay(250);
 
         // Show results
         document.getElementById('search-loading').classList.add('hidden');
@@ -352,8 +363,8 @@ async function startSearch() {
 
         document.getElementById('results-count').textContent =
             searchResults.length > 0
-                ? `${searchResults.length} offre(s) — triées par compatibilité`
-                : 'Aucune offre disponible';
+                ? `${searchResults.length} offre(s) trouvée(s) par l'IA`
+                : 'Aucune offre trouvée';
 
         renderResults();
         setupFilters();

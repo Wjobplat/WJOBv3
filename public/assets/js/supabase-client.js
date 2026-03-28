@@ -11,14 +11,13 @@ const AI_AGENT_URL  = 'https://bqobpkwkwypiuhtprjva.supabase.co/functions/v1/ai-
 window.wjob = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 // Expose le CLIENT (pas la lib CDN) via window.supabase pour que api.js l'utilise
 window.supabase = window.wjob;
-const supabase = window.wjob;
 
 // ── Auto-configure le webhook ──────────────────────────────────────────────
 // Dès que l'utilisateur est connecté, on s'assure que le webhook pointe
 // vers l'Edge Function ai-agent avec enabled = true
 async function _autoConfigWebhook(userId) {
     try {
-        const { data: existing } = await supabase
+        const { data: existing } = await window.wjob
             .from('webhook_config')
             .select('id, outgoing_url, enabled')
             .eq('user_id', userId)
@@ -27,7 +26,7 @@ async function _autoConfigWebhook(userId) {
         // Rien à faire si déjà configuré correctement
         if (existing && existing.outgoing_url === AI_AGENT_URL && existing.enabled) return;
 
-        await supabase.from('webhook_config').upsert({
+        await window.wjob.from('webhook_config').upsert({
             user_id:      userId,
             outgoing_url: AI_AGENT_URL,
             enabled:      true,
@@ -51,7 +50,7 @@ async function _autoConfigWebhook(userId) {
 
 // ── Auth listener ──────────────────────────────────────────────────────────
 // Configure le webhook dès la connexion et restaure le thème
-supabase.auth.onAuthStateChange((event, session) => {
+window.wjob.auth.onAuthStateChange((event, session) => {
     if (session?.user?.id) {
         _autoConfigWebhook(session.user.id);
     }
