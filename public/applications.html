@@ -378,144 +378,45 @@
     .dz-feat svg{width:11px;height:11px;color:#34d399;flex-shrink:0}
     .dz-hint{display:block;margin-top:1rem;font-size:.7rem;color:rgba(107,158,142,.6)}
 
-    /* ── FILE PREVIEW — FULL-WIDTH REDESIGN ── */
-    @keyframes fpIn{from{opacity:0;transform:scale(.97) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-    @keyframes checkPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-    @keyframes rdPulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}65%{box-shadow:0 0 0 5px transparent}}
-    @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+    /* ── FILE PREVIEW — CLEAN SIMPLE ── */
+    @keyframes fpIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes rdPulse{0%,100%{opacity:1}50%{opacity:.4}}
 
     .fp-new{
       width:100%;
-      background:linear-gradient(145deg,rgba(3,12,8,.98) 0%,rgba(6,20,13,.96) 100%);
-      border:1px solid rgba(16,185,129,.18);border-radius:22px;
-      overflow:hidden;position:relative;
-      box-shadow:0 0 0 1px rgba(16,185,129,.05),0 32px 80px rgba(0,0,0,.55),0 0 120px rgba(16,185,129,.05);
-      animation:fpIn .5s cubic-bezier(.16,1,.3,1) both;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:16px;overflow:hidden;
+      animation:fpIn .35s ease both;
     }
-    /* Dot-grid bg */
-    .fp-new::before{
-      content:'';position:absolute;inset:0;pointer-events:none;
-      background-image:radial-gradient(rgba(16,185,129,.055) 1px,transparent 1px);
-      background-size:26px 26px;
+    .fp-top{
+      display:flex;align-items:center;gap:1rem;
+      padding:1.5rem 1.75rem;
     }
-    /* Left emerald glow blob */
-    .fp-new::after{
-      content:'';position:absolute;
-      width:360px;height:360px;
-      background:radial-gradient(circle,rgba(16,185,129,.14) 0%,transparent 65%);
-      top:50%;left:-60px;transform:translateY(-50%);
-      pointer-events:none;
-    }
-    /* Top scan line */
-    .fp-scanline{
-      position:absolute;top:0;left:0;right:0;height:2px;z-index:4;
-      background:linear-gradient(90deg,transparent 0%,rgba(16,185,129,.45) 25%,#34d399 50%,rgba(16,185,129,.45) 75%,transparent 100%);
-    }
-
-    /* ── Inner layout ── */
-    .fp-inner{
-      display:flex;align-items:center;gap:2rem;
-      padding:2rem 2.25rem 1.5rem;
-      position:relative;z-index:1;
-    }
-
-    /* ── Left: document showcase ── */
-    .fp-left{flex-shrink:0;position:relative;padding:.75rem}
-    .fp-doc-halo{
-      position:absolute;inset:-18px;
-      background:radial-gradient(circle,rgba(16,185,129,.22) 0%,transparent 68%);
-      pointer-events:none;border-radius:50%;
-    }
-    .fp-doc{width:80px;height:100px;position:relative}
-    .fp-doc-body{
-      width:100%;height:100%;
-      background:linear-gradient(155deg,rgba(255,255,255,.07) 0%,rgba(16,185,129,.09) 100%);
-      border:1.5px solid rgba(16,185,129,.42);border-radius:6px 20px 6px 6px;
-      position:relative;overflow:hidden;
-      box-shadow:0 10px 40px rgba(16,185,129,.2),0 0 0 5px rgba(16,185,129,.05),inset 0 1px 0 rgba(255,255,255,.07);
-    }
-    .fp-doc-body::before{
-      content:'';position:absolute;top:0;right:0;
-      border-style:solid;border-width:0 16px 16px 0;
-      border-color:transparent rgba(3,12,8,.92) transparent transparent;
-    }
-    .fp-doc-body::after{
-      content:'';position:absolute;left:11px;right:11px;bottom:13px;
-      height:1.5px;border-radius:1px;
-      background:rgba(52,211,153,.32);
-      box-shadow:0 -8px 0 rgba(52,211,153,.2),0 -16px 0 rgba(52,211,153,.14),0 -24px 0 rgba(52,211,153,.1),0 -32px 0 rgba(52,211,153,.06);
-    }
-    .fp-doc-type{
-      position:absolute;top:22px;left:50%;transform:translateX(-50%);
-      font-size:.5rem;font-weight:900;letter-spacing:.16em;
-      color:#34d399;background:rgba(16,185,129,.18);
-      padding:.14rem .44rem;border-radius:4px;
-    }
-    .fp-doc-check{
-      position:absolute;bottom:-11px;right:-11px;
-      width:28px;height:28px;border-radius:50%;
-      background:linear-gradient(135deg,#059669,#10b981);
-      border:3px solid rgba(3,12,8,1);
+    .fp-icon{
+      width:46px;height:46px;border-radius:12px;flex-shrink:0;
+      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.18);
       display:flex;align-items:center;justify-content:center;
-      box-shadow:0 0 20px rgba(16,185,129,.8);
-      animation:checkPop .5s .25s cubic-bezier(.34,1.56,.64,1) both;
     }
-    .fp-doc-check svg{width:10px;height:10px;stroke:#fff;stroke-width:3;fill:none}
-
-    /* ── Right: file details ── */
-    .fp-right{flex:1;min-width:0;display:flex;flex-direction:column;gap:.55rem}
-
+    .fp-icon svg{width:22px;height:22px;stroke:#10b981;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .fp-meta{flex:1;min-width:0}
+    .fp-name{font-size:.95rem;font-weight:600;color:#eff6ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+    .fp-size{font-size:.72rem;color:#475f78}
     .fp-badge{
-      display:inline-flex;align-items:center;gap:.4rem;
-      font-size:.63rem;font-weight:700;color:#10b981;letter-spacing:.03em;
-      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
-      border-radius:999px;padding:.2rem .7rem;width:fit-content;
+      display:inline-flex;align-items:center;gap:.35rem;flex-shrink:0;
+      font-size:.62rem;font-weight:700;color:#10b981;
+      background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);
+      border-radius:999px;padding:.18rem .65rem;
     }
-    .fp-badge-dot{
-      width:6px;height:6px;border-radius:50%;background:#10b981;flex-shrink:0;
-      animation:rdPulse 1.8s ease-in-out infinite;
-    }
+    .fp-badge-dot{width:5px;height:5px;border-radius:50%;background:#10b981;animation:rdPulse 1.6s ease infinite}
+    .fp-sep{height:1px;background:rgba(255,255,255,.06);margin:0 1.75rem}
+    .fp-actions{display:flex;gap:.5rem;padding:1.25rem 1.75rem}
+    .fp-actions .btn-em{flex:1;justify-content:center;font-size:.88rem;padding:.8rem 1.25rem;gap:.55rem}
+    .fp-actions .btn-danger{flex-shrink:0;padding:.78rem .95rem}
 
-    .fp-name{
-      font-size:1.18rem;font-weight:800;color:#eff6ff;
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      letter-spacing:-.02em;line-height:1.1;
-    }
-    .fp-size{font-size:.72rem;color:#475f78;font-weight:500;margin-top:-.1rem}
-
-    .fp-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.2rem}
-    .fp-chip{
-      display:inline-flex;align-items:center;gap:.28rem;
-      font-size:.65rem;font-weight:700;color:#8ba3be;
-      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
-      border-radius:7px;padding:.24rem .55rem;
-    }
-    .fp-chip svg{width:8px;height:8px;stroke:#10b981;fill:none;stroke-width:2.5}
-
-    /* ── Action row ── */
-    .fp-actions{
-      display:flex;gap:.6rem;
-      padding:0 2.25rem 1.75rem;
-      position:relative;z-index:1;
-    }
-    .fp-actions .btn-em{
-      flex:1;justify-content:center;
-      font-size:.92rem;padding:.88rem 1.5rem;gap:.65rem;
-      background:linear-gradient(135deg,#059669 0%,#10b981 60%,#34d399 100%);
-      background-size:200% auto;
-      animation:shimmer 3s linear infinite;
-      box-shadow:0 0 0 1px rgba(16,185,129,.3),0 8px 28px rgba(16,185,129,.3);
-    }
-    .fp-actions .btn-danger{padding:.86rem 1rem;flex-shrink:0}
-
-    /* Light mode */
-    [data-theme="light"] .fp-new{background:linear-gradient(145deg,rgba(236,253,245,.97),rgba(240,255,250,.95));border-color:rgba(16,185,129,.3)}
-    [data-theme="light"] .fp-new::before{background-image:radial-gradient(rgba(16,185,129,.08) 1px,transparent 1px)}
-    [data-theme="light"] .fp-doc-body{background:linear-gradient(155deg,rgba(255,255,255,.8),rgba(16,185,129,.1));border-color:rgba(16,185,129,.5)}
-    [data-theme="light"] .fp-doc-body::before{border-right-color:rgba(236,253,245,.95)}
-    [data-theme="light"] .fp-doc-check{border-color:rgba(236,253,245,1)}
+    [data-theme="light"] .fp-new{background:rgba(0,0,0,.03);border-color:rgba(0,0,0,.08)}
+    [data-theme="light"] .fp-sep{background:rgba(0,0,0,.07)}
     [data-theme="light"] .fp-name{color:#0f172a}
-    [data-theme="light"] .fp-chip{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.09)}
     /* AI SEARCH LOADING */
     .ai-search-loading{max-width:540px;margin:0 auto;padding:2rem 1rem;text-align:center}
     .ai-pulse-ring{position:relative;width:88px;height:88px;margin:0 auto 1.5rem}
@@ -901,37 +802,20 @@
 
       <div id="file-preview" class="hidden">
         <div class="fp-new">
-          <div class="fp-scanline"></div>
-          <!-- Main: doc + info -->
-          <div class="fp-inner">
-            <!-- Left: document showcase -->
-            <div class="fp-left">
-              <div class="fp-doc-halo"></div>
-              <div class="fp-doc">
-                <div class="fp-doc-body">
-                  <div class="fp-doc-type">PDF</div>
-                </div>
-                <div class="fp-doc-check">
-                  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </div>
-              </div>
+          <div class="fp-top">
+            <div class="fp-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             </div>
-            <!-- Right: file details -->
-            <div class="fp-right">
-              <div class="fp-badge">
-                <span class="fp-badge-dot"></span>
-                Prêt pour l'analyse
-              </div>
+            <div class="fp-meta">
               <div id="file-name" class="fp-name">mon_cv.pdf</div>
-              <div id="file-size" class="fp-size">1.2 MB</div>
-              <div class="fp-chips">
-                <span class="fp-chip"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>PDF valide</span>
-                <span class="fp-chip"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>&lt; 10 MB</span>
-                <span class="fp-chip"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>IA compatible</span>
-              </div>
+              <div class="fp-size"><span id="file-size">1.2 MB</span> · PDF · IA compatible</div>
+            </div>
+            <div class="fp-badge">
+              <span class="fp-badge-dot"></span>
+              Prêt
             </div>
           </div>
-          <!-- Actions -->
+          <div class="fp-sep"></div>
           <div class="fp-actions">
             <button class="btn-em" id="start-analysis-btn">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
