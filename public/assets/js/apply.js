@@ -23,10 +23,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Charger l'offre + le profil en parallèle
-        [_job, _profile] = await Promise.all([
+        const [job, me] = await Promise.all([
             API.getJobById(_jobId),
             API.getMe()
         ]);
+        _job     = job;
+        _profile = enrichProfile(me);
 
         renderJobCard(_job);
         updateAvatar(_profile);
@@ -68,7 +70,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateSendBtn();
     } catch (e) {
         console.error('[apply] init error:', e);
-        showToast('Erreur de chargement.', 'error');
+        const msg = e?.message || 'Erreur de chargement.';
+        document.getElementById('job-card').innerHTML = `
+          <div style="display:flex;align-items:center;gap:.75rem;color:#f87171;font-size:.85rem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            ${esc(msg)} — <a href="/jobs" style="color:#f87171;text-decoration:underline">Retour aux emplois</a>
+          </div>`;
+        showToast(msg, 'error');
     }
 
     initEvents();
@@ -220,6 +228,11 @@ function resetCVDropzone() {
 
 // ── Lettre de motivation ──────────────────────────────────
 async function letterAction(action) {
+    if (!_job) {
+        showToast('Offre non chargée. Revenez depuis la liste des emplois.', 'error');
+        return;
+    }
+
     const textarea  = document.getElementById('letter-textarea');
     const loadEl    = document.getElementById('letter-loading');
     const current   = textarea.value.trim();
@@ -450,6 +463,29 @@ function initTheme() {
     document.getElementById('user-avatar')?.addEventListener('click', async () => {
         if (confirm('Se déconnecter ?')) { try { await API.logout(); } catch (e) {} location.href = '/login'; }
     });
+}
+
+// ── Enrichissement du profil ──────────────────────────────
+// Fusionne les données Supabase auth avec le profil CV analysé (si dispo en localStorage)
+function enrichProfile(me) {
+    const base = me || {};
+    try {
+        const stored = localStorage.getItem('wjob_cv_profile');
+        if (stored) {
+            const cv = JSON.parse(stored);
+            return {
+                ...base,
+                title:            cv.title            || base.title || '',
+                skills:           cv.skills           || [],
+                experience_years: cv.experience_years || 0,
+                education:        cv.education        || '',
+                summary:          cv.summary          || '',
+                job_titles:       cv.job_titles       || [],
+                languages:        cv.languages        || []
+            };
+        }
+    } catch (e) {}
+    return base;
 }
 
 function esc(str) {

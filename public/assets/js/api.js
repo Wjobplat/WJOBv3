@@ -117,8 +117,9 @@ var API = {
     },
 
     getJobById: async function (id) {
-        const { data, error } = await supabase.from('jobs').select('*').eq('id', id).single();
+        const { data, error } = await supabase.from('jobs').select('*').eq('id', id).maybeSingle();
         if (error) throw error;
+        if (!data) throw new Error('Offre introuvable (id: ' + id + ')');
         return {
             id: data.id,
             company: data.company,

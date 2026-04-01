@@ -166,6 +166,10 @@ async function startAnalysis() {
 
         if (res.success) {
             analysisData = res;
+            // Persister le profil CV pour la page apply.js
+            if (res.profile) {
+                try { localStorage.setItem('wjob_cv_profile', JSON.stringify(res.profile)); } catch (e) {}
+            }
             displayAnalysis(res);
             maxStep = 3;
         }
