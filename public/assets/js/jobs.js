@@ -142,7 +142,7 @@ function buildJobCard(job, index) {
     // Événements
     div.querySelector('.btn-apply').addEventListener('click', (e) => {
         e.stopPropagation();
-        window.location.href = `/applications?job_id=${job.id}`;
+        openApplyModal(job);
     });
     div.querySelector('.btn-save').addEventListener('click', (e) => {
         e.stopPropagation();
@@ -418,4 +418,84 @@ function applyFilters() {
 
 function escHtml(str) {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Modal Candidater ───────────────────────────────────────
+function openApplyModal(job) {
+    const modal = document.getElementById('apply-modal');
+    if (!modal) return;
+
+    // Remplir les infos de l'offre
+    const logoEl = modal.querySelector('.apply-modal-logo');
+    const titleEl = modal.querySelector('.apply-modal-title');
+    const companyEl = modal.querySelector('.apply-modal-company');
+    const contractEl = modal.querySelector('.apply-modal-contract');
+
+    if (logoEl) logoEl.textContent = (job.company || 'E').charAt(0).toUpperCase();
+    if (titleEl) titleEl.textContent = job.title || 'Poste';
+    if (companyEl) companyEl.textContent = job.company || '';
+    if (contractEl) contractEl.textContent = [job.contractType, job.location].filter(Boolean).join(' · ');
+
+    // Reset état
+    const confirmBtn = modal.querySelector('#apply-confirm-btn');
+    const cancelBtn = modal.querySelector('#apply-cancel-btn');
+    if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = 'Confirmer la candidature';
+        confirmBtn.dataset.jobId = job.id;
+    }
+
+    // Ouvrir
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Fermeture backdrop
+    modal.querySelector('.apply-modal-backdrop').onclick = () => closeApplyModal();
+    if (cancelBtn) cancelBtn.onclick = () => closeApplyModal();
+    if (confirmBtn) confirmBtn.onclick = () => submitApplication(confirmBtn, job);
+}
+
+function closeApplyModal() {
+    const modal = document.getElementById('apply-modal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+async function submitApplication(btn, job) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="apply-spinner"></span> Envoi en cours…';
+
+    try {
+        await API.createApplication({ jobId: job.id, status: 'sent' });
+
+        btn.innerHTML = '✓ Candidature envoyée !';
+        btn.style.background = 'rgba(16,185,129,.15)';
+        btn.style.borderColor = 'rgba(16,185,129,.4)';
+        btn.style.color = '#10b981';
+
+        showToast('Candidature envoyée avec succès !', 'success');
+
+        // Marquer la carte comme postulée
+        const card = document.querySelector(`.btn-apply[data-id="${job.id}"]`);
+        if (card) {
+            card.disabled = true;
+            card.textContent = 'Candidature envoyée ✓';
+            card.style.opacity = '.7';
+            card.style.cursor = 'default';
+        }
+
+        setTimeout(() => {
+            closeApplyModal();
+            window.location.href = '/candidatures';
+        }, 1500);
+    } catch (err) {
+        console.error('[W-JOB] Apply error:', err);
+        btn.disabled = false;
+        btn.innerHTML = 'Réessayer';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+        showToast('Erreur lors de l\'envoi. Réessayez.', 'error');
+    }
 }

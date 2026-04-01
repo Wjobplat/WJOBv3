@@ -341,11 +341,53 @@
   </div>
 
   <div id="toast-container" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem"></div>
+
+  <!-- ── Modal Candidater ── -->
+  <div id="apply-modal" style="display:none">
+    <div class="apply-modal-backdrop"></div>
+    <div class="apply-modal-card">
+      <div class="apply-modal-header">
+        <div class="apply-modal-logo"></div>
+        <div class="apply-modal-info">
+          <div class="apply-modal-title"></div>
+          <div class="apply-modal-company"></div>
+          <div class="apply-modal-contract"></div>
+        </div>
+      </div>
+      <p class="apply-modal-desc">Confirmer votre candidature pour ce poste ? Elle apparaîtra dans votre suivi.</p>
+      <div class="apply-modal-actions">
+        <button class="apply-modal-btn-cancel" id="apply-cancel-btn">Annuler</button>
+        <button class="apply-modal-btn-confirm" id="apply-confirm-btn">Confirmer la candidature</button>
+      </div>
+    </div>
+  </div>
   <style>
     .toast{display:flex;align-items:center;gap:.6rem;background:rgba(10,20,28,.95);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:.65rem 1rem;font-size:.82rem;color:var(--text);backdrop-filter:blur(20px);opacity:0;transform:translateY(8px);transition:all .25s;max-width:320px}
     .toast.toast-show{opacity:1;transform:translateY(0)}
     .toast-success{border-color:rgba(16,185,129,.4)}
     .toast-error{border-color:rgba(239,68,68,.4)}
+
+    /* ── Modal Candidater ── */
+    #apply-modal{position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;display:none}
+    #apply-modal.open{display:flex}
+    .apply-modal-backdrop{position:absolute;inset:0;background:rgba(3,13,18,.8);backdrop-filter:blur(6px)}
+    .apply-modal-card{position:relative;z-index:1;width:min(440px,92vw);background:rgba(7,13,20,.98);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2rem;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(16,185,129,.08);animation:modalIn .25s cubic-bezier(.34,1.56,.64,1) both}
+    @keyframes modalIn{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+    .apply-modal-header{display:flex;gap:1rem;align-items:flex-start;margin-bottom:1.25rem}
+    .apply-modal-logo{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.25),rgba(16,185,129,.08));border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:700;color:#10b981;flex-shrink:0}
+    .apply-modal-info{flex:1;min-width:0}
+    .apply-modal-title{font-size:1rem;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:.2rem}
+    .apply-modal-company{font-size:.85rem;color:#10b981;margin-bottom:.2rem}
+    .apply-modal-contract{font-size:.78rem;color:var(--muted)}
+    .apply-modal-desc{font-size:.85rem;color:var(--muted2,#8BA3BE);line-height:1.5;margin:0 0 1.5rem}
+    .apply-modal-actions{display:flex;gap:.75rem}
+    .apply-modal-btn-cancel{flex:1;padding:.7rem 1rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--muted2,#8BA3BE);font-size:.88rem;cursor:pointer;transition:all .2s}
+    .apply-modal-btn-cancel:hover{background:rgba(255,255,255,.08);color:var(--text)}
+    .apply-modal-btn-confirm{flex:2;padding:.7rem 1rem;border-radius:10px;border:1px solid rgba(16,185,129,.35);background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.08));color:#10b981;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.5rem}
+    .apply-modal-btn-confirm:hover:not(:disabled){background:linear-gradient(135deg,rgba(16,185,129,.3),rgba(16,185,129,.15));border-color:rgba(16,185,129,.5);transform:translateY(-1px)}
+    .apply-modal-btn-confirm:disabled{cursor:default}
+    .apply-spinner{width:14px;height:14px;border:2px solid rgba(16,185,129,.3);border-top-color:#10b981;border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
   </style>
 
   <script>
