@@ -147,39 +147,49 @@
     .btn-apply:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(16,185,129,.4)}
 
     /* SIDEBAR */
-    .sidebar-filter{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:0;backdrop-filter:blur(28px);overflow:hidden}
-    .sidebar-section{padding:1.1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.05)}
+    .sidebar-filter{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;backdrop-filter:blur(32px)}
+    .sidebar-head{display:flex;align-items:center;gap:.6rem;padding:.85rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+    .sidebar-head-title{font-size:.75rem;font-weight:700;color:var(--text);flex:1}
+    .sidebar-active-count{font-size:.62rem;font-weight:800;background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;padding:.1rem .45rem;border-radius:999px;min-width:18px;text-align:center}
+    .sidebar-reset-btn{font-size:.68rem;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:.15rem .5rem;border-radius:6px;transition:all .18s}
+    .sidebar-reset-btn:hover{color:#f87171;background:rgba(248,113,113,.08)}
+    .sidebar-section{padding:.9rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.05)}
     .sidebar-section:last-child{border-bottom:none}
-    .sidebar-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem}
-    .sidebar-label::before{content:'';display:inline-block;width:3px;height:10px;background:linear-gradient(180deg,var(--em-d),var(--em));border-radius:2px;flex-shrink:0}
+    .sidebar-label{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;display:flex;align-items:center;gap:.45rem}
+    .sidebar-label::before{content:'';display:inline-block;width:2.5px;height:10px;background:linear-gradient(180deg,var(--em-d),var(--em));border-radius:2px;flex-shrink:0}
 
     /* Checkboxes */
-    .check-item{display:flex;align-items:center;gap:.65rem;padding:.42rem .55rem;border-radius:9px;cursor:pointer;font-size:.8rem;color:var(--muted);transition:all .2s cubic-bezier(.16,1,.3,1);border:1px solid transparent;margin-bottom:2px;user-select:none}
-    .check-item:hover{background:rgba(255,255,255,.04);color:var(--text);border-color:rgba(255,255,255,.06)}
-    .check-item.checked{color:var(--text);background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.18)}
-    .check-box{width:17px;height:17px;border-radius:5px;border:1.5px solid rgba(255,255,255,.15);background:transparent;flex-shrink:0;transition:all .22s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:center;position:relative}
-    .check-item.checked .check-box{background:linear-gradient(135deg,var(--em-d),var(--em));border-color:transparent;box-shadow:0 0 10px rgba(16,185,129,.4)}
-    .check-item.checked .check-box::after{content:'';width:9px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);display:block}
+    .check-item{display:flex;align-items:center;gap:.55rem;padding:.38rem .5rem;border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--muted);transition:all .17s;border:1px solid transparent;margin-bottom:1px;user-select:none}
+    .check-item:hover{background:rgba(255,255,255,.04);color:var(--text)}
+    .check-item.checked{color:var(--text);background:rgba(16,185,129,.07);border-color:rgba(16,185,129,.16)}
+    .check-box{width:15px;height:15px;border-radius:4px;border:1.5px solid rgba(255,255,255,.14);background:transparent;flex-shrink:0;transition:all .2s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;justify-content:center;position:relative}
+    .check-item.checked .check-box{background:linear-gradient(135deg,var(--em-d),var(--em));border-color:transparent;box-shadow:0 0 8px rgba(16,185,129,.35)}
+    .check-item.checked .check-box::after{content:'';width:8px;height:5px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg) translateY(-1px);display:block}
 
-    /* Score indicators */
-    .score-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-    .check-count{margin-left:auto;font-size:.67rem;font-weight:700;color:var(--muted);background:rgba(255,255,255,.06);padding:.1rem .4rem;border-radius:999px}
-    .check-item.checked .check-count{background:rgba(16,185,129,.15);color:var(--em-l)}
+    /* Score dots + mini bars */
+    .score-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+    .score-mini-bar{flex:1;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;max-width:44px;margin-left:auto}
+    .score-mini-fill{height:100%;border-radius:2px;width:0%;transition:width .6s cubic-bezier(.16,1,.3,1)}
 
-    /* Salary range slider */
-    .salary-slider-wrap{padding:.3rem 0 .2rem}
-    #salary-min{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--em) var(--pct,0%),rgba(255,255,255,.1) var(--pct,0%))}
-    #salary-min::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em-l));box-shadow:0 0 10px rgba(16,185,129,.55),0 0 0 3px rgba(3,13,18,.8);cursor:pointer;border:none;transition:transform .2s}
-    #salary-min::-webkit-slider-thumb:hover{transform:scale(1.2)}
-    #salary-min::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em-l));box-shadow:0 0 10px rgba(16,185,129,.5);cursor:pointer;border:none}
-    .range-labels{display:flex;justify-content:space-between;align-items:center;font-size:.7rem;color:var(--muted);margin-top:.5rem}
-    #salary-min-label{color:var(--em-l);font-weight:700;font-size:.75rem}
+    /* Count badges */
+    .check-count{font-size:.63rem;font-weight:700;color:rgba(255,255,255,.3);background:rgba(255,255,255,.06);padding:.08rem .38rem;border-radius:999px;min-width:22px;text-align:center;transition:all .17s;flex-shrink:0}
+    .check-item.checked .check-count{background:rgba(16,185,129,.16);color:var(--em-l)}
 
-    [data-theme="light"] .sidebar-filter{background:rgba(255,255,255,.75);border-color:rgba(16,185,129,.15)}
+    /* Salary slider */
+    .salary-slider-wrap{padding:.4rem 0 .15rem}
+    #salary-min{-webkit-appearance:none;width:100%;height:3px;border-radius:2px;outline:none;cursor:pointer;background:linear-gradient(90deg,var(--em) var(--pct,0%),rgba(255,255,255,.09) var(--pct,0%))}
+    #salary-min::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em-l));box-shadow:0 0 8px rgba(16,185,129,.5),0 0 0 2.5px rgba(7,13,20,.9);cursor:pointer;border:none;transition:transform .18s}
+    #salary-min::-webkit-slider-thumb:hover{transform:scale(1.22)}
+    #salary-min::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em-l));box-shadow:0 0 8px rgba(16,185,129,.5);cursor:pointer;border:none}
+    .range-labels{display:flex;justify-content:space-between;align-items:center;font-size:.66rem;color:var(--muted);margin-top:.55rem}
+    #salary-min-label{color:var(--em-l);font-weight:700;font-size:.7rem}
+
+    [data-theme="light"] .sidebar-filter{background:rgba(255,255,255,.8);border-color:rgba(16,185,129,.15)}
     [data-theme="light"] .sidebar-section{border-bottom-color:rgba(0,0,0,.06)}
+    [data-theme="light"] .sidebar-head{border-bottom-color:rgba(0,0,0,.06)}
     [data-theme="light"] .check-item:hover{background:rgba(0,0,0,.04)}
-    [data-theme="light"] .check-item.checked{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.22)}
-    [data-theme="light"] .check-box{border-color:rgba(0,0,0,.2)}
+    [data-theme="light"] .check-item.checked{background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .check-box{border-color:rgba(0,0,0,.18)}
 
     ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.3);border-radius:2px}
     @media(max-width:1024px){.content-layout{grid-template-columns:1fr}.sidebar-filter{display:none}}
@@ -296,6 +306,11 @@
 
       <!-- SIDEBAR FILTERS -->
       <div class="sidebar-filter fade-in fi4" style="animation-delay:.5s;position:sticky;top:76px">
+        <div class="sidebar-head">
+          <span class="sidebar-head-title">Filtres</span>
+          <span class="sidebar-active-count" id="active-filter-count" style="display:none">0</span>
+          <button class="sidebar-reset-btn" id="sidebar-reset">Réinitialiser</button>
+        </div>
         <div class="sidebar-section">
           <span class="sidebar-label">Type de contrat</span>
           <div class="check-item" data-filter="contract" data-value="CDI"><div class="check-box"></div> CDI<span class="check-count">—</span></div>
@@ -316,10 +331,10 @@
         </div>
         <div class="sidebar-section">
           <span class="sidebar-label">Score de match</span>
-          <div class="check-item" data-filter="score" data-min="90" data-max="100"><div class="check-box"></div><div class="score-dot" style="background:#10b981"></div> Excellent ≥90%<span class="check-count">—</span></div>
-          <div class="check-item" data-filter="score" data-min="80" data-max="89"><div class="check-box"></div><div class="score-dot" style="background:#34d399"></div> Bon 80–89%<span class="check-count">—</span></div>
-          <div class="check-item" data-filter="score" data-min="70" data-max="79"><div class="check-box"></div><div class="score-dot" style="background:#fbbf24"></div> Correct 70–79%<span class="check-count">—</span></div>
-          <div class="check-item" data-filter="score" data-min="0" data-max="69"><div class="check-box"></div><div class="score-dot" style="background:#f87171"></div> Faible &lt;70%<span class="check-count">—</span></div>
+          <div class="check-item" data-filter="score" data-min="90" data-max="100"><div class="check-box"></div><div class="score-dot" style="background:#10b981"></div> Excellent ≥90%<div class="score-mini-bar"><div class="score-mini-fill" style="background:#10b981"></div></div><span class="check-count">—</span></div>
+          <div class="check-item" data-filter="score" data-min="80" data-max="89"><div class="check-box"></div><div class="score-dot" style="background:#34d399"></div> Bon 80–89%<div class="score-mini-bar"><div class="score-mini-fill" style="background:#34d399"></div></div><span class="check-count">—</span></div>
+          <div class="check-item" data-filter="score" data-min="70" data-max="79"><div class="check-box"></div><div class="score-dot" style="background:#fbbf24"></div> Correct 70–79%<div class="score-mini-bar"><div class="score-mini-fill" style="background:#fbbf24"></div></div><span class="check-count">—</span></div>
+          <div class="check-item" data-filter="score" data-min="0" data-max="69"><div class="check-box"></div><div class="score-dot" style="background:#f87171"></div> Faible &lt;70%<div class="score-mini-bar"><div class="score-mini-fill" style="background:#f87171"></div></div><span class="check-count">—</span></div>
         </div>
       </div>
     </div>

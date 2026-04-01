@@ -213,6 +213,22 @@ function initFilters() {
     // Sidebar checkboxes
     initSidebarFilters();
 
+    // Bouton reset
+    const resetBtn = document.getElementById('sidebar-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            document.querySelectorAll('.check-item[data-filter]').forEach(i => i.classList.remove('checked'));
+            const slider = document.getElementById('salary-min');
+            const label  = document.getElementById('salary-min-label');
+            if (slider) { slider.value = 0; slider.style.setProperty('--pct','0%'); }
+            if (label)  label.textContent = 'Tous';
+            _salaryMin = 0;
+            syncSidebarState();
+            updateActiveCount();
+            applyFilters();
+        });
+    }
+
     // Slider salaire
     const salarySlider = document.getElementById('salary-min');
     const salaryLabel  = document.getElementById('salary-min-label');
@@ -257,6 +273,16 @@ function syncSidebarState() {
             });
         }
     });
+    updateActiveCount();
+}
+
+function updateActiveCount() {
+    const total = _sidebarContracts.size + _sidebarLocations.size + _sidebarScores.length + (_salaryMin > 0 ? 1 : 0);
+    const badge = document.getElementById('active-filter-count');
+    if (badge) {
+        badge.textContent = total;
+        badge.style.display = total > 0 ? 'inline-block' : 'none';
+    }
 }
 
 // ── Mise à jour des compteurs sidebar ─────────────────────
@@ -269,16 +295,20 @@ function updateSidebarCounts(jobs) {
         if (badge) badge.textContent = cnt;
     });
 
-    // Score
-    document.querySelectorAll('.check-item[data-filter="score"]').forEach(item => {
+    // Score + mini-barres
+    const scoreItems = document.querySelectorAll('.check-item[data-filter="score"]');
+    const maxCount = Math.max(1, ...([...scoreItems].map(item => {
+        const min = parseInt(item.dataset.min || 0), max = parseInt(item.dataset.max || 100);
+        return jobs.filter(j => { const s = j.compatibility || j.match_score || 0; return s >= min && s <= max; }).length;
+    })));
+    scoreItems.forEach(item => {
         const min = parseInt(item.dataset.min || 0);
         const max = parseInt(item.dataset.max || 100);
-        const cnt = jobs.filter(j => {
-            const s = j.compatibility || j.match_score || 0;
-            return s >= min && s <= max;
-        }).length;
+        const cnt = jobs.filter(j => { const s = j.compatibility || j.match_score || 0; return s >= min && s <= max; }).length;
         const badge = item.querySelector('.check-count');
         if (badge) badge.textContent = cnt;
+        const fill = item.querySelector('.score-mini-fill');
+        if (fill) fill.style.width = Math.round((cnt / maxCount) * 100) + '%';
     });
 }
 
