@@ -116,6 +116,42 @@ var API = {
         return { success: true };
     },
 
+    getJobById: async function (id) {
+        const { data, error } = await supabase.from('jobs').select('*').eq('id', id).single();
+        if (error) throw error;
+        return {
+            id: data.id,
+            company: data.company,
+            title: data.title,
+            location: data.location,
+            contractType: data.contract_type,
+            salary: data.salary,
+            description: data.description,
+            skills: data.skills || [],
+            compatibility: data.compatibility,
+            remote: data.remote,
+            postedDate: data.posted_date
+        };
+    },
+
+    getApplicationByJobId: async function (jobId) {
+        const { data, error } = await supabase
+            .from('applications')
+            .select('*')
+            .eq('job_id', jobId)
+            .order('created_date', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+        if (error) throw error;
+        return data;
+    },
+
+    deleteApplication: async function (id) {
+        const { error } = await supabase.from('applications').delete().eq('id', id);
+        if (error) throw error;
+        return { success: true };
+    },
+
     // Applications
     getApplications: async function () {
         const { data, error } = await supabase

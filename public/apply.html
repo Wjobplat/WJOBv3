@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>W-JOB — Candidature</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    .hidden{display:none!important}
+
+    :root{
+      --em:#10b981;--em-l:#34d399;--em-d:#059669;--teal:#14b8a6;
+      --bg:#070d14;
+      --glass:rgba(255,255,255,.05);--gb:rgba(16,185,129,.16);--gh:rgba(255,255,255,.09);
+      --text:#eff6ff;--muted:#8ba3be;--dim:#a3c4bc;
+    }
+    [data-theme="light"]{
+      --bg:#f0fdf8;--glass:rgba(0,0,0,.04);--gb:rgba(16,185,129,.18);--gh:rgba(0,0,0,.06);
+      --text:#0f172a;--muted:#4b7a6c;--dim:#2d5c4e
+    }
+    [data-theme="light"] body::before{background:radial-gradient(ellipse 60% 50% at 12% -5%,rgba(16,185,129,.09) 0%,transparent 55%),linear-gradient(160deg,#f0fdf8 0%,#e5f7f0 100%)}
+    [data-theme="light"] .topnav{background:rgba(240,253,248,.88);border-bottom-color:rgba(16,185,129,.22)}
+    [data-theme="light"] .nav-link{color:var(--dim)}
+    [data-theme="light"] .section-card,[data-theme="light"] .job-card-wrap{background:rgba(255,255,255,.65);border-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .cv-dropzone{background:rgba(255,255,255,.5);border-color:rgba(16,185,129,.25)}
+    [data-theme="light"] .letter-textarea{background:rgba(255,255,255,.5);border-color:rgba(16,185,129,.2);color:var(--text)}
+    [data-theme="light"] .email-field{background:rgba(255,255,255,.5);border-color:rgba(16,185,129,.2);color:var(--text)}
+    [data-theme="light"] .action-bar{background:rgba(240,253,248,.95);border-bottom-color:rgba(16,185,129,.2)}
+    [data-theme="light"] .icon-btn{background:rgba(255,255,255,.6);border-color:rgba(16,185,129,.2)}
+    .icon-sun{display:block}.icon-moon{display:none}
+    [data-theme="light"] .icon-sun{display:none}[data-theme="light"] .icon-moon{display:block}
+
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+      background:radial-gradient(ellipse 60% 50% at 10% -5%,rgba(16,185,129,.14) 0%,transparent 55%),
+                 radial-gradient(ellipse 45% 40% at 90% 105%,rgba(20,184,166,.09) 0%,transparent 50%),
+                 linear-gradient(160deg,#070d14 0%,#0a1a24 100%)}
+    #theme-flash{position:fixed;inset:0;z-index:9999;pointer-events:none;background:rgba(255,255,255,0)}
+    #theme-flash.flash-dark{animation:flashOut .4s ease forwards;background:rgba(0,0,0,.18)}
+    #theme-flash.flash-light{animation:flashOut .4s ease forwards;background:rgba(255,255,255,.22)}
+    @keyframes flashOut{0%{opacity:1}100%{opacity:0}}
+
+    /* ── NAV ── */
+    .topnav{position:sticky;top:0;z-index:100;height:60px;padding:0 2rem;
+      display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+      background:rgba(7,13,20,.8);backdrop-filter:blur(28px) saturate(1.5);
+      border-bottom:1px solid rgba(16,185,129,.11)}
+    .nav-logo{display:flex;align-items:center;gap:.6rem;text-decoration:none;flex-shrink:0}
+    .nav-logo-icon{width:32px;height:32px;flex-shrink:0}
+    .nav-logo-text{font-size:1.25rem;font-weight:900;letter-spacing:-.5px;
+      background:linear-gradient(135deg,var(--em-l),var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .nav-links{display:flex;align-items:center;gap:.25rem;flex:1;justify-content:center}
+    .nav-link{display:flex;align-items:center;gap:.45rem;padding:.42rem .85rem;border-radius:8px;
+      font-size:.85rem;font-weight:500;color:var(--dim);text-decoration:none;transition:all .2s;white-space:nowrap}
+    .nav-link svg{width:15px;height:15px;stroke-width:2;flex-shrink:0}
+    .nav-link:hover{color:var(--text);background:var(--gh)}
+    .nav-link.active{color:var(--em-l);background:rgba(16,185,129,.12)}
+    .nav-link .badge{background:var(--em-d);color:#fff;font-size:.6rem;font-weight:700;padding:.1rem .42rem;border-radius:999px;line-height:1.4}
+    .nav-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
+    .icon-btn{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--gb);
+      display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;color:var(--dim)}
+    .icon-btn:hover{background:var(--gh);color:var(--em-l);border-color:rgba(16,185,129,.35)}
+    .icon-btn svg{width:16px;height:16px;stroke-width:1.8}
+    .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--em-d),var(--em));
+      display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;
+      cursor:pointer;box-shadow:0 0 16px rgba(16,185,129,.32)}
+
+    /* ── PAGE ── */
+    .page{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:2rem 2rem 5rem}
+
+    /* ── ACTION BAR ── */
+    .action-bar{display:flex;align-items:center;justify-content:space-between;
+      gap:1rem;margin-bottom:1.75rem;flex-wrap:wrap}
+    .back-btn{display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--muted);
+      background:none;border:none;cursor:pointer;padding:.3rem 0;transition:color .2s}
+    .back-btn:hover{color:var(--em-l)}
+    .back-btn svg{width:14px;height:14px;stroke-width:2}
+    .action-bar-right{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+    .save-indicator{font-size:.75rem;color:var(--muted);transition:color .4s}
+    .status-badge{font-size:.72rem;font-weight:700;padding:.24rem .7rem;border-radius:999px;white-space:nowrap}
+    .status-draft{background:rgba(255,255,255,.08);color:var(--muted);border:1px solid rgba(255,255,255,.1)}
+    .status-ready{background:rgba(16,185,129,.12);color:var(--em-l);border:1px solid rgba(16,185,129,.25)}
+    .status-sent{background:rgba(59,130,246,.12);color:#93c5fd;border:1px solid rgba(59,130,246,.25)}
+    .btn{padding:.6rem 1.2rem;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;
+      border:none;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;gap:.4rem;
+      text-decoration:none;transition:all .22s;position:relative;overflow:hidden}
+    .btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.07);transform:translateX(-110%) skewX(-15deg);transition:transform .4s}
+    .btn:hover::after{transform:translateX(110%) skewX(-15deg)}
+    .btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+    .btn-primary{background:linear-gradient(135deg,var(--em-d),var(--em));color:#fff;box-shadow:0 0 22px rgba(16,185,129,.3)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 0 36px rgba(16,185,129,.5)}
+    .btn-ghost{background:var(--glass);border:1px solid var(--gb);color:var(--dim)}
+    .btn-ghost:hover{border-color:var(--em);color:var(--em-l)}
+    .btn-danger{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171}
+    .btn-danger:hover{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.35)}
+    .btn svg{width:14px;height:14px;stroke-width:2}
+
+    /* ── CARDS ── */
+    .section-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      border-radius:20px;padding:1.5rem;margin-bottom:1.25rem;backdrop-filter:blur(20px)}
+    .section-card:hover{border-color:rgba(16,185,129,.18)}
+
+    .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem}
+    .sec-title{display:flex;align-items:center;gap:.6rem;font-size:.92rem;font-weight:700}
+    .sec-title svg{width:16px;height:16px;stroke-width:2;color:var(--em)}
+    .sec-title-num{width:22px;height:22px;border-radius:50%;background:rgba(16,185,129,.15);
+      border:1px solid rgba(16,185,129,.3);color:var(--em-l);font-size:.68rem;font-weight:800;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .check-ind{font-size:.82rem}
+
+    /* ── JOB CARD ── */
+    .job-card-wrap{background:rgba(255,255,255,.04);border:1px solid rgba(16,185,129,.18);
+      border-radius:20px;padding:1.5rem;margin-bottom:1.25rem;backdrop-filter:blur(20px)}
+    .jc-top{display:flex;align-items:flex-start;gap:1rem}
+    .jc-logo{width:48px;height:48px;border-radius:12px;flex-shrink:0;
+      background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(16,185,129,.06));
+      border:1px solid rgba(16,185,129,.22);display:flex;align-items:center;justify-content:center;
+      font-size:1.1rem;font-weight:800;color:var(--em-l)}
+    .jc-info{flex:1;min-width:0}
+    .jc-title{font-size:1.05rem;font-weight:700;line-height:1.3;margin-bottom:.2rem}
+    .jc-company{font-size:.84rem;color:var(--muted);margin-bottom:.6rem}
+    .jc-tags{display:flex;gap:.4rem;flex-wrap:wrap}
+    .jc-tag{font-size:.7rem;font-weight:600;padding:.18rem .55rem;border-radius:6px;
+      background:rgba(255,255,255,.07);color:var(--dim)}
+    .jc-tag-salary{background:rgba(16,185,129,.1);color:var(--em-l)}
+    .jc-tag-score{background:rgba(59,130,246,.12);color:#93c5fd}
+    .jc-desc-toggle{display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--em);
+      cursor:pointer;margin-top:.9rem;background:none;border:none;padding:0;font-family:'Inter',sans-serif;
+      transition:color .2s}
+    .jc-desc-toggle svg{width:14px;height:14px;stroke-width:2.5}
+    .jc-desc-toggle:hover{color:var(--em-l)}
+    .jc-desc{margin-top:.75rem;font-size:.8rem;color:var(--muted);line-height:1.6;
+      padding:.9rem 1rem;background:rgba(255,255,255,.03);border-radius:10px;
+      border:1px solid rgba(255,255,255,.06);white-space:pre-wrap;max-height:200px;overflow-y:auto}
+
+    /* ── CV DROPZONE ── */
+    .cv-dropzone{border:2px dashed rgba(16,185,129,.25);border-radius:14px;
+      padding:2rem 1.5rem;text-align:center;cursor:pointer;transition:all .22s;
+      background:rgba(16,185,129,.03)}
+    .cv-dropzone:hover,.cv-dropzone.dragover{border-color:rgba(16,185,129,.5);background:rgba(16,185,129,.07)}
+    .dz-text{font-size:.88rem;color:var(--dim);margin-bottom:.3rem}
+    .dz-text strong{color:var(--text)}
+    .dz-sub{font-size:.75rem;color:var(--muted)}
+    .dz-loading{display:flex;align-items:center;gap:.6rem;justify-content:center;font-size:.85rem;color:var(--muted)}
+    .cv-file-row{display:flex;align-items:center;gap:.75rem;padding:.5rem;justify-content:center;font-size:.85rem}
+    .cv-file-row svg{width:18px;height:18px;color:var(--em);flex-shrink:0}
+    .cv-fname{color:var(--text);font-weight:500;flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:260px}
+    .cv-ok{font-size:.75rem;color:var(--em);font-weight:600;white-space:nowrap}
+    .cv-remove{background:none;border:none;cursor:pointer;color:var(--muted);padding:.2rem;transition:color .2s;display:flex}
+    .cv-remove:hover{color:#f87171}
+    .cv-remove svg{width:14px;height:14px;stroke-width:2}
+
+    /* ── LETTRE ── */
+    .ai-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+    .ai-btn{padding:.42rem .9rem;border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;
+      border:1px solid rgba(16,185,129,.3);background:rgba(16,185,129,.07);color:var(--em-l);
+      font-family:'Inter',sans-serif;transition:all .2s;display:flex;align-items:center;gap:.35rem}
+    .ai-btn:hover:not(:disabled){background:rgba(16,185,129,.15);border-color:rgba(16,185,129,.5)}
+    .ai-btn:disabled{opacity:.35;cursor:not-allowed}
+    .ai-btn svg{width:13px;height:13px;stroke-width:2}
+    .ai-btn-main{background:linear-gradient(135deg,rgba(16,185,129,.18),rgba(16,185,129,.08));border-color:rgba(16,185,129,.4)}
+    .letter-loading{display:flex;align-items:center;gap:.6rem;font-size:.82rem;color:var(--muted);padding:.5rem 0}
+    .letter-textarea{width:100%;min-height:220px;padding:1rem;border-radius:12px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;line-height:1.65;
+      resize:vertical;transition:all .2s;outline:none}
+    .letter-textarea:focus{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.03)}
+    .letter-meta{display:flex;justify-content:flex-end;margin-top:.4rem;font-size:.72rem;color:var(--muted)}
+
+    /* ── EMAIL ── */
+    .email-gen-row{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+    .email-preview{margin-top:.25rem}
+    .email-label{font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+    .email-field{width:100%;padding:.7rem 1rem;border-radius:10px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+      color:var(--text);font-family:'Inter',sans-serif;font-size:.85rem;outline:none;transition:all .2s}
+    .email-field:focus{border-color:rgba(16,185,129,.35);background:rgba(16,185,129,.02)}
+    textarea.email-field{min-height:160px;resize:vertical;line-height:1.6}
+    .email-actions{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem}
+
+    /* ── BOTTOM ACTIONS ── */
+    .bottom-actions{display:flex;gap:.75rem;align-items:center;justify-content:space-between;
+      margin-top:1.5rem;flex-wrap:wrap}
+
+    /* ── SPINNERS ── */
+    .spin,.spin-sm{border-radius:50%;border-style:solid;animation:spin .65s linear infinite;flex-shrink:0}
+    .spin{width:16px;height:16px;border-width:2px;border-color:rgba(16,185,129,.25);border-top-color:var(--em)}
+    .spin-sm{width:13px;height:13px;border-width:1.5px;border-color:rgba(16,185,129,.25);border-top-color:var(--em)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ── TOAST ── */
+    #toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+    .toast{display:flex;align-items:center;gap:.6rem;background:rgba(7,13,20,.97);border:1px solid rgba(16,185,129,.25);
+      border-radius:10px;padding:.65rem 1rem;font-size:.82rem;color:var(--text);backdrop-filter:blur(20px);
+      opacity:0;transform:translateY(8px);transition:all .25s;max-width:320px}
+    .toast.toast-show{opacity:1;transform:translateY(0)}
+    .toast-success{border-color:rgba(16,185,129,.4)}
+    .toast-error{border-color:rgba(239,68,68,.4)}
+
+    @media(max-width:640px){.page{padding:1rem 1rem 4rem}.nav-links .nav-link span{display:none}.action-bar{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+<div id="theme-flash"></div>
+
+<!-- ── NAV ── -->
+<nav class="topnav">
+  <a href="/dashboard" class="nav-logo">
+    <svg class="nav-logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="9" fill="url(#lg)"/>
+      <path d="M8 12h3l2.5 7L16 12l2.5 7L21 12h3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse"><stop stop-color="#059669"/><stop offset="1" stop-color="#10b981"/></linearGradient></defs>
+    </svg>
+    <span class="nav-logo-text">W-JOB</span>
+  </a>
+  <div class="nav-links">
+    <a href="/applications" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      <span>Démarrer</span>
+    </a>
+    <a href="/dashboard" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="/jobs" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Emplois</span>
+    </a>
+    <a href="/candidatures" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      <span>Candidatures</span>
+    </a>
+  </div>
+  <div class="nav-right">
+    <a href="/settings" class="icon-btn" title="Paramètres">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </a>
+    <button class="icon-btn" id="themeToggle" title="Thème" aria-label="Changer le thème">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+    <div class="avatar" id="user-avatar">MM</div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="back-btn" id="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Retour aux emplois
+    </button>
+    <div class="action-bar-right">
+      <span class="save-indicator" id="save-indicator"></span>
+      <span class="status-badge status-draft" id="status-badge">Brouillon</span>
+      <button class="btn btn-ghost" id="save-manual-btn" onclick="autosave()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Sauvegarder
+      </button>
+      <button class="btn btn-primary" id="send-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Envoyer la candidature
+      </button>
+    </div>
+  </div>
+
+  <!-- Job info -->
+  <div class="job-card-wrap" id="job-card">
+    <div style="display:flex;align-items:center;gap:.75rem;color:var(--muted);font-size:.85rem">
+      <div class="spin"></div> Chargement de l'offre…
+    </div>
+  </div>
+
+  <!-- 1. CV -->
+  <div class="section-card">
+    <div class="sec-header">
+      <div class="sec-title">
+        <div class="sec-title-num">1</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        CV
+      </div>
+      <span class="check-ind" id="cv-check"><span style="color:var(--muted)">—</span></span>
+    </div>
+    <div class="cv-dropzone" id="cv-dropzone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:32px;height:32px;color:var(--em);margin-bottom:.75rem"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="dz-text"><strong>Glissez votre CV ici</strong> ou cliquez pour sélectionner</div>
+      <div class="dz-sub">PDF, DOC, DOCX · max 5 Mo</div>
+      <input type="file" id="cv-input" accept=".pdf,.doc,.docx" style="display:none">
+    </div>
+  </div>
+
+  <!-- 2. Lettre de motivation -->
+  <div class="section-card">
+    <div class="sec-header">
+      <div class="sec-title">
+        <div class="sec-title-num">2</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Lettre de motivation
+      </div>
+      <span class="check-ind" id="letter-check"><span style="color:var(--muted)">—</span></span>
+    </div>
+
+    <div class="ai-btns">
+      <button class="ai-btn ai-btn-main" id="gen-letter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Générer avec IA
+      </button>
+      <button class="ai-btn" id="improve-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Améliorer
+      </button>
+      <button class="ai-btn" id="shorten-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+        Raccourcir
+      </button>
+      <button class="ai-btn" id="punch-btn" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Percutant
+      </button>
+    </div>
+
+    <div class="letter-loading hidden" id="letter-loading">
+      <div class="spin"></div> Génération en cours…
+    </div>
+
+    <textarea class="letter-textarea" id="letter-textarea" placeholder="Votre lettre de motivation… ou cliquez sur &quot;Générer avec IA&quot; pour qu'elle soit rédigée automatiquement en fonction de votre profil et de l'offre."></textarea>
+    <div class="letter-meta">
+      <span><span id="char-count">0</span> caractères</span>
+    </div>
+  </div>
+
+  <!-- 3. Email de candidature -->
+  <div class="section-card">
+    <div class="sec-header">
+      <div class="sec-title">
+        <div class="sec-title-num">3</div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email de candidature
+      </div>
+    </div>
+
+    <div class="email-gen-row">
+      <button class="ai-btn ai-btn-main" id="gen-email-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Générer l'email
+      </button>
+      <span style="font-size:.78rem;color:var(--muted)">Email prêt à copier-coller</span>
+    </div>
+
+    <div class="email-preview hidden" id="email-preview">
+      <div class="email-label">Objet</div>
+      <input type="text" class="email-field" id="email-subject" placeholder="Objet de l'email…">
+      <div class="email-label" style="margin-top:.9rem">Corps</div>
+      <textarea class="email-field" id="email-body" placeholder="Corps de l'email…"></textarea>
+      <div class="email-actions">
+        <button class="ai-btn" id="copy-email-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copier l'email
+        </button>
+        <button class="ai-btn" id="claude-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Prompt pour Claude
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom actions -->
+  <div class="bottom-actions">
+    <button class="btn btn-danger" id="delete-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      Supprimer le brouillon
+    </button>
+    <button class="btn btn-primary" id="send-btn-bottom" onclick="document.getElementById('send-btn').click()" style="pointer-events:none;opacity:0" id="send-btn-bottom">
+    </button>
+  </div>
+
+</div>
+
+<div id="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/auth-guard.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/apply.js"></script>
+</body>
+</html>

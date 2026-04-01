@@ -142,7 +142,7 @@ function buildJobCard(job, index) {
     // Événements
     div.querySelector('.btn-apply').addEventListener('click', (e) => {
         e.stopPropagation();
-        openApplyModal(job);
+        window.location.href = `/apply?job_id=${job.id}`;
     });
     div.querySelector('.btn-save').addEventListener('click', (e) => {
         e.stopPropagation();
