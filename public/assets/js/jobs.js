@@ -297,7 +297,7 @@ function buildLocationSidebar(jobs) {
         html += '<div style="font-size:.75rem;color:var(--muted)">Aucune donnée</div>';
     } else {
         locs.forEach(loc => {
-            html += `<div class="check-item checked" data-filter="location" data-value="${escHtml(loc.toLowerCase())}"><div class="check-box"></div> ${escHtml(loc)}</div>`;
+            html += `<div class="check-item" data-filter="location" data-value="${escHtml(loc.toLowerCase())}"><div class="check-box"></div> ${escHtml(loc)}</div>`;
         });
     }
     container.innerHTML = html;
