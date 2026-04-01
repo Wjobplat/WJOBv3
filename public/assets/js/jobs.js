@@ -12,6 +12,10 @@ let _allJobs   = [];
 let _activeFilter = 'all'; // 'all' | 'CDI' | 'CDD' | 'Stage' | 'Alternance' | 'remote'
 let _searchQuery  = '';
 let _locationQuery = '';
+let _sidebarContracts = new Set(); // vide = tous
+let _sidebarLocations = new Set(); // vide = tous
+let _sidebarScores    = [];        // [{min,max}] vide = tous
+let _salaryMin        = 0;         // k€, 0 = pas de filtre
 
 // ── Chargement des offres ──────────────────────────────────
 async function loadJobs() {
@@ -26,6 +30,8 @@ async function loadJobs() {
         _allJobs = jobs || [];
         renderJobs(_allJobs);
         updateStats(_allJobs);
+        buildLocationSidebar(_allJobs);
+        updateSidebarCounts(_allJobs);
     } catch (e) {
         console.error('[W-JOB] Jobs load error:', e);
         grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);">Impossible de charger les offres. Vérifiez votre connexion.</div>';
@@ -161,11 +167,11 @@ function updateStats(jobs) {
     const today     = new Date().toISOString().split('T')[0];
     const newToday  = jobs.filter(j => (j.postedDate || '').startsWith(today)).length;
 
-    const statVals = document.querySelectorAll('.stats-row .stat-val');
-    if (statVals[0]) statVals[0].textContent = total;
-    if (statVals[1]) statVals[1].textContent = newToday;
-    if (statVals[2]) statVals[2].textContent = avgMatch > 0 ? avgMatch + '%' : '—';
-    if (statVals[3]) statVals[3].textContent = companies;
+    const s = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    s('stat-total', total);
+    s('stat-new', newToday);
+    s('stat-match', avgMatch > 0 ? avgMatch + '%' : '—');
+    s('stat-companies', companies);
 
     const cnt = document.getElementById('results-count');
     if (cnt) cnt.textContent = total;
@@ -173,14 +179,14 @@ function updateStats(jobs) {
 
 // ── Filtres ────────────────────────────────────────────────
 function initFilters() {
-    // Boutons de filtre de type de contrat
+    // Boutons type de contrat (barre du haut)
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', function () {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             const text = this.textContent.trim();
             if (text.includes('Tous')) _activeFilter = 'all';
-            else if (text.includes('Remote') || text.includes('Télétravail')) _activeFilter = 'remote';
+            else if (text.includes('Télétravail') || text.includes('Remote')) _activeFilter = 'remote';
             else _activeFilter = text;
             applyFilters();
         });
@@ -195,7 +201,7 @@ function initFilters() {
         });
     }
 
-    // Filtre localisation
+    // Filtre localisation (barre du haut)
     const locationInput = document.getElementById('filter-location');
     if (locationInput) {
         locationInput.addEventListener('input', function () {
@@ -203,11 +209,114 @@ function initFilters() {
             applyFilters();
         });
     }
+
+    // Sidebar checkboxes
+    initSidebarFilters();
+
+    // Slider salaire
+    const salarySlider = document.getElementById('salary-min');
+    const salaryLabel  = document.getElementById('salary-min-label');
+    if (salarySlider) {
+        const updateSliderTrack = function () {
+            const pct = ((this.value - this.min) / (this.max - this.min)) * 100;
+            this.style.setProperty('--pct', pct + '%');
+        };
+        salarySlider.addEventListener('input', function () {
+            _salaryMin = parseInt(this.value);
+            updateSliderTrack.call(this);
+            if (salaryLabel) salaryLabel.textContent = _salaryMin > 0 ? `≥ ${_salaryMin}k€` : 'Tous';
+            applyFilters();
+        });
+    }
+}
+
+function initSidebarFilters() {
+    document.querySelectorAll('.check-item[data-filter]').forEach(item => {
+        item.addEventListener('click', function () {
+            this.classList.toggle('checked');
+            syncSidebarState();
+            applyFilters();
+        });
+    });
+    syncSidebarState();
+}
+
+function syncSidebarState() {
+    _sidebarContracts = new Set();
+    _sidebarLocations = new Set();
+    _sidebarScores    = [];
+
+    document.querySelectorAll('.check-item[data-filter].checked').forEach(item => {
+        const f = item.dataset.filter;
+        if (f === 'contract') _sidebarContracts.add(item.dataset.value.toLowerCase());
+        if (f === 'location')  _sidebarLocations.add(item.dataset.value.toLowerCase());
+        if (f === 'score') {
+            _sidebarScores.push({
+                min: parseInt(item.dataset.min || 0),
+                max: parseInt(item.dataset.max || 100)
+            });
+        }
+    });
+}
+
+// ── Mise à jour des compteurs sidebar ─────────────────────
+function updateSidebarCounts(jobs) {
+    // Contrat
+    document.querySelectorAll('.check-item[data-filter="contract"]').forEach(item => {
+        const val = item.dataset.value;
+        const cnt = jobs.filter(j => (j.contractType || '').toLowerCase() === val.toLowerCase()).length;
+        const badge = item.querySelector('.check-count');
+        if (badge) badge.textContent = cnt;
+    });
+
+    // Score
+    document.querySelectorAll('.check-item[data-filter="score"]').forEach(item => {
+        const min = parseInt(item.dataset.min || 0);
+        const max = parseInt(item.dataset.max || 100);
+        const cnt = jobs.filter(j => {
+            const s = j.compatibility || j.match_score || 0;
+            return s >= min && s <= max;
+        }).length;
+        const badge = item.querySelector('.check-count');
+        if (badge) badge.textContent = cnt;
+    });
+}
+
+// Construit dynamiquement la liste des localisations à partir des offres chargées
+function buildLocationSidebar(jobs) {
+    const container = document.getElementById('sidebar-locations');
+    if (!container) return;
+
+    // Extraire les villes/régions uniques
+    const locs = [...new Set(
+        jobs.map(j => (j.location || '').split(/[·,]/)[0].trim()).filter(Boolean)
+    )].sort().slice(0, 8);
+
+    let html = '<span class="sidebar-label">Localisation</span>';
+    if (locs.length === 0) {
+        html += '<div style="font-size:.75rem;color:var(--muted)">Aucune donnée</div>';
+    } else {
+        locs.forEach(loc => {
+            html += `<div class="check-item checked" data-filter="location" data-value="${escHtml(loc.toLowerCase())}"><div class="check-box"></div> ${escHtml(loc)}</div>`;
+        });
+    }
+    container.innerHTML = html;
+
+    // Rebrancher les événements sur les nouvelles checkboxes
+    container.querySelectorAll('.check-item[data-filter]').forEach(item => {
+        item.addEventListener('click', function () {
+            this.classList.toggle('checked');
+            syncSidebarState();
+            applyFilters();
+        });
+    });
+    syncSidebarState();
 }
 
 function applyFilters() {
     let filtered = _allJobs;
 
+    // ── Filtre type contrat (barre haut) ──
     if (_activeFilter !== 'all') {
         if (_activeFilter === 'remote') {
             filtered = filtered.filter(j => j.remote);
@@ -218,18 +327,59 @@ function applyFilters() {
         }
     }
 
+    // ── Filtre contrat sidebar (si barre = "Tous" et checkboxes non-vides) ──
+    if (_activeFilter === 'all' && _sidebarContracts.size > 0) {
+        filtered = filtered.filter(j =>
+            _sidebarContracts.has((j.contractType || '').toLowerCase())
+        );
+    }
+
+    // ── Filtre localisation (barre de recherche) ──
+    if (_locationQuery) {
+        filtered = filtered.filter(j =>
+            (j.location || '').toLowerCase().includes(_locationQuery)
+        );
+    }
+
+    // ── Filtre localisation sidebar ──
+    if (_sidebarLocations.size > 0) {
+        filtered = filtered.filter(j => {
+            const loc = (j.location || '').toLowerCase();
+            for (const sl of _sidebarLocations) {
+                if (loc.includes(sl)) return true;
+            }
+            return false;
+        });
+    }
+
+    // ── Filtre score sidebar ──
+    if (_sidebarScores.length > 0) {
+        filtered = filtered.filter(j => {
+            const score = j.compatibility || j.match_score || 0;
+            return _sidebarScores.some(r => score >= r.min && score <= r.max);
+        });
+    }
+
+    // ── Filtre salaire minimum ──
+    if (_salaryMin > 0) {
+        filtered = filtered.filter(j => {
+            const sal = j.salary || '';
+            // Extraire le premier nombre du format "38–45k€" ou "38000"
+            const match = sal.match(/(\d+)/);
+            if (!match) return true; // pas de donnée = on inclut
+            const val = parseInt(match[1]);
+            // Si valeur < 1000, c'est en k€
+            return (val < 1000 ? val : val / 1000) >= _salaryMin;
+        });
+    }
+
+    // ── Recherche textuelle ──
     if (_searchQuery) {
         filtered = filtered.filter(j =>
             (j.title || '').toLowerCase().includes(_searchQuery) ||
             (j.company || '').toLowerCase().includes(_searchQuery) ||
             (j.description || '').toLowerCase().includes(_searchQuery) ||
             (j.skills || []).some(s => s.toLowerCase().includes(_searchQuery))
-        );
-    }
-
-    if (_locationQuery) {
-        filtered = filtered.filter(j =>
-            (j.location || '').toLowerCase().includes(_locationQuery)
         );
     }
 
