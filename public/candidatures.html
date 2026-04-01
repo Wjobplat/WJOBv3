@@ -198,6 +198,17 @@
     .add-card svg{width:15px;height:15px;stroke-width:2}
     .add-card:hover{border-color:rgba(16,185,129,.42);color:var(--em-l);background:rgba(16,185,129,.04);transform:scale(1.01)}
 
+    /* Classes dynamiques kanban.js */
+    .match-badge{font-size:.67rem;font-weight:700;color:var(--em-l);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.22);padding:.14rem .44rem;border-radius:6px;white-space:nowrap;flex-shrink:0}
+    .card-info{flex:1;min-width:0;overflow:hidden}
+    .card-info .card-role{font-size:.83rem;font-weight:700;line-height:1.3;margin-bottom:.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-info .card-company{font-size:.73rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .card-actions{display:flex;gap:.35rem}
+    .btn-card-send,.btn-card-view{font-size:.7rem;font-weight:600;padding:.22rem .6rem;border-radius:6px;border:1px solid rgba(16,185,129,.3);background:transparent;color:var(--em-l);cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+    .btn-card-send:hover,.btn-card-view:hover{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.5)}
+    .btn-card-send:disabled{opacity:.5;cursor:default}
+    .col-empty{text-align:center;padding:1.5rem 1rem;color:var(--muted);font-size:.8rem}
+
     ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(16,185,129,.3);border-radius:2px}
 
     @media(max-width:1024px){.kanban{grid-template-columns:repeat(2,1fr)}}
@@ -230,12 +241,12 @@
       <a href="/jobs" class="nav-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <span>Emplois</span>
-        <span class="badge">12</span>
+        <span class="badge" id="badge-jobs">—</span>
       </a>
       <a href="/candidatures" class="nav-link active">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         <span>Candidatures</span>
-        <span class="badge">5</span>
+        <span class="badge" id="badge-apps">—</span>
       </a>
       <a href="/recruiters" class="nav-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -273,7 +284,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Exporter
         </button>
-        <button class="btn btn-primary">
+        <button class="btn btn-primary" id="btn-new-app">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           Nouvelle candidature
         </button>
@@ -286,54 +297,54 @@
         <div class="stat-icon" style="background:rgba(255,255,255,.07)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
         </div>
-        <div><div class="stat-val">50</div><div class="stat-lbl">Offres trouvées</div></div>
+        <div><div class="stat-val" id="stat-apps-total">—</div><div class="stat-lbl">Candidatures</div></div>
       </div>
       <div class="stat-pill">
         <div class="stat-icon" style="background:rgba(16,185,129,.14);color:var(--em-l)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </div>
-        <div><div class="stat-val" style="color:var(--em-l)">3</div><div class="stat-lbl">Envoyées</div></div>
+        <div><div class="stat-val" id="stat-apps-sent" style="color:var(--em-l)">—</div><div class="stat-lbl">Envoyées</div></div>
       </div>
       <div class="stat-pill">
         <div class="stat-icon" style="background:rgba(245,158,11,.12);color:#fbbf24">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-        <div><div class="stat-val" style="color:#fbbf24">5</div><div class="stat-lbl">En attente</div></div>
+        <div><div class="stat-val" id="stat-apps-pending" style="color:#fbbf24">—</div><div class="stat-lbl">En attente</div></div>
       </div>
       <div class="stat-pill">
         <div class="stat-icon" style="background:rgba(59,130,246,.14);color:#93c5fd">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         </div>
-        <div><div class="stat-val" style="color:#93c5fd">91%</div><div class="stat-lbl">Meilleur match</div></div>
+        <div><div class="stat-val" id="stat-apps-match" style="color:#93c5fd">—</div><div class="stat-lbl">Meilleur match</div></div>
       </div>
     </div>
 
     <!-- FILTERS -->
     <div class="filters fade-in fi3">
-      <button class="filter-btn active">
+      <button class="filter-btn active" data-status="all">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Toutes (50)
+        Toutes (<span id="fcount-all">—</span>)
       </button>
-      <button class="filter-btn">
+      <button class="filter-btn" data-status="draft">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        Brouillons
+        Brouillons (<span id="fcount-draft">—</span>)
       </button>
-      <button class="filter-btn">
+      <button class="filter-btn" data-status="pending">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        En attente
+        En attente (<span id="fcount-pending">—</span>)
       </button>
-      <button class="filter-btn">
+      <button class="filter-btn" data-status="sent">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Envoyées (3)
+        Envoyées (<span id="fcount-sent">—</span>)
       </button>
-      <button class="filter-btn">
+      <button class="filter-btn" data-status="responded">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Réponses
+        Réponses (<span id="fcount-responded">—</span>)
       </button>
-      <div class="search-input">
+      <label class="search-input">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        Rechercher...
-      </div>
+        <input type="text" id="search-apps" placeholder="Rechercher..." style="background:none;border:none;outline:none;color:inherit;font-size:.82rem;font-family:inherit;width:140px">
+      </label>
     </div>
 
     <!-- KANBAN -->
@@ -491,20 +502,9 @@
   </div>
 
   <script>
-    lucide.createIcons();
-
-    // Filter buttons
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
     // ── THEME TOGGLE ──
     const root = document.documentElement;
-    const saved = localStorage.getItem('wjob-theme') || 'dark';
-    root.dataset.theme = saved;
+    root.dataset.theme = localStorage.getItem('wjob-theme') || 'dark';
 
     function navBg() {
       const light = root.dataset.theme === 'light';
