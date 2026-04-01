@@ -6,6 +6,12 @@
   "functions": {
     "api/analyze-cv.js": {
       "maxDuration": 30
+    },
+    "api/generate-letter.js": {
+      "maxDuration": 30
+    },
+    "api/generate-email.js": {
+      "maxDuration": 30
     }
   }
 }
