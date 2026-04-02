@@ -109,6 +109,9 @@ function buildCard(app, status) {
         <div class="card-actions">
           ${status === 'draft' ? `<button class="btn-card-send" data-id="${app.id}">Envoyer</button>` : ''}
           <button class="btn-card-view" data-id="${app.id}">Voir</button>
+          <button class="btn-card-delete" data-id="${app.id}" title="Supprimer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
         </div>
       </div>`;
 
@@ -119,6 +122,10 @@ function buildCard(app, status) {
     div.querySelector('.btn-card-send')?.addEventListener('click', async e => {
         e.stopPropagation();
         await sendApp(app.id, e.currentTarget);
+    });
+    div.querySelector('.btn-card-delete')?.addEventListener('click', async e => {
+        e.stopPropagation();
+        await deleteApp(app.id, div);
     });
     div.addEventListener('click', () => viewApp(app.id));
 
@@ -197,6 +204,23 @@ async function sendApp(id, btn) {
     } catch (e) {
         console.error('[W-JOB] Send error:', e);
         if (btn) { btn.disabled = false; btn.textContent = 'Envoyer'; }
+    }
+}
+
+async function deleteApp(id, cardEl) {
+    if (!confirm('Supprimer cette candidature définitivement ?')) return;
+    try {
+        cardEl.style.opacity = '.4';
+        cardEl.style.pointerEvents = 'none';
+        await API.deleteApplication(id);
+        _allApps = _allApps.filter(a => a.id !== id);
+        renderKanban(_allApps);
+        updateStats(_allApps);
+        updateFilterCounts(_allApps);
+    } catch (e) {
+        console.error('[W-JOB] Delete error:', e);
+        cardEl.style.opacity = '';
+        cardEl.style.pointerEvents = '';
     }
 }
 
