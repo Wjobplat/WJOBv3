@@ -1,12 +1,15 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { job, profile } = req.body;
+  const { job, profile, apiKey } = req.body;
   if (!job || !profile) return res.status(400).json({ error: 'job et profile requis' });
+
+  const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!resolvedKey) return res.status(400).json({ error: 'Clé API Anthropic manquante. Configurez-la dans Paramètres.' });
+
+  const client = new Anthropic({ apiKey: resolvedKey });
 
   const prompt = `Tu es un expert en recherche d'emploi. Rédige un email de candidature professionnel, humain et personnalisé.
 
@@ -44,7 +47,7 @@ Rédige uniquement l'email (objet + corps), en français.`;
     const email = message.content[0].text.trim();
     res.status(200).json({ success: true, email });
   } catch (err) {
-    console.error('Claude generate-email error:', err);
-    res.status(500).json({ error: 'Erreur lors de la génération par Claude' });
+    console.error('Claude generate-email error:', err.message || err);
+    res.status(500).json({ error: err.message || 'Erreur lors de la génération par Claude' });
   }
 }

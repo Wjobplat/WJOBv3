@@ -1,7 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 function buildPrompt(action, job, profile, currentLetter) {
   const jobCtx = `Poste : ${job.title} chez ${job.company}
 Localisation : ${job.location || 'Non spécifiée'}
@@ -83,11 +81,16 @@ Retourne uniquement la lettre transformée.`;
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { job, profile, currentLetter, action = 'generate' } = req.body;
+  const { job, profile, currentLetter, action = 'generate', apiKey } = req.body;
   if (!job) return res.status(400).json({ error: 'job requis' });
   if (action !== 'generate' && !currentLetter) {
     return res.status(400).json({ error: 'currentLetter requis pour cette action' });
   }
+
+  const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY;
+  if (!resolvedKey) return res.status(400).json({ error: 'Clé API Anthropic manquante. Configurez-la dans Paramètres.' });
+
+  const client = new Anthropic({ apiKey: resolvedKey });
 
   try {
     const prompt = buildPrompt(action, job, profile, currentLetter);
@@ -98,7 +101,7 @@ export default async function handler(req, res) {
     });
     res.status(200).json({ success: true, letter: message.content[0].text.trim() });
   } catch (err) {
-    console.error('[generate-letter] error:', err);
-    res.status(500).json({ error: 'Erreur lors de la génération IA' });
+    console.error('[generate-letter] error:', err.message || err);
+    res.status(500).json({ error: err.message || 'Erreur lors de la génération IA' });
   }
 }

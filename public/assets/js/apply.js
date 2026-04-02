@@ -246,10 +246,11 @@ async function letterAction(action) {
     textarea.style.opacity = '.4';
 
     try {
+        const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const res = await fetch('/api/generate-letter', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ job: _job, profile: _profile, currentLetter: current, action })
+            body: JSON.stringify({ job: _job, profile: _profile, currentLetter: current, action, apiKey })
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
@@ -260,7 +261,8 @@ async function letterAction(action) {
         showToast(action === 'generate' ? 'Lettre générée ✓' : 'Lettre mise à jour ✓', 'success');
     } catch (e) {
         console.error('[apply] letter error:', e);
-        showToast('Erreur IA. Réessayez.', 'error');
+        const msg = e?.message || 'Réessayez.';
+        showToast(msg.includes('Clé API') ? msg : 'Erreur IA. Réessayez.', 'error');
     } finally {
         setLetterBtnsDisabled(false);
         loadEl.classList.add('hidden');
@@ -297,10 +299,11 @@ async function generateEmail() {
     btn.innerHTML = '<span class="spin-sm"></span> Génération…';
 
     try {
+        const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const res = await fetch('/api/generate-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ job: _job, profile: _profile })
+            body: JSON.stringify({ job: _job, profile: _profile, apiKey })
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.error);
