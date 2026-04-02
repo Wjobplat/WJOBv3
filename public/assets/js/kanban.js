@@ -207,21 +207,41 @@ async function sendApp(id, btn) {
     }
 }
 
-async function deleteApp(id, cardEl) {
-    if (!confirm('Supprimer cette candidature définitivement ?')) return;
-    try {
+function deleteApp(id, cardEl) {
+    // Afficher confirmation inline sur la carte
+    const footer = cardEl.querySelector('.card-footer');
+    if (!footer || cardEl.querySelector('.delete-confirm')) return;
+
+    const confirmBar = document.createElement('div');
+    confirmBar.className = 'delete-confirm';
+    confirmBar.innerHTML = `
+      <span class="delete-confirm-text">Supprimer ?</span>
+      <button class="delete-confirm-yes">Oui</button>
+      <button class="delete-confirm-no">Non</button>`;
+    footer.replaceWith(confirmBar);
+
+    confirmBar.querySelector('.delete-confirm-no').addEventListener('click', e => {
+        e.stopPropagation();
+        confirmBar.replaceWith(footer);
+    });
+
+    confirmBar.querySelector('.delete-confirm-yes').addEventListener('click', async e => {
+        e.stopPropagation();
         cardEl.style.opacity = '.4';
         cardEl.style.pointerEvents = 'none';
-        await API.deleteApplication(id);
-        _allApps = _allApps.filter(a => a.id !== id);
-        renderKanban(_allApps);
-        updateStats(_allApps);
-        updateFilterCounts(_allApps);
-    } catch (e) {
-        console.error('[W-JOB] Delete error:', e);
-        cardEl.style.opacity = '';
-        cardEl.style.pointerEvents = '';
-    }
+        try {
+            await API.deleteApplication(id);
+            _allApps = _allApps.filter(a => a.id !== id);
+            renderKanban(_allApps);
+            updateStats(_allApps);
+            updateFilterCounts(_allApps);
+        } catch (err) {
+            console.error('[W-JOB] Delete error:', err);
+            cardEl.style.opacity = '';
+            cardEl.style.pointerEvents = '';
+            confirmBar.replaceWith(footer);
+        }
+    });
 }
 
 function viewApp(id) {
