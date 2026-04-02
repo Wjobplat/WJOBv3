@@ -78,8 +78,8 @@ function renderKanban(apps) {
 // ── Construction d'une carte ──────────────────────────────
 function buildCard(app, status) {
     const job      = app.job || {};
-    const title    = job.title    || app.job_title || 'Poste';
-    const company  = job.company  || app.company   || 'Entreprise';
+    const title    = job.title    || app.job_title || 'Offre supprimée';
+    const company  = job.company  || app.company   || '';
     const location = job.location || app.location  || '';
     const score    = app.match_score || job.compatibility || 0;
     const match    = score > 0 ? Math.round(score) + '%' : '';
@@ -151,9 +151,9 @@ function updateFilterCounts(apps) {
 // ── Filtres ───────────────────────────────────────────────
 function initFilters() {
     // Boutons filtre par statut
-    document.querySelectorAll('.filter-btn[data-status]').forEach(btn => {
+    document.querySelectorAll('.ftab[data-status]').forEach(btn => {
         btn.addEventListener('click', function () {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             filterColumns(this.dataset.status);
         });
