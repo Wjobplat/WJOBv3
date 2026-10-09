@@ -309,7 +309,7 @@ async function startSearch() {
         const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const searchRes = await fetch('/api/search-jobs', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: await window.wjobApiHeaders(),
             body: JSON.stringify({ profile, apiKey })
         });
         if (!searchRes.ok) {

@@ -2,17 +2,19 @@
 // Vercel Serverless Function — Incoming Webhook Handler
 // Processes events and logs them in Supabase
 import { createClient } from '@supabase/supabase-js';
+import { isAuthorizedFor } from './_utils/auth.js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || 'https://bqobpkwkwypiuhtprjva.supabase.co';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Client créé seulement si la clé service est configurée (sinon le module plante au chargement)
+const supabase = supabaseKey ? createClient(supabaseUrl, supabaseKey) : null;
 
 export default async function handler(req, res) {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Webhook-Secret, X-Webhook-Signature, X-Webhook-Event');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Webhook-Secret, X-Webhook-Signature, X-Webhook-Event');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -22,6 +24,10 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    if (!supabase) {
+        return res.status(503).json({ error: 'SUPABASE_SERVICE_ROLE_KEY non configurée sur Vercel' });
+    }
+
     try {
         const event = req.body.event || req.query.event;
         const data = req.body.data || req.body;
@@ -29,6 +35,10 @@ export default async function handler(req, res) {
 
         if (!event || !user_id) {
             return res.status(400).json({ error: 'Missing event or user_id' });
+        }
+
+        if (!(await isAuthorizedFor(req, user_id))) {
+            return res.status(401).json({ error: 'Non autorisé' });
         }
 
         console.log(`[Webhook] Received: ${event} for user ${user_id}`);
@@ -50,11 +60,11 @@ export default async function handler(req, res) {
 
         // 2. Perform business logic based on event
         if (event === 'job.created') {
-            const { error } = await supabase.from('jobs').insert(data);
+            const { error } = await supabase.from('jobs').insert({ ...data, user_id });
             if (error) console.error('[Webhook] Job insert error:', error);
         }
         else if (event === 'recruiter.found') {
-            const { error } = await supabase.from('recruiters').insert(data);
+            const { error } = await supabase.from('recruiters').insert({ ...data, user_id });
             if (error) console.error('[Webhook] Recruiter insert error:', error);
         }
         else if (event === 'application.generated') {
@@ -76,7 +86,7 @@ export default async function handler(req, res) {
             if (status === 'sent') updates.sent_date = new Date().toISOString().split('T')[0];
             if (status === 'responded') updates.response_date = new Date().toISOString().split('T')[0];
 
-            const { error } = await supabase.from('applications').update(updates).eq('id', applicationId);
+            const { error } = await supabase.from('applications').update(updates).eq('id', applicationId).eq('user_id', user_id);
             if (error) console.error('[Webhook] Application update error:', error);
         }
         else if (event === 'cv.uploaded') {

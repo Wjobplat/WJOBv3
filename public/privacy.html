@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>W-JOB — Politique de confidentialité</title>
+  <meta name="description" content="Politique de confidentialité de W-JOB : données collectées, finalités, sous-traitants et droits RGPD." />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --em: #10b981; --em-l: #34d399; --bg: #030d12; --glass: rgba(255,255,255,.04); --border: rgba(255,255,255,.08); --text: #f0fdf8; --dim: #a3c4bc; --muted: #6b9e8e; }
+    [data-theme="light"] { --bg: #f0fdf8; --glass: rgba(0,0,0,.03); --border: rgba(0,0,0,.1); --text: #0f172a; --dim: #2d5c4e; --muted: #4b7a6c; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; min-height: 100vh; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 2.5rem 1rem 4rem; }
+    .back { display: inline-flex; align-items: center; gap: .4rem; color: var(--em-l); text-decoration: none; font-size: .875rem; font-weight: 600; margin-bottom: 2rem; }
+    .back:hover { text-decoration: underline; }
+    h1 { font-size: clamp(1.6rem, 4vw, 2.1rem); font-weight: 800; letter-spacing: -.5px; margin-bottom: .4rem; }
+    .updated { color: var(--muted); font-size: .85rem; margin-bottom: 2rem; }
+    .card { background: var(--glass); border: 1px solid var(--border); border-radius: 16px; padding: 1.75rem; }
+    h2 { font-size: 1.1rem; font-weight: 700; margin: 1.75rem 0 .6rem; color: var(--em-l); }
+    h2:first-child { margin-top: 0; }
+    p, li { color: var(--dim); font-size: .925rem; }
+    ul { padding-left: 1.2rem; margin: .4rem 0; }
+    li { margin: .25rem 0; }
+    strong { color: var(--text); }
+    a { color: var(--em-l); }
+    .todo { color: #fbbf24; font-style: normal; }
+    footer { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 2rem; }
+  </style>
+  <script>document.documentElement.dataset.theme = localStorage.getItem('wjob-theme') || 'dark';</script>
+</head>
+<body>
+  <main class="wrap">
+    <a href="/" class="back">← Retour à l'accueil</a>
+    <h1>Politique de confidentialité</h1>
+    <p class="updated">Dernière mise à jour : <span class="todo">[à compléter]</span></p>
+
+    <div class="card">
+      <h2>1. Responsable du traitement</h2>
+      <p>W-JOB est édité par <span class="todo">[nom / raison sociale à compléter]</span>, <span class="todo">[adresse à compléter]</span>. Contact : <span class="todo">[email à compléter]</span>.</p>
+
+      <h2>2. Données collectées</h2>
+      <ul>
+        <li><strong>Compte</strong> : adresse email, nom, prénom.</li>
+        <li><strong>CV</strong> : le fichier que vous déposez et les informations qui en sont extraites (compétences, expériences, formation).</li>
+        <li><strong>Candidatures</strong> : offres sauvegardées, lettres et emails générés, statuts de suivi.</li>
+        <li><strong>Recruteurs</strong> : contacts professionnels associés aux offres.</li>
+        <li><strong>Préférences</strong> : thème d'affichage et consentement aux cookies (stockés dans votre navigateur).</li>
+      </ul>
+
+      <h2>3. Finalités</h2>
+      <ul>
+        <li>Analyser votre CV et calculer la compatibilité avec des offres.</li>
+        <li>Générer des lettres de motivation et des emails de candidature, que vous validez avant tout envoi.</li>
+        <li>Suivre l'avancement de vos candidatures.</li>
+      </ul>
+      <p>Base légale : exécution du service que vous demandez et votre consentement.</p>
+
+      <h2>4. Sous-traitants</h2>
+      <ul>
+        <li><strong>Supabase</strong> : authentification, base de données et stockage des CV — région <span class="todo">[à compléter]</span>.</li>
+        <li><strong>Vercel</strong> : hébergement du site et des fonctions serveur.</li>
+        <li><strong>Anthropic</strong> : traitement par l'IA Claude pour l'analyse du CV et la rédaction des contenus. Les données transmises via l'API ne servent pas à entraîner les modèles.</li>
+      </ul>
+
+      <h2>5. Durée de conservation</h2>
+      <p>Vos données sont conservées tant que votre compte est actif, puis supprimées sous <span class="todo">[délai à compléter]</span>. Vous pouvez supprimer vos données à tout moment depuis les <a href="/settings">Paramètres</a>.</p>
+
+      <h2>6. Sécurité</h2>
+      <p>Les échanges sont chiffrés (HTTPS). Chaque utilisateur n'accède qu'à ses propres données grâce aux règles d'accès de la base, et les CV ne sont lisibles que par leur auteur.</p>
+
+      <h2>7. Vos droits (RGPD)</h2>
+      <p>Vous disposez des droits d'accès, de rectification, d'effacement, de portabilité, d'opposition et de limitation. Pour les exercer : <span class="todo">[email à compléter]</span>. Vous pouvez aussi saisir la CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).</p>
+
+      <h2>8. Cookies</h2>
+      <p>W-JOB utilise uniquement le stockage local nécessaire au fonctionnement (session de connexion, thème). Aucun cookie publicitaire ou de suivi tiers.</p>
+    </div>
+
+    <footer>© 2026 W-JOB · <a href="/terms">Conditions générales d'utilisation</a></footer>
+  </main>
+</body>
+</html>

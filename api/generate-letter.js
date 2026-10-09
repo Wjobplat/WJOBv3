@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { requireUser } from './_utils/auth.js';
 
 function buildPrompt(action, job, profile, currentLetter) {
   const jobCtx = `Poste : ${job.title} chez ${job.company}
@@ -88,6 +89,10 @@ export default async function handler(req, res) {
   }
 
   const resolvedKey = apiKey || process.env.ANTHROPIC_API_KEY;
+
+  // Sans clé personnelle, c'est la clé du serveur qui paie : connexion obligatoire
+
+  if (!apiKey && !(await requireUser(req, res))) return;
   if (!resolvedKey) return res.status(400).json({ error: 'Clé API Anthropic manquante. Configurez-la dans Paramètres.' });
 
   const client = new Anthropic({ apiKey: resolvedKey });

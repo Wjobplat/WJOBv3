@@ -378,7 +378,7 @@ var API = {
         try {
             const response = await fetch(config.outgoingUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: await window.wjobAgentHeaders(config.outgoingUrl, config.secret),
                 body: JSON.stringify({
                     action: action,
                     user_id: user.id,
@@ -411,8 +411,7 @@ var API = {
                         job_description: data.job?.description
                     }
                 };
-                const headers = { 'Content-Type': 'application/json' };
-                if (config.secret) headers['X-Webhook-Secret'] = config.secret;
+                const headers = await window.wjobAgentHeaders(config.outgoingUrl, config.secret);
 
                 const response = await fetch(config.outgoingUrl, {
                     method: 'POST',
@@ -458,7 +457,7 @@ var API = {
         const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const response = await fetch('/api/analyze-cv', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: await window.wjobApiHeaders(),
             body: JSON.stringify({ cvBase64, apiKey })
         });
 
@@ -511,7 +510,7 @@ var API = {
     _defaultWebhookConfig: function () {
         return {
             id: null,
-            outgoingUrl: window.location.origin + '/api/trigger',
+            outgoingUrl: '',
             secret: 'wjob_sec_' + Math.random().toString(36).substr(2, 9),
             enabled: false,
             events: {
@@ -560,8 +559,7 @@ var API = {
         };
 
         try {
-            const headers = { 'Content-Type': 'application/json' };
-            if (config.secret) headers['X-Webhook-Secret'] = config.secret;
+            const headers = await window.wjobAgentHeaders(config.outgoingUrl, config.secret);
 
             const response = await fetch(config.outgoingUrl, {
                 method: 'POST',

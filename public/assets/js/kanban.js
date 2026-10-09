@@ -117,7 +117,7 @@ function buildCard(app, status) {
 
     div.querySelector('.btn-card-view')?.addEventListener('click', e => {
         e.stopPropagation();
-        viewApp(app.id);
+        viewApp(app);
     });
     div.querySelector('.btn-card-send')?.addEventListener('click', async e => {
         e.stopPropagation();
@@ -127,7 +127,7 @@ function buildCard(app, status) {
         e.stopPropagation();
         await deleteApp(app.id, div);
     });
-    div.addEventListener('click', () => viewApp(app.id));
+    div.addEventListener('click', () => viewApp(app));
 
     return div;
 }
@@ -244,8 +244,9 @@ function deleteApp(id, cardEl) {
     });
 }
 
-function viewApp(id) {
-    window.location.href = '/application-review?id=' + id;
+function viewApp(app) {
+    const params = new URLSearchParams({ job_id: app.jobId ?? '', app_id: app.id });
+    window.location.href = '/apply?' + params.toString();
 }
 
 function escHtml(str) {

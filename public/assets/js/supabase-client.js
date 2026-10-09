@@ -86,3 +86,26 @@ async function logout() {
 })();
 
 console.log('[W-JOB] Supabase client initialisé ✅ | Agent IA:', AI_AGENT_URL);
+
+// En-têtes pour nos propres fonctions /api : JSON + jeton de session Supabase
+window.wjobApiHeaders = async function () {
+    const headers = { 'Content-Type': 'application/json' };
+    try {
+        const { data: { session } } = await window.wjob.auth.getSession();
+        if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+    } catch (e) { }
+    return headers;
+};
+
+// En-têtes pour l'agent (webhook sortant) : secret + jeton de session si c'est notre Edge Function
+window.wjobAgentHeaders = async function (url, secret) {
+    const headers = { 'Content-Type': 'application/json' };
+    if (secret) headers['X-Webhook-Secret'] = secret;
+    if (String(url || '').startsWith(SUPABASE_URL + '/functions/')) {
+        try {
+            const { data: { session } } = await window.wjob.auth.getSession();
+            if (session?.access_token) headers.Authorization = `Bearer ${session.access_token}`;
+        } catch (e) { }
+    }
+    return headers;
+};

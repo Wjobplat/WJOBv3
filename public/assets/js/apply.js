@@ -249,7 +249,7 @@ async function letterAction(action) {
         const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const res = await fetch('/api/generate-letter', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: await window.wjobApiHeaders(),
             body: JSON.stringify({ job: _job, profile: _profile, currentLetter: current, action, apiKey })
         });
         const data = await res.json();
@@ -302,7 +302,7 @@ async function generateEmail() {
         const apiKey = localStorage.getItem('wjob_anthropic_key') || '';
         const res = await fetch('/api/generate-email', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: await window.wjobApiHeaders(),
             body: JSON.stringify({ job: _job, profile: _profile, apiKey })
         });
         const data = await res.json();
