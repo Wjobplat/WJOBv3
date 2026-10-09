@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>W-JOB — Ton CV devient des candidatures</title>
+  <meta name="description" content="W-JOB analyse ton CV avec l'IA Claude, trouve les offres qui te correspondent et rédige tes candidatures. Rien n'est envoyé sans ta validation." />
+  <meta property="og:title" content="W-JOB — Ton CV devient des candidatures" />
+  <meta property="og:description" content="Dépose ton CV. L'IA trouve, note et rédige. Tu valides." />
+  <meta name="theme-color" content="#070D14" />
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #070D14;
+      --bg-1: #0B1520;
+      --bg-2: #0F1C2A;
+      --brand: #10B981;
+      --brand-l: #34D399;
+      --brand-glow: rgba(16, 185, 129, .28);
+      --t1: #EFF6FF;
+      --t2: #8BA3BE;
+      --t3: #475F78;
+      --glass: rgba(255, 255, 255, .04);
+      --b: rgba(255, 255, 255, .08);
+      --amber: #FBBF24;
+      --f-display: 'Bricolage Grotesque', sans-serif;
+      --f-serif: 'Instrument Serif', serif;
+      --f-body: 'Instrument Sans', sans-serif;
+      --f-mono: 'JetBrains Mono', monospace;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+      --gutter: clamp(16px, 4vw, 48px);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--t1); font-family: var(--f-body); line-height: 1.6; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--brand); color: var(--bg); }
+
+    /* ── ATMOSPHÈRE ───────────────────────────── */
+    #field { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(80px); opacity: .55; }
+    .aurora span { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: drift 22s ease-in-out infinite alternate; }
+    .aurora span:nth-child(1) { width: 46vw; height: 46vw; left: 8%; top: 4%; background: radial-gradient(circle, rgba(16,185,129,.35), transparent 65%); }
+    .aurora span:nth-child(2) { width: 38vw; height: 38vw; right: 4%; top: 30%; background: radial-gradient(circle, rgba(20,184,166,.22), transparent 65%); animation-duration: 28s; }
+    .aurora span:nth-child(3) { width: 30vw; height: 30vw; left: 35%; bottom: 0; background: radial-gradient(circle, rgba(52,211,153,.16), transparent 65%); animation-duration: 34s; }
+    @keyframes drift { to { transform: translate(6vw, -4vh) scale(1.15); } }
+    .grain { position: fixed; inset: 0; z-index: 100; pointer-events: none; opacity: .06; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    .cursor-glow { position: fixed; width: 420px; height: 420px; border-radius: 50%; pointer-events: none; z-index: 1; background: radial-gradient(circle, rgba(16,185,129,.10), transparent 60%); transform: translate(-50%, -50%); transition: opacity .3s; opacity: 0; }
+
+    main, nav, footer { position: relative; z-index: 2; }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 var(--gutter); }
+
+    /* ── NAV ──────────────────────────────────── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: background .4s, border-color .4s, backdrop-filter .4s; border-bottom: 1px solid transparent; }
+    nav.scrolled { background: rgba(7, 13, 20, .72); backdrop-filter: blur(18px) saturate(1.4); border-color: var(--b); }
+    .nav-in { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 1rem; }
+    .logo { font-family: var(--f-display); font-weight: 800; font-size: 1.35rem; letter-spacing: -.04em; display: flex; align-items: center; gap: .5rem; }
+    .logo i { width: 10px; height: 10px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 14px var(--brand); animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse { 50% { transform: scale(.6); opacity: .6; } }
+    .nav-links { display: flex; gap: 2rem; font-size: .9rem; color: var(--t2); }
+    .nav-links a { position: relative; transition: color .25s; }
+    .nav-links a::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1px; background: var(--brand-l); transform: scaleX(0); transform-origin: right; transition: transform .4s var(--ease); }
+    .nav-links a:hover { color: var(--t1); }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+    .nav-cta { display: flex; gap: .6rem; align-items: center; }
+
+    .btn { display: inline-flex; align-items: center; gap: .55rem; font-family: var(--f-body); font-weight: 600; font-size: .92rem; padding: .78rem 1.35rem; border-radius: 999px; cursor: pointer; border: 1px solid transparent; transition: transform .35s var(--ease), box-shadow .35s, background .35s, border-color .35s; will-change: transform; }
+    .btn-ghost { color: var(--t2); border-color: var(--b); }
+    .btn-ghost:hover { color: var(--t1); border-color: rgba(52,211,153,.4); }
+    .btn-main { background: var(--brand); color: #04110b; box-shadow: 0 0 0 0 var(--brand-glow), 0 10px 40px -10px var(--brand-glow); }
+    .btn-main:hover { box-shadow: 0 0 0 6px rgba(16,185,129,.15), 0 16px 50px -8px rgba(16,185,129,.55); }
+    .btn svg { width: 16px; height: 16px; transition: transform .35s var(--ease); }
+    .btn:hover svg { transform: translateX(4px); }
+
+    /* ── HERO ─────────────────────────────────── */
+    .hero { min-height: 100vh; display: grid; grid-template-columns: 1.08fr .92fr; align-items: center; gap: clamp(2rem, 5vw, 5rem); padding-top: 110px; padding-bottom: 60px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: .6rem; font-family: var(--f-mono); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--brand-l); padding: .45rem .9rem; border: 1px solid rgba(52,211,153,.25); border-radius: 999px; background: rgba(16,185,129,.06); margin-bottom: 1.8rem; }
+    .eyebrow b { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-l); animation: pulse 1.6s infinite; }
+    h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.9rem, 7.2vw, 6.4rem); line-height: .92; letter-spacing: -.055em; }
+    h1 .line { display: block; overflow: hidden; padding-bottom: .06em; }
+    h1 .line > span { display: inline-block; transform: translateY(110%); animation: rise 1.1s var(--ease) forwards; }
+    h1 .line:nth-child(2) > span { animation-delay: .12s; }
+    h1 .line:nth-child(3) > span { animation-delay: .24s; }
+    @keyframes rise { to { transform: translateY(0); } }
+    .serif { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; color: var(--brand-l); }
+    .rotator { display: inline-grid; vertical-align: bottom; }
+    .rotator span { grid-area: 1 / 1; opacity: 0; transform: translateY(40%) rotateX(-60deg); transition: opacity .6s var(--ease), transform .8s var(--ease); white-space: nowrap; }
+    .rotator span.on { opacity: 1; transform: none; }
+    .rotator span.off { opacity: 0; transform: translateY(-40%) rotateX(60deg); }
+    .lede { margin-top: 1.8rem; max-width: 34rem; font-size: clamp(1.02rem, 1.4vw, 1.18rem); color: var(--t2); opacity: 0; animation: fade .9s .55s var(--ease) forwards; }
+    .lede strong { color: var(--t1); font-weight: 600; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 2.2rem; opacity: 0; animation: fade .9s .7s var(--ease) forwards; }
+    .hero-cta .btn-main { font-size: 1rem; padding: 1rem 1.7rem; }
+    .trust { display: flex; flex-wrap: wrap; gap: 1.4rem; margin-top: 2.6rem; font-size: .82rem; color: var(--t3); opacity: 0; animation: fade .9s .85s var(--ease) forwards; }
+    .trust span { display: flex; align-items: center; gap: .45rem; }
+    .trust svg { width: 15px; height: 15px; color: var(--brand); }
+    @keyframes fade { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+    /* Scanner */
+    .stage { position: relative; height: min(600px, 78vh); perspective: 1400px; opacity: 0; animation: fade 1.1s .35s var(--ease) forwards; }
+    .cv { position: absolute; left: 4%; top: 8%; width: 58%; aspect-ratio: .72; background: linear-gradient(160deg, #0F1C2A, #0A141E); border: 1px solid var(--b); border-radius: 18px; padding: 1.4rem; overflow: hidden; transform: rotateY(14deg) rotateX(4deg); transform-style: preserve-3d; box-shadow: 0 40px 80px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.02) inset; transition: transform .6s var(--ease); }
+    .cv-head { display: flex; gap: .8rem; align-items: center; margin-bottom: 1.2rem; }
+    .cv-avatar { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--brand), #14b8a6); }
+    .bar { height: 7px; border-radius: 4px; background: rgba(255,255,255,.08); margin-bottom: .55rem; }
+    .bar.t { height: 10px; background: rgba(255,255,255,.16); }
+    .bar.hl { background: rgba(52,211,153,.0); position: relative; }
+    .cv-sec { font-family: var(--f-mono); font-size: .58rem; letter-spacing: .14em; color: var(--t3); margin: 1rem 0 .5rem; }
+    .laser { position: absolute; left: 0; right: 0; height: 2px; top: 0; background: linear-gradient(90deg, transparent, var(--brand-l), transparent); box-shadow: 0 0 22px 4px var(--brand-glow); animation: scan 3.2s ease-in-out infinite; }
+    .laser::after { content: ''; position: absolute; left: 0; right: 0; top: -60px; height: 60px; background: linear-gradient(to top, rgba(16,185,129,.16), transparent); }
+    @keyframes scan { 0% { top: 6%; } 50% { top: 94%; } 100% { top: 6%; } }
+    .chip { position: absolute; font-family: var(--f-mono); font-size: .72rem; padding: .38rem .7rem; border-radius: 999px; background: rgba(16,185,129,.1); border: 1px solid rgba(52,211,153,.35); color: var(--brand-l); white-space: nowrap; opacity: 0; pointer-events: none; backdrop-filter: blur(6px); }
+    .jobs { position: absolute; right: 0; top: 14%; width: 52%; display: flex; flex-direction: column; gap: .8rem; }
+    .job { display: flex; align-items: center; gap: .85rem; padding: .85rem 1rem; border-radius: 14px; background: rgba(11, 21, 32, .82); border: 1px solid var(--b); backdrop-filter: blur(12px); transform: translateX(40px); opacity: 0; transition: transform .8s var(--ease), opacity .8s var(--ease), border-color .4s; box-shadow: 0 20px 40px -20px rgba(0,0,0,.8); }
+    .job.in { transform: none; opacity: 1; }
+    .job.best { border-color: rgba(52,211,153,.45); box-shadow: 0 20px 50px -18px rgba(16,185,129,.35); }
+    .ring { position: relative; width: 46px; height: 46px; flex-shrink: 0; }
+    .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .ring circle { fill: none; stroke-width: 4; }
+    .ring .track { stroke: rgba(255,255,255,.07); }
+    .ring .val { stroke: var(--brand); stroke-linecap: round; stroke-dasharray: 113; stroke-dashoffset: 113; transition: stroke-dashoffset 1.4s var(--ease); }
+    .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-mono); font-size: .72rem; font-weight: 600; }
+    .job h4 { font-family: var(--f-display); font-size: .92rem; font-weight: 600; letter-spacing: -.02em; line-height: 1.2; }
+    .job p { font-size: .74rem; color: var(--t2); }
+    .mail { position: absolute; left: 22%; bottom: 0; width: 62%; padding: 1rem 1.1rem; border-radius: 14px; background: rgba(11, 21, 32, .9); border: 1px solid rgba(52,211,153,.25); font-family: var(--f-mono); font-size: .72rem; color: var(--t2); min-height: 96px; opacity: 0; transform: translateY(20px); transition: all .8s var(--ease); backdrop-filter: blur(12px); }
+    .mail.in { opacity: 1; transform: none; }
+    .mail .to { color: var(--brand-l); margin-bottom: .4rem; }
+    .caret { display: inline-block; width: 7px; height: 1em; background: var(--brand-l); vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── MARQUEE ──────────────────────────────── */
+    .marquee { border-block: 1px solid var(--b); overflow: hidden; padding: 1.3rem 0; background: rgba(255,255,255,.012); mask: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+    .marquee-track { display: flex; gap: 3rem; width: max-content; animation: slide 38s linear infinite; }
+    .marquee span { font-family: var(--f-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 600; letter-spacing: -.03em; color: var(--t3); display: flex; align-items: center; gap: 3rem; white-space: nowrap; }
+    .marquee span::after { content: '✦'; color: var(--brand); font-size: .7em; }
+    .marquee span em { font-family: var(--f-serif); color: var(--t2); }
+    @keyframes slide { to { transform: translateX(-50%); } }
+
+    /* ── SECTIONS ─────────────────────────────── */
+    section { padding: clamp(5rem, 11vw, 9rem) 0; }
+    .kicker { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .16em; text-transform: uppercase; color: var(--brand-l); margin-bottom: 1.1rem; display: flex; align-items: center; gap: .7rem; }
+    .kicker::before { content: ''; width: 28px; height: 1px; background: var(--brand-l); }
+    h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: .98; letter-spacing: -.045em; max-width: 16ch; }
+    .sub { color: var(--t2); max-width: 36rem; margin-top: 1.2rem; font-size: 1.05rem; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+    .reveal.seen { opacity: 1; transform: none; }
+
+    /* Pipeline */
+    .pipe { display: grid; grid-template-columns: .9fr 1.1fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+    .pipe-sticky { position: sticky; top: 120px; }
+    .progress { margin-top: 2.5rem; height: 2px; background: var(--b); border-radius: 2px; overflow: hidden; max-width: 22rem; }
+    .progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--brand), var(--brand-l)); box-shadow: 0 0 12px var(--brand); transition: width .2s linear; }
+    .step-count { font-family: var(--f-mono); font-size: .8rem; color: var(--t3); margin-top: .8rem; }
+    .step-count b { color: var(--brand-l); }
+    .steps { display: flex; flex-direction: column; gap: 1.2rem; }
+    .step { position: relative; padding: 2rem 2rem 2rem 5.2rem; border-radius: 22px; border: 1px solid var(--b); background: var(--glass); transition: border-color .6s, background .6s, transform .6s var(--ease); opacity: .38; }
+    .step.active { opacity: 1; border-color: rgba(52,211,153,.35); background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(255,255,255,.02)); transform: translateX(-8px); }
+    .step .n { position: absolute; left: 1.6rem; top: 1.9rem; font-family: var(--f-serif); font-style: italic; font-size: 2.4rem; line-height: 1; color: var(--brand-l); }
+    .step h3 { font-family: var(--f-display); font-size: 1.45rem; letter-spacing: -.03em; margin-bottom: .4rem; }
+    .step p { color: var(--t2); font-size: .97rem; }
+    .step code { font-family: var(--f-mono); font-size: .78rem; color: var(--brand-l); background: rgba(16,185,129,.08); padding: .1rem .4rem; border-radius: 6px; }
+
+    /* Démo */
+    .demo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 3.5rem; }
+    .panel { border: 1px solid var(--b); border-radius: 22px; background: linear-gradient(160deg, rgba(15,28,42,.9), rgba(7,13,20,.9)); overflow: hidden; }
+    .panel-top { display: flex; align-items: center; gap: .45rem; padding: .9rem 1.1rem; border-bottom: 1px solid var(--b); font-family: var(--f-mono); font-size: .72rem; color: var(--t3); }
+    .panel-top i { width: 9px; height: 9px; border-radius: 50%; background: var(--t3); opacity: .5; }
+    .panel-top i:first-child { background: #F43F5E; opacity: .8; } .panel-top i:nth-child(2) { background: var(--amber); opacity: .8; } .panel-top i:nth-child(3) { background: var(--brand); opacity: .8; }
+    .panel-top span { margin-left: auto; }
+    .demo-form { display: flex; gap: .6rem; padding: 1.2rem; border-bottom: 1px solid var(--b); }
+    .demo-form input { flex: 1; min-width: 0; background: rgba(255,255,255,.04); border: 1px solid var(--b); border-radius: 12px; padding: .8rem 1rem; color: var(--t1); font-family: var(--f-body); font-size: .95rem; outline: none; transition: border-color .3s, box-shadow .3s; }
+    .demo-form input:focus { border-color: rgba(52,211,153,.5); box-shadow: 0 0 0 4px rgba(16,185,129,.12); }
+    .presets { display: flex; flex-wrap: wrap; gap: .45rem; padding: 0 1.2rem 1.1rem; border-bottom: 1px solid var(--b); }
+    .presets button { font-family: var(--f-mono); font-size: .7rem; color: var(--t2); background: none; border: 1px solid var(--b); border-radius: 999px; padding: .3rem .7rem; cursor: pointer; transition: all .25s; }
+    .presets button:hover { color: var(--brand-l); border-color: rgba(52,211,153,.4); }
+    .log { padding: 1.2rem; font-family: var(--f-mono); font-size: .8rem; line-height: 1.85; color: var(--t2); min-height: 260px; }
+    .log .ok { color: var(--brand-l); } .log .dim { color: var(--t3); } .log .warn { color: var(--amber); }
+    .result { padding: 1.6rem; display: flex; flex-direction: column; gap: 1.2rem; min-height: 100%; }
+    .dial-row { display: flex; align-items: center; gap: 1.4rem; }
+    .dial { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+    .dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .dial circle { fill: none; stroke-width: 9; }
+    .dial .track { stroke: rgba(255,255,255,.06); }
+    .dial .val { stroke: url(#dialGrad); stroke-linecap: round; stroke-dasharray: 377; stroke-dashoffset: 377; transition: stroke-dashoffset 1.6s var(--ease); }
+    .dial b { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--f-display); font-size: 2.3rem; font-weight: 800; letter-spacing: -.05em; }
+    .dial-txt h4 { font-family: var(--f-display); font-size: 1.25rem; letter-spacing: -.03em; line-height: 1.15; }
+    .dial-txt p { color: var(--t2); font-size: .85rem; margin-top: .3rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag { font-family: var(--f-mono); font-size: .7rem; padding: .3rem .6rem; border-radius: 8px; border: 1px solid var(--b); color: var(--t2); opacity: 0; transform: scale(.8); transition: all .5s var(--ease); }
+    .tag.ok { color: var(--brand-l); border-color: rgba(52,211,153,.3); background: rgba(16,185,129,.07); }
+    .tag.in { opacity: 1; transform: none; }
+    .letter { border: 1px dashed rgba(52,211,153,.25); border-radius: 14px; padding: 1rem 1.1rem; font-size: .88rem; color: var(--t2); min-height: 130px; white-space: pre-wrap; }
+    .letter-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .pill { font-size: .78rem; padding: .45rem .9rem; border-radius: 999px; border: 1px solid var(--b); color: var(--t2); }
+    .pill.go { border-color: rgba(52,211,153,.4); color: var(--brand-l); }
+    .demo-note { margin-top: 1rem; font-size: .78rem; color: var(--t3); text-align: center; }
+
+    /* Bento */
+    .bento { display: grid; grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(210px, auto); gap: 1rem; margin-top: 3.5rem; }
+    .cell { position: relative; border: 1px solid var(--b); border-radius: 22px; padding: 1.8rem; background: var(--glass); overflow: hidden; transform-style: preserve-3d; transition: transform .5s var(--ease), border-color .5s; }
+    .cell::before { content: ''; position: absolute; inset: 0; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(52,211,153,.13), transparent 45%); opacity: 0; transition: opacity .4s; pointer-events: none; }
+    .cell:hover::before { opacity: 1; }
+    .cell:hover { border-color: rgba(52,211,153,.3); }
+    .cell h3 { font-family: var(--f-display); font-size: 1.4rem; letter-spacing: -.03em; line-height: 1.1; margin-bottom: .5rem; position: relative; }
+    .cell p { color: var(--t2); font-size: .93rem; position: relative; max-width: 30ch; }
+    .cell .ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: rgba(16,185,129,.1); border: 1px solid rgba(52,211,153,.25); color: var(--brand-l); margin-bottom: 1.3rem; position: relative; }
+    .cell .ico svg { width: 20px; height: 20px; }
+    .c-a { grid-column: span 4; grid-row: span 2; }
+    .c-b { grid-column: span 2; }
+    .c-c { grid-column: span 2; }
+    .c-d { grid-column: span 3; }
+    .c-e { grid-column: span 3; }
+    .kanban { position: absolute; left: 1.8rem; right: 1.8rem; bottom: 1.8rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem; }
+    .kcol { border-radius: 12px; background: rgba(255,255,255,.025); border: 1px solid var(--b); padding: .6rem; min-height: 150px; }
+    .kcol small { display: block; font-family: var(--f-mono); font-size: .6rem; letter-spacing: .1em; color: var(--t3); text-transform: uppercase; margin-bottom: .5rem; }
+    .kcard { height: 32px; border-radius: 8px; background: rgba(255,255,255,.05); border-left: 2px solid var(--t3); margin-bottom: .4rem; animation: hop 9s var(--ease) infinite; }
+    .kcol:nth-child(2) .kcard { border-color: var(--amber); }
+    .kcol:nth-child(3) .kcard { border-color: var(--brand); }
+    .kcol:nth-child(4) .kcard { border-color: #60A5FA; }
+    .kcard.mover { animation: travel 9s var(--ease) infinite; background: rgba(16,185,129,.18); border-color: var(--brand-l); }
+    @keyframes travel { 0%, 15% { transform: translateX(0); } 30%, 45% { transform: translateX(calc(100% + .6rem + 1.2rem)); } 60%, 75% { transform: translateX(calc(200% + 1.2rem + 2.4rem)); } 90%, 100% { transform: translateX(calc(300% + 1.8rem + 3.6rem)); } }
+    .big-num { font-family: var(--f-display); font-size: clamp(3.5rem, 7vw, 5.5rem); font-weight: 800; letter-spacing: -.06em; line-height: 1; background: linear-gradient(135deg, var(--t1), var(--brand-l)); -webkit-background-clip: text; background-clip: text; color: transparent; position: relative; }
+    .shield { position: absolute; right: -30px; bottom: -40px; width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(52,211,153,.2); }
+    .shield::before, .shield::after { content: ''; position: absolute; inset: 22px; border-radius: 50%; border: 1px solid rgba(52,211,153,.15); animation: ripple 3s ease-out infinite; }
+    .shield::after { animation-delay: 1.5s; }
+    @keyframes ripple { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+
+    /* Stats */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--b); }
+    .stat { padding: 2.6rem 1.5rem; border-right: 1px solid var(--b); }
+    .stat:last-child { border-right: 0; }
+    .stat b { display: block; font-family: var(--f-display); font-size: clamp(2.4rem, 4.5vw, 3.6rem); font-weight: 800; letter-spacing: -.05em; line-height: 1; }
+    .stat b sup { font-size: .45em; color: var(--brand-l); vertical-align: super; margin-left: .1em; }
+    .stat span { display: block; margin-top: .6rem; color: var(--t2); font-size: .9rem; }
+
+    /* FAQ */
+    .faq { display: grid; grid-template-columns: .8fr 1.2fr; gap: clamp(2rem, 6vw, 6rem); }
+    details { border-bottom: 1px solid var(--b); }
+    summary { list-style: none; cursor: pointer; padding: 1.5rem 0; display: flex; justify-content: space-between; gap: 1rem; font-family: var(--f-display); font-size: 1.2rem; font-weight: 600; letter-spacing: -.02em; transition: color .3s; }
+    summary::-webkit-details-marker { display: none; }
+    summary:hover { color: var(--brand-l); }
+    summary i { width: 24px; height: 24px; flex-shrink: 0; position: relative; }
+    summary i::before, summary i::after { content: ''; position: absolute; left: 50%; top: 50%; width: 14px; height: 1.5px; background: currentColor; transform: translate(-50%, -50%); transition: transform .4s var(--ease); }
+    summary i::after { transform: translate(-50%, -50%) rotate(90deg); }
+    details[open] summary i::after { transform: translate(-50%, -50%) rotate(0); }
+    details p { color: var(--t2); padding-bottom: 1.5rem; max-width: 52ch; animation: fade .5s var(--ease); }
+
+    /* CTA finale */
+    .final { text-align: center; position: relative; overflow: hidden; }
+    .final h2 { margin: 0 auto; max-width: 14ch; font-size: clamp(2.8rem, 8vw, 7rem); }
+    .final .sub { margin: 1.5rem auto 0; }
+    .final .btn-main { margin-top: 2.6rem; font-size: 1.1rem; padding: 1.15rem 2.2rem; }
+    .orbit { position: absolute; left: 50%; top: 50%; width: min(900px, 140vw); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid rgba(52,211,153,.08); pointer-events: none; animation: spin 60s linear infinite; }
+    .orbit::before { content: ''; position: absolute; top: -5px; left: 50%; width: 10px; height: 10px; border-radius: 50%; background: var(--brand-l); box-shadow: 0 0 20px var(--brand); }
+    .orbit.o2 { width: min(620px, 100vw); animation-duration: 40s; animation-direction: reverse; }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    footer { border-top: 1px solid var(--b); padding: 2rem 0; color: var(--t3); font-size: .85rem; }
+    .foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .foot nav { position: static; display: flex; gap: 1.5rem; }
+    .foot a:hover { color: var(--brand-l); }
+
+    /* ── RESPONSIVE ───────────────────────────── */
+    @media (max-width: 1000px) {
+      .hero { grid-template-columns: 1fr; padding-top: 120px; }
+      .stage { height: 520px; max-width: 560px; width: 100%; margin: 0 auto; }
+      .pipe, .faq, .demo { grid-template-columns: 1fr; }
+      .pipe-sticky { position: static; }
+      .bento { grid-template-columns: repeat(2, 1fr); }
+      .c-a, .c-b, .c-c, .c-d, .c-e { grid-column: span 2; }
+      .c-a { grid-row: span 1; min-height: 400px; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .stat:nth-child(2) { border-right: 0; }
+      .stat:nth-child(-n+2) { border-bottom: 1px solid var(--b); }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 560px) {
+      .nav-cta .btn-ghost { display: none; }
+      .stage { height: 460px; }
+      .cv { width: 66%; left: 0; }
+      .jobs { width: 64%; }
+      .job { padding: .65rem .75rem; gap: .6rem; }
+      .job h4 { font-size: .8rem; }
+      .mail { left: 6%; width: 88%; }
+      .step { padding: 1.6rem 1.4rem 1.6rem 4.2rem; }
+      .step .n { left: 1.2rem; font-size: 2rem; }
+      .dial-row { flex-direction: column; align-items: flex-start; }
+      .kanban { grid-template-columns: repeat(2, 1fr); }
+      .kcol:nth-child(n+3) { display: none; }
+      .kcard.mover { animation: none; }
+      .stats { grid-template-columns: 1fr; }
+      .stat { border-right: 0; border-bottom: 1px solid var(--b); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="field" aria-hidden="true"></canvas>
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <nav id="nav">
+    <div class="wrap nav-in">
+      <a href="/landing" class="logo" aria-label="W-JOB accueil"><i></i>W-JOB</a>
+      <div class="nav-links">
+        <a href="#pipeline">Comment ça marche</a>
+        <a href="#demo">Démo</a>
+        <a href="#features">Fonctionnalités</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="nav-cta">
+        <a href="/login" class="btn btn-ghost">Se connecter</a>
+        <a href="/login" class="btn btn-main magnetic">Commencer</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <header class="wrap hero">
+      <div>
+        <div class="eyebrow"><b></b>Agent IA propulsé par Claude</div>
+        <h1>
+          <span class="line"><span>Ton CV.</span></span>
+          <span class="line"><span>Des candidatures</span></span>
+          <span class="line"><span class="serif rotator" id="rotator">
+            <span class="on">sur-mesure.</span>
+            <span>bien notées.</span>
+            <span>prêtes à partir.</span>
+            <span>validées par toi.</span>
+          </span></span>
+        </h1>
+        <p class="lede">Dépose ton CV : W-JOB le lit comme un recruteur, trouve les offres qui te correspondent vraiment, calcule ta compatibilité et rédige chaque lettre. <strong>Rien ne part sans ton feu vert.</strong></p>
+        <div class="hero-cta">
+          <a href="/login" class="btn btn-main magnetic">Analyser mon CV
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#demo" class="btn btn-ghost">Voir la démo</a>
+        </div>
+        <div class="trust">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>Gratuit pour commencer</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Données privées</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v20M2 12h20"/></svg>Aucun envoi automatique</span>
+        </div>
+      </div>
+
+      <div class="stage" id="stage" aria-hidden="true">
+        <div class="cv" id="cv">
+          <div class="cv-head"><div class="cv-avatar"></div><div style="flex:1"><div class="bar t" style="width:70%"></div><div class="bar" style="width:45%"></div></div></div>
+          <div class="cv-sec">EXPÉRIENCE</div>
+          <div class="bar" style="width:92%"></div><div class="bar" style="width:78%"></div><div class="bar" style="width:85%"></div>
+          <div class="cv-sec">COMPÉTENCES</div>
+          <div class="bar" style="width:60%"></div><div class="bar" style="width:72%"></div>
+          <div class="cv-sec">FORMATION</div>
+          <div class="bar" style="width:66%"></div><div class="bar" style="width:40%"></div>
+          <div class="cv-sec">LANGUES</div>
+          <div class="bar" style="width:50%"></div>
+          <div class="laser"></div>
+        </div>
+        <div class="jobs" id="jobs"></div>
+        <div class="mail" id="mail"><div class="to">→ recrutement@entreprise.fr</div><span id="mailText"></span><span class="caret"></span></div>
+      </div>
+    </header>
+
+    <!-- MARQUEE -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Analyse de CV <em>en PDF</em></span><span>Score de compatibilité</span><span>Lettres <em>sur-mesure</em></span><span>Suivi en kanban</span><span>Emails aux recruteurs</span><span>Tu valides, <em>on envoie</em></span>
+        <span>Analyse de CV <em>en PDF</em></span><span>Score de compatibilité</span><span>Lettres <em>sur-mesure</em></span><span>Suivi en kanban</span><span>Emails aux recruteurs</span><span>Tu valides, <em>on envoie</em></span>
+      </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <section id="pipeline">
+      <div class="wrap pipe">
+        <div class="pipe-sticky">
+          <div class="kicker">Le processus</div>
+          <h2 class="reveal">Cinq étapes. <span class="serif">Une seule</span> à faire toi-même.</h2>
+          <p class="sub reveal">Tu déposes ton CV. L'agent fait le reste, et tu gardes la main sur chaque envoi.</p>
+          <div class="progress"><i id="pipeBar"></i></div>
+          <div class="step-count">Étape <b id="pipeNum">01</b> / 05</div>
+        </div>
+        <div class="steps" id="steps">
+          <article class="step"><span class="n">01</span><h3>Tu déposes ton CV</h3><p>Un PDF, c'est tout. Pas de formulaire de 40 champs, pas de profil à remplir à la main.</p></article>
+          <article class="step"><span class="n">02</span><h3>L'IA le lit comme un recruteur</h3><p>Claude extrait tes compétences, ton expérience, ta formation et les mots-clés qui comptent : <code>skills</code>, <code>job_titles</code>, <code>experience_years</code>.</p></article>
+          <article class="step"><span class="n">03</span><h3>Les offres sont notées pour toi</h3><p>Chaque offre reçoit un score de compatibilité. Les meilleures remontent, les autres ne te font pas perdre ton temps.</p></article>
+          <article class="step"><span class="n">04</span><h3>Lettre et email rédigés</h3><p>Une lettre de motivation et un email adaptés à chaque poste, que tu peux régénérer, raccourcir ou modifier.</p></article>
+          <article class="step"><span class="n">05</span><h3>Tu valides, c'est parti</h3><p>Rien n'est envoyé sans ton accord. Ensuite, tout se suit dans un kanban : brouillon, envoyée, réponse.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- DÉMO -->
+    <section id="demo" style="padding-top:0">
+      <div class="wrap">
+        <div class="kicker">Essaie maintenant</div>
+        <h2 class="reveal">Tape un poste. <span class="serif">Regarde</span> l'agent travailler.</h2>
+        <div class="demo reveal">
+          <div class="panel">
+            <div class="panel-top"><i></i><i></i><i></i><span>agent-ia — simulation</span></div>
+            <form class="demo-form" id="demoForm">
+              <input id="demoInput" type="text" placeholder="Ex : Développeur front-end" maxlength="60" aria-label="Poste visé" />
+              <button class="btn btn-main" type="submit">Lancer</button>
+            </form>
+            <div class="presets">
+              <button type="button" data-p="Chef de projet digital">Chef de projet digital</button>
+              <button type="button" data-p="Ingénieur mécanique">Ingénieur mécanique</button>
+              <button type="button" data-p="Data analyst">Data analyst</button>
+            </div>
+            <div class="log" id="log" aria-live="polite"><span class="dim">// en attente d'un poste…</span></div>
+          </div>
+          <div class="panel">
+            <div class="panel-top"><i></i><i></i><i></i><span>résultat</span></div>
+            <div class="result">
+              <div class="dial-row">
+                <div class="dial">
+                  <svg viewBox="0 0 140 140"><defs><linearGradient id="dialGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10B981"/><stop offset="1" stop-color="#34D399"/></linearGradient></defs><circle class="track" cx="70" cy="70" r="60"/><circle class="val" id="dialVal" cx="70" cy="70" r="60"/></svg>
+                  <b id="dialNum">–</b>
+                </div>
+                <div class="dial-txt"><h4 id="dialTitle">Compatibilité</h4><p id="dialSub">Le score apparaît ici.</p></div>
+              </div>
+              <div class="tags" id="tags"></div>
+              <div class="letter" id="letter"><span class="dim" style="color:var(--t3)">La lettre générée s'écrira ici.</span></div>
+              <div class="letter-actions"><span class="pill">Modifier</span><span class="pill">Régénérer</span><span class="pill go">✓ Valider l'envoi</span></div>
+            </div>
+          </div>
+        </div>
+        <p class="demo-note">Aperçu simulé dans ton navigateur. La vraie analyse utilise ton CV, une fois connecté.</p>
+      </div>
+    </section>
+
+    <!-- BENTO -->
+    <section id="features" style="padding-top:0">
+      <div class="wrap">
+        <div class="kicker">Fonctionnalités</div>
+        <h2 class="reveal">Tout ce qu'une recherche d'emploi <span class="serif">aurait dû</span> être.</h2>
+        <div class="bento">
+          <div class="cell c-a reveal">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/></svg></div>
+            <h3>Un kanban qui se remplit tout seul</h3>
+            <p>Chaque candidature avance de colonne en colonne : brouillon, en attente, envoyée, réponse.</p>
+            <div class="kanban" aria-hidden="true">
+              <div class="kcol"><small>Brouillon</small><div class="kcard mover"></div><div class="kcard"></div></div>
+              <div class="kcol"><small>En attente</small><div class="kcard"></div></div>
+              <div class="kcol"><small>Envoyée</small><div class="kcard"></div><div class="kcard"></div></div>
+              <div class="kcol"><small>Réponse</small><div class="kcard"></div></div>
+            </div>
+          </div>
+          <div class="cell c-b reveal">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></div>
+            <h3>Lecture de PDF</h3><p>Ton CV tel quel, sans ressaisie.</p>
+          </div>
+          <div class="cell c-c reveal">
+            <div class="big-num" data-count="10">0</div>
+            <h3 style="margin-top:.6rem">offres par recherche</h3><p>Notées et triées par compatibilité.</p>
+          </div>
+          <div class="cell c-d reveal">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v12H5.17L4 17.17z"/><path d="M8 9h8M8 12h5"/></svg></div>
+            <h3>Lettres qui ne sonnent pas « IA »</h3><p>Ton ton, tes expériences, le vocabulaire de l'offre. Régénère, raccourcis ou réécris en un clic.</p>
+          </div>
+          <div class="cell c-e reveal">
+            <div class="shield" aria-hidden="true"></div>
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <h3>Tes données restent à toi</h3><p>Chaque compte ne voit que ses offres, ses candidatures et ses CV. Export et suppression à tout moment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="wrap">
+      <div class="stats reveal">
+        <div class="stat"><b><span data-count="30">0</span><sup>s</sup></b><span>pour analyser un CV</span></div>
+        <div class="stat"><b><span data-count="10">0</span></b><span>offres notées à chaque recherche</span></div>
+        <div class="stat"><b><span data-count="100">0</span><sup>%</sup></b><span>des lettres personnalisées par poste</span></div>
+        <div class="stat"><b><span data-count="0">0</span></b><span>envoi sans ta validation</span></div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="wrap faq">
+        <div>
+          <div class="kicker">Questions</div>
+          <h2 class="reveal">Ce qu'on nous <span class="serif">demande</span> souvent.</h2>
+        </div>
+        <div class="reveal">
+          <details open><summary>Est-ce que W-JOB envoie des candidatures à ma place ?<i></i></summary><p>Non, pas sans toi. L'agent prépare la lettre et l'email ; tu les relis, tu modifies si besoin, et c'est toi qui valides l'envoi.</p></details>
+          <details><summary>Quelle IA est utilisée ?<i></i></summary><p>Claude, développé par Anthropic. Les contenus transmis via l'API ne servent pas à entraîner les modèles.</p></details>
+          <details><summary>Où sont stockées mes données ?<i></i></summary><p>Dans une base Supabase protégée : chaque utilisateur n'accède qu'à ses propres offres, candidatures et CV. Tu peux tout exporter ou tout supprimer depuis les paramètres.</p></details>
+          <details><summary>Faut-il remplir un profil ?<i></i></summary><p>Non. Ton CV en PDF suffit : l'IA en extrait le profil, que tu peux ensuite ajuster.</p></details>
+          <details><summary>Combien ça coûte ?<i></i></summary><p>Tu peux commencer gratuitement. Tu peux aussi utiliser ta propre clé API Anthropic depuis les paramètres.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA FINALE -->
+    <section class="final">
+      <div class="orbit" aria-hidden="true"></div>
+      <div class="orbit o2" aria-hidden="true"></div>
+      <div class="wrap" style="position:relative">
+        <div class="kicker" style="justify-content:center">Prêt ?</div>
+        <h2 class="reveal">Ta prochaine candidature est <span class="serif">déjà écrite.</span></h2>
+        <p class="sub reveal">Il te reste juste à déposer ton CV.</p>
+        <a href="/login" class="btn btn-main magnetic reveal">Commencer gratuitement
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>© 2026 W-JOB · Propulsé par Claude</span>
+      <nav><a href="/privacy">Confidentialité</a><a href="/terms">CGU</a><a href="/login">Connexion</a></nav>
+    </div>
+  </footer>
+
+  <script>
+  (() => {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(pointer: fine)').matches;
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const mouse = { x: -9999, y: -9999 };
+
+    // ── Champ de particules (filaments bioluminescents) ──
+    const cv = $('#field'), ctx = cv.getContext('2d');
+    let W, H, pts = [];
+    function resize() {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr;
+      cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px';
+      const n = Math.min(90, Math.floor(innerWidth * innerHeight / 16000));
+      pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .25 * dpr, vy: (Math.random() - .5) * .25 * dpr, r: (Math.random() * 1.4 + .4) * dpr }));
+      field.dpr = dpr;
+    }
+    function field() {
+      ctx.clearRect(0, 0, W, H);
+      const d = field.dpr, mx = mouse.x * d, my = mouse.y * d, link = 130 * d;
+      for (const p of pts) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        const dx = p.x - mx, dy = p.y - my, dm = Math.hypot(dx, dy);
+        if (dm < 160 * d) { p.x += dx / dm * .8; p.y += dy / dm * .8; }
+      }
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i], b = pts[j], dist = Math.hypot(a.x - b.x, a.y - b.y);
+          if (dist < link) { ctx.strokeStyle = `rgba(52,211,153,${(1 - dist / link) * .16})`; ctx.lineWidth = d * .6; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        }
+        const p = pts[i], near = Math.hypot(p.x - mx, p.y - my) < 220 * d;
+        ctx.fillStyle = near ? 'rgba(52,211,153,.9)' : 'rgba(139,163,190,.45)';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (near ? 1.8 : 1), 0, Math.PI * 2); ctx.fill();
+      }
+      if (!reduce) requestAnimationFrame(field);
+    }
+    resize(); field(); addEventListener('resize', resize);
+
+    // ── Curseur lumineux + nav ──
+    const glow = $('.cursor-glow');
+    addEventListener('pointermove', e => {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+      if (fine) { glow.style.opacity = 1; glow.style.left = e.clientX + 'px'; glow.style.top = e.clientY + 'px'; }
+    });
+    const nav = $('#nav');
+    const onScroll = () => nav.classList.toggle('scrolled', scrollY > 20);
+    addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+    // ── Boutons magnétiques ──
+    if (fine && !reduce) $$('.magnetic').forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        el.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .25}px, ${(e.clientY - r.top - r.height / 2) * .35}px)`;
+      });
+      el.addEventListener('pointerleave', () => el.style.transform = '');
+    });
+
+    // ── Mot qui tourne ──
+    const words = $$('#rotator span'); let wi = 0;
+    setInterval(() => {
+      words[wi].classList.replace('on', 'off');
+      const prev = words[wi]; setTimeout(() => prev.classList.remove('off'), 800);
+      wi = (wi + 1) % words.length; words[wi].classList.add('on');
+    }, 2600);
+
+    // ── Scène du hero : CV → compétences → offres → email ──
+    const stage = $('#stage'), jobsBox = $('#jobs'), mail = $('#mail'), mailText = $('#mailText'), cvEl = $('#cv');
+    const SKILLS = ['React', 'Gestion de projet', 'Anglais C1', 'SQL', 'Figma', 'Agile'];
+    const JOBS = [
+      { t: 'Product Designer', c: 'Studio Nova · Lyon', s: 94 },
+      { t: 'Chef de projet digital', c: 'Helios · Paris', s: 88 },
+      { t: 'Front-end React', c: 'Kite · Remote', s: 81 }
+    ];
+    const MAIL = "Bonjour, votre poste de Product Designer correspond exactement à ce que je construis depuis 4 ans…";
+    if (fine && !reduce) stage.addEventListener('pointermove', e => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      cvEl.style.transform = `rotateY(${14 + x * 14}deg) rotateX(${4 - y * 10}deg)`;
+    });
+    stage.addEventListener('pointerleave', () => cvEl.style.transform = '');
+
+    async function scene() {
+      const sr = stage.getBoundingClientRect(), cr = cvEl.getBoundingClientRect();
+      jobsBox.innerHTML = ''; mail.classList.remove('in'); mailText.textContent = '';
+      // compétences extraites qui s'envolent vers la droite
+      for (let i = 0; i < SKILLS.length; i++) {
+        const chip = document.createElement('span');
+        chip.className = 'chip'; chip.textContent = SKILLS[i];
+        const sx = cr.left - sr.left + cr.width * .2, sy = cr.top - sr.top + cr.height * (.25 + i * .1);
+        chip.style.left = sx + 'px'; chip.style.top = sy + 'px';
+        stage.appendChild(chip);
+        chip.animate([
+          { opacity: 0, transform: 'scale(.6)' },
+          { opacity: 1, transform: 'scale(1)', offset: .2 },
+          { opacity: 1, transform: `translate(${sr.width * .45}px, ${(i - 2.5) * 14}px) scale(1)`, offset: .75 },
+          { opacity: 0, transform: `translate(${sr.width * .55}px, ${(i - 2.5) * 14}px) scale(.7)` }
+        ], { duration: 1800, easing: 'cubic-bezier(.16,1,.3,1)' }).onfinish = () => chip.remove();
+        await sleep(220);
+      }
+      await sleep(900);
+      // offres notées
+      for (const [k, j] of JOBS.entries()) {
+        const el = document.createElement('div');
+        el.className = 'job' + (k === 0 ? ' best' : '');
+        el.innerHTML = `<div class="ring"><svg viewBox="0 0 44 44"><circle class="track" cx="22" cy="22" r="18"/><circle class="val" cx="22" cy="22" r="18"/></svg><b>0%</b></div><div><h4>${j.t}</h4><p>${j.c}</p></div>`;
+        jobsBox.appendChild(el);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          el.classList.add('in');
+          el.querySelector('.val').style.strokeDashoffset = 113 * (1 - j.s / 100);
+          countTo(el.querySelector('b'), j.s, 1300, '%');
+        }));
+        await sleep(450);
+      }
+      await sleep(900);
+      // email qui s'écrit
+      mail.classList.add('in');
+      for (const ch of MAIL) { mailText.textContent += ch; await sleep(reduce ? 0 : 26); }
+      await sleep(3500);
+      $$('.job', jobsBox).forEach(j => j.classList.remove('in')); mail.classList.remove('in');
+      await sleep(900);
+      scene();
+    }
+    if (reduce) {
+      JOBS.forEach((j, k) => { const el = document.createElement('div'); el.className = 'job in' + (k === 0 ? ' best' : ''); el.innerHTML = `<div class="ring"><svg viewBox="0 0 44 44"><circle class="track" cx="22" cy="22" r="18"/><circle class="val" cx="22" cy="22" r="18" style="stroke-dashoffset:${113 * (1 - j.s / 100)}"/></svg><b>${j.s}%</b></div><div><h4>${j.t}</h4><p>${j.c}</p></div>`; jobsBox.appendChild(el); });
+      mail.classList.add('in'); mailText.textContent = MAIL;
+    } else {
+      setTimeout(scene, 1200);
+    }
+
+    // ── Compteurs ──
+    function countTo(el, to, ms = 1400, suffix = '') {
+      if (reduce || to === 0) { el.textContent = to + suffix; return; }
+      const t0 = performance.now();
+      const tick = t => { const p = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - p, 4); el.textContent = Math.round(to * e) + suffix; if (p < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    }
+
+    // ── Apparitions au scroll ──
+    const io = new IntersectionObserver(entries => entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('seen');
+      $$('[data-count]', en.target).forEach(c => countTo(c, +c.dataset.count));
+      if (en.target.dataset.count) countTo(en.target, +en.target.dataset.count);
+      io.unobserve(en.target);
+    }), { threshold: .2 });
+    $$('.reveal').forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+    // ── Pipeline piloté par le scroll ──
+    const steps = $$('#steps .step'), bar = $('#pipeBar'), num = $('#pipeNum');
+    function pipe() {
+      const mid = innerHeight * .5; let active = 0;
+      steps.forEach((s, i) => { if (s.getBoundingClientRect().top < mid) active = i; });
+      steps.forEach((s, i) => s.classList.toggle('active', i === active));
+      bar.style.width = ((active + 1) / steps.length * 100) + '%';
+      num.textContent = String(active + 1).padStart(2, '0');
+    }
+    addEventListener('scroll', pipe, { passive: true }); pipe();
+
+    // ── Bento : projecteur + inclinaison ──
+    $$('.cell').forEach(c => {
+      c.addEventListener('pointermove', e => {
+        const r = c.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
+        if (fine && !reduce) c.style.transform = `perspective(900px) rotateX(${(.5 - y / r.height) * 5}deg) rotateY(${(x / r.width - .5) * 5}deg)`;
+      });
+      c.addEventListener('pointerleave', () => c.style.transform = '');
+    });
+
+    // ── Démo simulée ──
+    const form = $('#demoForm'), input = $('#demoInput'), log = $('#log'), dialVal = $('#dialVal'), dialNum = $('#dialNum'), tags = $('#tags'), letter = $('#letter');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const SKILLSETS = {
+      default: ['Communication', 'Organisation', 'Anglais', 'Gestion de projet', 'Pack Office', 'Autonomie'],
+      dev: ['JavaScript', 'React', 'TypeScript', 'Git', 'CSS', 'API REST'],
+      data: ['SQL', 'Python', 'Power BI', 'Statistiques', 'Excel', 'dbt'],
+      meca: ['CAO / CREO', 'SolidWorks', 'RDM', 'Industrialisation', 'Anglais', 'Lean'],
+      projet: ['Agile / Scrum', 'Roadmap', 'Jira', 'Coordination', 'UX', 'Budget']
+    };
+    const pick = q => /dev|front|back|full|react|web|logiciel/i.test(q) ? 'dev' : /data|analy|bi\b|scien/i.test(q) ? 'data' : /méca|meca|ingénieur|indus|conception/i.test(q) ? 'meca' : /projet|product|chef|manager|digital/i.test(q) ? 'projet' : 'default';
+    let running = false;
+    async function line(html, cls = '', wait = 380) { log.insertAdjacentHTML('beforeend', `<div class="${cls}">${html}</div>`); log.scrollTop = log.scrollHeight; await sleep(reduce ? 0 : wait); }
+    async function runDemo(q) {
+      if (running) return; running = true;
+      const role = esc(q.trim() || 'Chef de projet digital');
+      const set = SKILLSETS[pick(q)], score = 78 + Math.floor(Math.random() * 18);
+      log.innerHTML = ''; tags.innerHTML = ''; letter.textContent = '';
+      dialVal.style.strokeDashoffset = 377; dialNum.textContent = '–';
+      $('#dialTitle').textContent = role; $('#dialSub').textContent = 'Analyse en cours…';
+      await line(`<span class="dim">$</span> agent search --poste "${role}"`, '', 300);
+      await line('→ lecture du profil (CV.pdf)…');
+      await line(`<span class="ok">✓</span> ${set.length} compétences détectées`, '', 420);
+      await line('→ recherche des offres correspondantes…', '', 520);
+      await line(`<span class="ok">✓</span> 10 offres trouvées, 3 au-dessus de 85 %`);
+      await line('→ calcul de compatibilité…', '', 300);
+      dialVal.style.strokeDashoffset = 377 * (1 - score / 100);
+      countTo(dialNum, score, 1500, '%');
+      set.forEach((s, i) => { const t = document.createElement('span'); t.className = 'tag' + (i < 4 ? ' ok' : ''); t.textContent = (i < 4 ? '✓ ' : '+ ') + s; tags.appendChild(t); setTimeout(() => t.classList.add('in'), 90 * i); });
+      await line(`<span class="ok">✓</span> meilleur match : ${score} %`, '', 500);
+      $('#dialSub').textContent = `${set.slice(0, 4).join(' · ')}`;
+      await line('→ rédaction de la lettre…', '', 200);
+      const text = `Madame, Monsieur,\n\nVotre offre de ${q.trim() || 'Chef de projet digital'} a retenu toute mon attention : mes compétences en ${set[0]} et ${set[1]} rejoignent précisément vos besoins…`;
+      for (const ch of text) { letter.textContent += ch; if (!reduce) await sleep(14); }
+      await line('<span class="warn">⏸</span> en attente de ta validation', 'warn', 0);
+      running = false;
+    }
+    form.addEventListener('submit', e => { e.preventDefault(); runDemo(input.value); });
+    $$('.presets button').forEach(b => b.addEventListener('click', () => { input.value = b.dataset.p; runDemo(b.dataset.p); }));
+    const demoIO = new IntersectionObserver(en => { if (en[0].isIntersecting) { demoIO.disconnect(); if (!input.value) { input.value = 'Chef de projet digital'; runDemo(input.value); } } }, { threshold: .4 });
+    demoIO.observe($('#demo .demo'));
+  })();
+  </script>
+</body>
+</html>
