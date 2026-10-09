@@ -159,14 +159,11 @@ function buildRecruiterCard(rec, index) {
 
 // ── Mise à jour des stats ──────────────────────────────────
 function updateStats(recruiters) {
-    const total    = recruiters.length;
-    const contacts = recruiters.filter(r => r.status === 'contacted' || r.status === 'replied').length;
-
-    const elTotal = document.getElementById('total-recruiters');
-    const elCont  = document.getElementById('total-contacts');
-
-    if (elTotal) elTotal.textContent = total;
-    if (elCont)  elCont.textContent  = contacts;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('total-recruiters', recruiters.length);
+    set('total-companies', new Set(recruiters.map(r => r.company).filter(Boolean)).size);
+    set('total-contacts', recruiters.filter(r => r.email).length);
+    set('total-linkedin', recruiters.filter(r => r.linkedin).length);
 }
 
 function escHtml(str) {

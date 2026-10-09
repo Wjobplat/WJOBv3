@@ -3,28 +3,49 @@
 let _allApps = [];
 
 document.addEventListener('DOMContentLoaded', async function () {
-    // Avatar + badges dynamiques
-    try {
-        const me = await API.getMe();
-        if (me) {
-            const av = document.getElementById('user-avatar');
-            if (av) av.textContent = (me.name || me.email || 'MM').substring(0, 2).toUpperCase();
-        }
-    } catch (e) {}
+    showSkeletons();
 
-    try {
-        const stats = await API.getStats();
-        if (stats) {
-            const bj = document.getElementById('badge-jobs');
-            const ba = document.getElementById('badge-apps');
-            if (bj) bj.textContent = stats.jobs || 0;
-            if (ba) ba.textContent = stats.applications || 0;
-        }
-    } catch (e) {}
+    // Avatar + badges dynamiques, en parallèle du kanban
+    const avatar = API.getMe().then(me => {
+        const av = document.getElementById('user-avatar');
+        if (me && av) av.textContent = (me.name || me.email || '?').substring(0, 2).toUpperCase();
+    }).catch(() => {});
 
-    await loadKanban();
+    const badges = API.getStats().then(stats => {
+        if (!stats) return;
+        const bj = document.getElementById('badge-jobs');
+        const ba = document.getElementById('badge-apps');
+        if (bj) bj.textContent = stats.jobs || 0;
+        if (ba) ba.textContent = stats.applications || 0;
+    }).catch(() => {});
+
+    await Promise.all([avatar, badges, loadKanban()]);
     initFilters();
 });
+
+// Remplace le contenu d'exemple du HTML par des cartes de chargement
+function showSkeletons() {
+    ['draft', 'pending', 'sent', 'responded'].forEach(status => {
+        const col = document.getElementById('kanban-' + status);
+        if (!col) return;
+        Array.from(col.children).forEach(child => {
+            if (!child.classList.contains('col-header') && !child.classList.contains('add-card')) child.remove();
+        });
+        const cnt = document.getElementById('count-' + status);
+        if (cnt) cnt.textContent = '–';
+        const sk = document.createElement('div');
+        sk.className = 'col-empty';
+        sk.style.cssText = 'height:96px;border-radius:14px;margin-bottom:.6rem;background:linear-gradient(90deg,rgba(255,255,255,.03) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.03) 75%);background-size:200% 100%;animation:wjSk 1.4s infinite';
+        const addBtn = col.querySelector('.add-card');
+        addBtn ? col.insertBefore(sk, addBtn) : col.appendChild(sk);
+    });
+    if (!document.getElementById('wj-sk-style')) {
+        const st = document.createElement('style');
+        st.id = 'wj-sk-style';
+        st.textContent = '@keyframes wjSk{0%{background-position:200% 0}100%{background-position:-200% 0}}';
+        document.head.appendChild(st);
+    }
+}
 
 // ── Chargement ────────────────────────────────────────────
 async function loadKanban() {

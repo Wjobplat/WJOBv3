@@ -162,3 +162,9 @@ html.v2:not([data-theme="light"]) .auth-box {
   backdrop-filter: blur(16px);
 }
 html.v2 .auth-title { font-family: var(--v2-display); font-size: 2rem !important; letter-spacing: -.045em; }
+
+/* Écrans tactiles : pas de lampe torche, mur presque invisible */
+@media (pointer: coarse) {
+  html.v2 .v2-wall:not(.lit) { color: rgba(139, 163, 190, .022) !important; }
+  html.v2 .v2-wall.lit { display: none; }
+}

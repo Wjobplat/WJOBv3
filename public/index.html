@@ -23,7 +23,7 @@
       --brand-glow: rgba(16, 185, 129, .28);
       --t1: #EFF6FF;
       --t2: #8BA3BE;
-      --t3: #475F78;
+      --t3: #6B87A3;
       --glass: rgba(255, 255, 255, .04);
       --b: rgba(255, 255, 255, .08);
       --amber: #FBBF24;
@@ -45,6 +45,7 @@
     .wall { position: fixed; inset: -2rem; z-index: 0; pointer-events: none; font-family: var(--f-mono); font-size: 12px; line-height: 2.1; letter-spacing: .02em; color: rgba(139,163,190,.03); word-spacing: .6em; overflow: hidden; user-select: none; }
     .wall.lit { color: rgba(52,211,153,.55); -webkit-mask: radial-gradient(260px circle at var(--cx, -999px) var(--cy, -999px), #000 0%, transparent 70%); mask: radial-gradient(260px circle at var(--cx, -999px) var(--cy, -999px), #000 0%, transparent 70%); }
     .wall .m { color: var(--brand-l); text-shadow: 0 0 12px var(--brand); transition: color 1.2s, text-shadow 1.2s; }
+    @media (pointer: coarse) { .wall { color: rgba(139,163,190,.022); } .wall.lit, .wall .m { display: none; } }
     .aurora { position: fixed; inset: -20%; z-index: 0; pointer-events: none; filter: blur(80px); opacity: .55; }
     .aurora span { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: drift 22s ease-in-out infinite alternate; }
     .aurora span:nth-child(1) { width: 46vw; height: 46vw; left: 8%; top: 4%; background: radial-gradient(circle, rgba(16,185,129,.35), transparent 65%); }
@@ -213,7 +214,9 @@
     .tag.in { opacity: 1; transform: none; }
     .letter { border: 1px dashed rgba(52,211,153,.25); border-radius: 14px; padding: 1rem 1.1rem; font-size: .88rem; color: var(--t2); min-height: 130px; white-space: pre-wrap; }
     .letter-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
-    .pill { font-size: .78rem; padding: .45rem .9rem; border-radius: 999px; border: 1px solid var(--b); color: var(--t2); }
+    .pill { font: inherit; font-size: .78rem; padding: .45rem .9rem; border-radius: 999px; border: 1px solid var(--b); color: var(--t2); background: none; cursor: pointer; transition: color .25s, border-color .25s, background .25s; }
+    .pill:hover { color: var(--t1); border-color: rgba(52,211,153,.4); }
+    .pill.go:hover { background: var(--brand); color: #04110b; }
     .pill.go { border-color: rgba(52,211,153,.4); color: var(--brand-l); }
     .demo-note { margin-top: 1rem; font-size: .78rem; color: var(--t3); text-align: center; }
 
@@ -459,7 +462,7 @@
               </div>
               <div class="tags" id="tags"></div>
               <div class="letter" id="letter"><span class="dim" style="color:var(--t3)">La lettre générée s'écrira ici.</span></div>
-              <div class="letter-actions"><span class="pill">Modifier</span><span class="pill">Régénérer</span><span class="pill go">✓ Valider l'envoi</span></div>
+              <div class="letter-actions"><button type="button" class="pill" data-rerun>Régénérer</button><a href="/login" class="pill">Modifier</a><a href="/login" class="pill go">✓ Valider l'envoi</a></div>
             </div>
           </div>
         </div>
@@ -573,7 +576,7 @@
     }
     buildWall();
     addEventListener('resize', () => { clearTimeout(buildWall.t); buildWall.t = setTimeout(buildWall, 300); });
-    if (!reduce) setInterval(() => {
+    if (!reduce && fine) setInterval(() => {
       const spans = wall.children; if (!spans.length) return;
       const s = spans[Math.floor(Math.random() * spans.length)];
       s.classList.add('m'); setTimeout(() => s.classList.remove('m'), 1600);
@@ -801,6 +804,7 @@
     }
     form.addEventListener('submit', e => { e.preventDefault(); runDemo(input.value); });
     $$('.presets button').forEach(b => b.addEventListener('click', () => { input.value = b.dataset.p; runDemo(b.dataset.p); }));
+    $('[data-rerun]').addEventListener('click', () => runDemo(input.value || 'Chef de projet digital'));
     const demoIO = new IntersectionObserver(en => { if (en[0].isIntersecting) { demoIO.disconnect(); if (!input.value) { input.value = 'Chef de projet digital'; runDemo(input.value); } } }, { threshold: .4 });
     demoIO.observe($('#demo .demo'));
   })();

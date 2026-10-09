@@ -71,16 +71,10 @@ var API = {
     },
 
     isAdmin: async function () {
+        if (!supabase?.auth?.getUser) return false; // page sans client Supabase (ex. connexion)
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return false;
-        if (localStorage.getItem('wjob_admin_override') === 'true') return true;
-        return user.user_metadata?.role === 'admin';
-    },
-
-    promoteMe: function () {
-        localStorage.setItem('wjob_admin_override', 'true');
-        showToast('Promotion Admin activée ! Redémarrage...', 'success');
-        setTimeout(() => location.reload(), 1000);
+        // app_metadata n'est modifiable que côté serveur
+        return user?.app_metadata?.role === 'admin';
     },
 
     // Jobs
@@ -709,17 +703,6 @@ function showToast(message, type = 'info') {
         setTimeout(() => toast.remove(), 300);
     }, 4000);
 }
-
-// Auto-admin via URL parameter
-(function () {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('admin') === '1') {
-        localStorage.setItem('wjob_admin_override', 'true');
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, newUrl);
-        location.reload();
-    }
-})();
 
 // Global UI Manager for Admin-only elements
 document.addEventListener('DOMContentLoaded', async function () {
