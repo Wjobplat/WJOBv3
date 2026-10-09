@@ -13,10 +13,8 @@
 
     var root = document.documentElement;
     root.classList.add('v2');
-    var link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = '/assets/css/v2.css';
-    document.head.appendChild(link);
+    // document.write depuis un script synchrone du <head> : feuille bloquante, pas de flash de l'ancien design
+    document.write('<link rel="stylesheet" href="/assets/css/v2.css?v=3">');
 
     var TITLES = ['Product Designer', 'Data Analyst', 'Chef de projet', 'Développeur React', 'Ingénieur méca', 'UX Writer', 'Business Developer', 'Comptable', 'DevOps', 'Chargé·e RH', 'Account Manager', 'Juriste', 'Community Manager', 'Data Scientist', 'Product Owner', 'Commercial B2B', 'Architecte cloud', 'Designer UI'];
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -95,3 +95,70 @@ html.v2 .v2-in { animation: v2rise .8s var(--v2-ease) both; }
   html.v2 .v2-in { animation: none; }
   html.v2 * { transition-duration: .01ms !important; }
 }
+
+/* ═══ Transformation visible ═══════════════════════════════════ */
+
+/* Fond : mur plus présent sur l'appli */
+html.v2:not([data-theme="light"]) .v2-wall:not(.lit) { color: rgba(139, 163, 190, .05); }
+
+/* Navigation flottante en pilule */
+html.v2 .topnav {
+  position: sticky !important;
+  top: 14px !important;
+  margin: 14px auto 0;
+  width: min(1240px, calc(100% - 32px));
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .09) !important;
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 255, 255, .05);
+}
+html.v2 .nav-link.active { background: #10B981 !important; color: #04110b !important; box-shadow: 0 6px 20px -6px rgba(16, 185, 129, .6); }
+html.v2 .nav-link.active svg { stroke: #04110b; }
+html.v2 .nav-link .badge { background: rgba(255, 255, 255, .12); }
+
+/* Grands titres éditoriaux */
+html.v2 .page-header h2, html.v2 .settings-hero-title, html.v2 .hero-title, html.v2 .greeting {
+  font-size: clamp(2.2rem, 4.4vw, 3.6rem) !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  letter-spacing: -.05em !important;
+}
+html.v2 .page-header h2::after { content: '.'; color: #34D399; }
+html.v2 .page-header p { font-size: 1rem; margin-top: .6rem; }
+
+/* Cartes à bordure dégradée lumineuse */
+html.v2:not([data-theme="light"]) :is(.kpi-card, .stat-pill, .job-card, .app-card, .recruiter-card, .section-card, .glass-card, .stat-card, .card, .kanban-col, .sidebar-filter, .greeting-card) {
+  border: 1px solid transparent !important;
+  background:
+    radial-gradient(380px circle at var(--mx, -999px) var(--my, -999px), rgba(52, 211, 153, .10), transparent 45%) padding-box,
+    linear-gradient(160deg, rgba(15, 28, 42, .92), rgba(9, 17, 26, .92)) padding-box,
+    linear-gradient(140deg, rgba(52, 211, 153, .45), rgba(255, 255, 255, .06) 35%, rgba(255, 255, 255, .03) 70%, rgba(52, 211, 153, .18)) border-box !important;
+  backdrop-filter: blur(14px);
+}
+html.v2 :is(.kpi-card, .stat-pill, .job-card, .app-card, .recruiter-card, .glass-card, .stat-card):hover { transform: translateY(-4px); }
+html.v2 :is(.kpi-value, .stat-val) { font-size: clamp(2rem, 3vw, 2.6rem) !important; }
+
+/* Champs de saisie */
+html.v2:not([data-theme="light"]) :is(.form-input, input[type="text"], input[type="email"], input[type="password"], input[type="url"], select, textarea) {
+  background: rgba(7, 13, 20, .7) !important;
+  border: 1px solid rgba(255, 255, 255, .09) !important;
+  border-radius: 14px !important;
+}
+html.v2 :is(.form-input, input, select, textarea):focus { border-color: rgba(52, 211, 153, .55) !important; }
+
+/* Connexion : panneau gauche éditorial sur le mur, formulaire en carte */
+html.v2 .mesh, html.v2 .orb { display: none !important; }
+html.v2:not([data-theme="light"]) .panel-left { background: transparent !important; border-right: 1px solid rgba(255, 255, 255, .06); }
+html.v2 .panel-left h2 { font-family: var(--v2-display); font-size: clamp(2.8rem, 4.6vw, 4.4rem) !important; line-height: .95 !important; letter-spacing: -.055em !important; font-weight: 800; }
+html.v2 .panel-left h2 .highlight { font-family: var(--v2-serif); font-style: italic; font-weight: 400; letter-spacing: -.02em; color: #34D399; -webkit-text-fill-color: #34D399; background: none; }
+html.v2:not([data-theme="light"]) .panel-right { background: transparent !important; }
+html.v2:not([data-theme="light"]) .auth-box {
+  padding: 2.4rem;
+  border-radius: 28px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(160deg, rgba(15, 28, 42, .9), rgba(7, 13, 20, .92)) padding-box,
+    linear-gradient(140deg, rgba(52, 211, 153, .5), rgba(255, 255, 255, .05) 40%, rgba(52, 211, 153, .2)) border-box;
+  box-shadow: 0 40px 90px -40px rgba(16, 185, 129, .35);
+  backdrop-filter: blur(16px);
+}
+html.v2 .auth-title { font-family: var(--v2-display); font-size: 2rem !important; letter-spacing: -.045em; }
