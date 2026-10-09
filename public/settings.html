@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+  <script src="/assets/js/design.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>W-JOB — Paramètres</title>
     <meta name="description" content="W-JOB - Gestion de vos paramètres, webhooks et données personnelles.">
@@ -582,6 +583,30 @@
 
             <!-- ══ SETTINGS GRID ═══════════════════════════════════ -->
             <div class="settings-grid">
+
+                <!-- ══ APPARENCE ══════════════════════════════════ -->
+                <div class="settings-section stagger-1 fade-in">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <div class="section-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 0 0 18z" fill="currentColor"></path></svg>
+                                </div>
+                                Apparence
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label class="form-label" for="design-select">Design du site</label>
+                                <select id="design-select" class="form-input" onchange="wjobSetDesign(this.value)">
+                                    <option value="v2">Nouveau design (animé)</option>
+                                    <option value="classic">Design classique</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>document.getElementById('design-select').value = window.wjobDesign || 'v2';</script>
 
                 <!-- ══ PROFILE SECTION ════════════════════════════ -->
                 <div class="settings-section stagger-1 fade-in">
